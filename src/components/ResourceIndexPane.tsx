@@ -332,12 +332,7 @@ export function ResourceIndexPane({
             </p>
           ) : null}
 
-          {/* One question, six answers, one of them on at a time. There is no
-              "fluids a bee makes" to ask for, so there is no second row to pair
-              this with; the view toggle sits with the search box it belongs to. */}
-          {/* Four across, two rows, always shown (the fold-away key and the
-              mod filter went on 2026-09-06): the six filters, then the sort
-              across the last two cells so the grid closes square. */}
+          {/* Kind filters, followed by mod scope and sorting. */}
           <div className="mt-1 grid grid-cols-4 gap-1">
             {RESOURCE_FILTER_CHOICES.filter((choice) => !isMonifactory || !["plants", "bees"].includes(choice.mode)).map((choice) => (
               <button
@@ -356,6 +351,15 @@ export function ResourceIndexPane({
                 {choice.label}
               </button>
             ))}
+            <select
+              value={resourceMod}
+              onChange={(event) => setResourceMod(event.target.value)}
+              aria-label="Filter by mod"
+              className="col-span-2 h-6 min-w-0 rounded-[4px] border border-neutral-700 bg-[#17191d] px-1.5 text-[11px] text-neutral-100 outline-none"
+            >
+              <option value="">All mods</option>
+              {displayedMods.map((mod) => <option key={mod.id} value={mod.id}>{mod.id} ({mod.count.toLocaleString()})</option>)}
+            </select>
             <select
               value={resourceSort}
               onChange={(event) => setResourceSort(event.target.value as ResourceSortMode)}
@@ -1187,7 +1191,8 @@ function ResourceResultPage({
                         : undefined
                     }
                     className={
-                      resource.kind === "fluid" ? "!h-11 !w-11" : "!h-11 !w-11 scale-[1.5]"
+                      resource.kind === "fluid" || resource.iconAtlas?.renderScale
+                        ? "!h-11 !w-11" : "!h-11 !w-11 scale-[1.5]"
                     }
                   />
                 )}

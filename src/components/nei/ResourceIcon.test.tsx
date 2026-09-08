@@ -5,6 +5,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ResourceIcon } from "./ResourceIcon";
 
 describe("ResourceIcon", () => {
+  it("keeps tight atlas captures inside the same slot as padded legacy art", () => {
+    const resource = { kind: "item" as const, id: "gtceu:mv_mixer", amount: 1,
+      iconAtlas: { imagePath: "/atlas.png", atlasWidth: 1280, atlasHeight: 80,
+        x: 8, y: 8, width: 64, height: 64, renderScale: 0.5 } };
+    const { rerender } = render(<ResourceIcon resource={resource} iconPixelSize={64} tooltip={false} />);
+    expect(screen.getByRole("img").style.width).toBe("32px");
+    rerender(<ResourceIcon resource={{ ...resource, iconAtlas: { ...resource.iconAtlas, renderScale: undefined } }} iconPixelSize={64} tooltip={false} />);
+    expect(screen.getByRole("img").style.width).toBe("64px");
+  });
   afterEach(() => {
     cleanup();
   });

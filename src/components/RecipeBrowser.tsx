@@ -3,6 +3,7 @@
 import { SpawnKeys } from "@/components/SpawnKeys";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { DEFAULT_DATASET_MANIFEST_URL } from "@/lib/datasets";
+import { recipeMapLabel } from "@/lib/datasets/identity";
 import {
   getRecipeDatasetRecipe,
   queryRecipeDatasetResources,
@@ -1178,7 +1179,7 @@ function buildRecipeMapTabs(
     const resource = icons[recipeMap];
     return {
       id: recipeMap,
-      label: recipeMap,
+      label: recipeMapLabel(recipeMap),
       icon: resource
         ? {
             kind: resource.kind,

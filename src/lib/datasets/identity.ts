@@ -11,3 +11,10 @@ export function datasetLabel(
 }
 
 export const DEFAULT_MANIFEST_PATH = "/datasets/monifactory/datasets.manifest.json";
+
+/** Namespaced recipe IDs stay intact for queries; show readable GTCEu category names. */
+export function recipeMapLabel(id: string): string {
+  return id.startsWith("gtceu:")
+    ? id.slice(6).replace(/_/g, " ").replace(/\b[a-z]/g, (letter) => letter.toUpperCase())
+    : id;
+}

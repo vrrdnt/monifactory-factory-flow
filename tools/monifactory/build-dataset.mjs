@@ -5,8 +5,14 @@ import { gzipSync } from "node:zlib";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildPlannerRecipes } from "./planner-recipes.mjs";
+import { publishTextures } from "./textures.mjs";
 
-export function buildDataset(catalog, reference, generatedAt = new Date().toISOString()) {
+export function buildDataset(
+  catalog,
+  reference,
+  generatedAt = new Date().toISOString(),
+  icons = {},
+) {
   const recipes = buildPlannerRecipes(catalog, reference);
   const profile = catalog.profile;
   if (
@@ -17,7 +23,16 @@ export function buildDataset(catalog, reference, generatedAt = new Date().toISOS
     throw new Error("Only the audited Monifactory 0.13.7 Expert profile is supported.");
   }
   const resources = new Map();
+  function decorate(resource) {
+    const iconAtlas = icons[`${resource.kind}:${resource.id}`];
+    if (iconAtlas) {
+      resource.iconAtlas = iconAtlas;
+      resource.dominantColor = iconAtlas.dominantColor;
+    }
+    for (const alternative of resource.alternatives ?? []) decorate(alternative);
+  }
   function add(resource) {
+    decorate(resource);
     const key = `${resource.kind}:${resource.id}`;
     if (!resources.has(key)) {
       resources.set(key, {
@@ -26,12 +41,36 @@ export function buildDataset(catalog, reference, generatedAt = new Date().toISOS
         displayName: resource.displayName ?? resource.id,
         modId: resource.id.split(":")[0],
         alternatives: resource.alternatives,
+        iconAtlas: resource.iconAtlas,
+        dominantColor: resource.dominantColor,
       });
     }
     for (const alternative of resource.alternatives ?? []) add(alternative);
   }
   for (const recipe of recipes) {
     for (const resource of [...recipe.inputs, ...recipe.outputs]) add(resource);
+  }
+  const machines = new Map(catalog.machines.map((m) => [m.id, m]));
+  const handlerIcons = new Map();
+  const mapIcons = new Map();
+  for (const recipe of recipes) {
+    for (const handler of recipe.machineHandlers ?? []) {
+      const machine = machines.get(handler.id);
+      const resource = {
+        kind: "item",
+        id: machine?.itemId ?? handler.id,
+        displayName: handler.label,
+      };
+      add(resource);
+      handlerIcons.set(handler.id, { familyId: handler.id, resource });
+      const current = mapIcons.get(recipe.source.recipeMap);
+      if (!current || (machine?.tier ?? Infinity) < current.tier)
+        mapIcons.set(recipe.source.recipeMap, {
+          recipeMap: recipe.source.recipeMap,
+          resource,
+          tier: machine?.tier ?? Infinity,
+        });
+    }
   }
   return {
     schemaVersion: 1,
@@ -47,12 +86,20 @@ export function buildDataset(catalog, reference, generatedAt = new Date().toISOS
       sourceVersion: "1",
       generatedAt,
       notes:
-        "Ordinary LV–UV machines only. Modifier and inventory reference checks passed; full production cycles, multiblocks, generators and non-GT recipes are not covered. Icons are not yet included.",
+        "Ordinary LV–UV machines only. Modifier and inventory reference checks passed; full production cycles, multiblocks, generators and non-GT recipes are not covered. " +
+        (Object.keys(icons).length
+          ? "Default-stack icons captured from the installed EMI renderer."
+          : "Icons are not yet included."),
     },
     resources: [...resources.values()].sort((a, b) =>
       `${a.kind}:${a.id}`.localeCompare(`${b.kind}:${b.id}`),
     ),
     recipes,
+    machineHandlerIcons: [...handlerIcons.values()],
+    recipeMapIcons: [...mapIcons.values()].map(({ recipeMap, resource }) => ({
+      recipeMap,
+      resource,
+    })),
     oreDictionary: {},
     recipeMaps: [...new Set(recipes.map((recipe) => recipe.source.recipeMap))].sort(),
     generatedAt,
@@ -60,18 +107,38 @@ export function buildDataset(catalog, reference, generatedAt = new Date().toISOS
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const [catalogPath, referencePath] = process.argv.slice(2);
+  const [catalogPath, referencePath, textureIndexPath] = process.argv.slice(2);
   if (!catalogPath || !referencePath)
-    throw new Error("Usage: build-dataset.mjs <capacity-catalog.json> <inventory-reference.json>");
-  const dataset = buildDataset(
-    JSON.parse(await readFile(catalogPath, "utf8")),
-    JSON.parse(await readFile(referencePath, "utf8")),
-  );
+    throw new Error(
+      "Usage: build-dataset.mjs <capacity-catalog.json> <inventory-reference.json> [texture-index.json]",
+    );
+  const catalog = JSON.parse(await readFile(catalogPath, "utf8"));
   const root = fileURLToPath(new URL("../../", import.meta.url));
   const publicRoot = path.join(root, "public", "datasets", "monifactory");
+  if (!/^monifactory-[a-zA-Z0-9._-]+$/.test(catalog.profile.id))
+    throw new Error("Unsafe dataset version ID.");
+  const output = path.join(publicRoot, catalog.profile.id);
+  const prefix = `/datasets/monifactory/${catalog.profile.id}`;
+  const icons = textureIndexPath
+    ? await publishTextures(
+        textureIndexPath,
+        path.join(output, "textures"),
+        `${prefix}/textures`,
+        catalog,
+      )
+    : {};
+  const dataset = buildDataset(
+    catalog,
+    JSON.parse(await readFile(referencePath, "utf8")),
+    new Date().toISOString(),
+    icons,
+  );
+  if (textureIndexPath) {
+    const missing = dataset.resources.filter((r) => !r.iconAtlas && !r.alternatives?.length);
+    if (missing.length) throw new Error(`Missing textures for ${missing.length} concrete planner resources: ${missing.slice(0, 5).map((r) => r.id).join(", ")}`);
+  }
   if (!/^monifactory-[a-zA-Z0-9._-]+$/.test(dataset.datasetVersionId))
     throw new Error("Unsafe dataset version ID.");
-  const output = path.join(publicRoot, dataset.datasetVersionId);
   await mkdir(output, { recursive: true });
   const datasetPath = path.join(output, "recipes.json.gz");
   await writeFile(datasetPath, gzipSync(JSON.stringify(dataset), { level: 9 }));
@@ -87,7 +154,6 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const checksumSha256 = createHash("sha256")
     .update(await readFile(datasetPath))
     .digest("hex");
-  const prefix = `/datasets/monifactory/${dataset.datasetVersionId}`;
   const manifestPath = "/datasets/monifactory/datasets.manifest.json";
   const manifest = {
     schemaVersion: 1,

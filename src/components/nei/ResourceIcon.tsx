@@ -148,6 +148,7 @@ function atlasEquals(a?: ResourceIconAtlasRef, b?: ResourceIconAtlasRef): boolea
     a.y === b.y &&
     a.width === b.width &&
     a.height === b.height &&
+    a.renderScale === b.renderScale &&
     a.atlasWidth === b.atlasWidth &&
     a.atlasHeight === b.atlasHeight
   );
@@ -719,6 +720,8 @@ function AtlasIconImage({
 }) {
   const positionX = getAtlasBackgroundPosition(atlas.x, atlas.atlasWidth, atlas.width);
   const positionY = getAtlasBackgroundPosition(atlas.y, atlas.atlasHeight, atlas.height);
+  const scale = atlas.renderScale ?? 1;
+  const pixels = iconPixelSize ? iconPixelSize * scale : undefined;
 
   return (
     <span
@@ -730,7 +733,8 @@ function AtlasIconImage({
           : "minecraft-pixel-art block h-[calc(200%-8px)] w-[calc(200%-8px)] max-w-none bg-no-repeat"
       }
       style={{
-        ...(iconPixelSize ? { width: iconPixelSize, height: iconPixelSize } : undefined),
+        width: pixels ?? `calc(${200 * scale}% - ${8 * scale}px)`,
+        height: pixels ?? `calc(${200 * scale}% - ${8 * scale}px)`,
         backgroundImage: `url('${atlas.imagePath}')`,
         backgroundSize: `${(atlas.atlasWidth / atlas.width) * 100}% ${
           (atlas.atlasHeight / atlas.height) * 100

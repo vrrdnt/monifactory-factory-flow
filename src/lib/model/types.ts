@@ -14,6 +14,8 @@ export type ResourceKind = "item" | "fluid" | "aspect" | "power";
 export type ResourceKey = `${ResourceKind}:${string}`;
 
 export interface ResourceIconAtlasRef {
+  /** Relative to the legacy padded captures; tight EMI captures use 0.5. */
+  renderScale?: number;
   imagePath: string;
   atlasWidth: number;
   atlasHeight: number;

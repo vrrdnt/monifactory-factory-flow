@@ -21,7 +21,23 @@ import { getHandlerRecipeStats } from "../../src/components/flow/MachinePicker";
 const fixture = JSON.parse(
   readFileSync(new URL("./fixtures/inventory-examples.json", import.meta.url), "utf8"),
 );
-const dataset = buildDataset(fixture.catalog, fixture.reference, "2026-09-08T00:00:00Z");
+const icons = Object.fromEntries(
+  fixture.catalog.resources.map((r) => [
+    `${r.kind}:${r.id}`,
+    {
+      imagePath: "/textures/fixture.png",
+      atlasWidth: 1280,
+      atlasHeight: 80,
+      x: 8,
+      y: 8,
+      width: 64,
+      height: 64,
+      renderScale: 0.5,
+      dominantColor: "#aabbcc",
+    },
+  ]),
+);
+const dataset = buildDataset(fixture.catalog, fixture.reference, "2026-09-08T00:00:00Z", icons);
 const root = fileURLToPath(new URL("../../", import.meta.url));
 let scratch;
 
@@ -76,7 +92,7 @@ describe("Monifactory dataset to server to board", () => {
     expect(datasetLabel({ gtnhVersion: "2.9" })).toBe("GTNH 2.9");
     const catalog = await getDatasetCatalog(dataset.datasetVersionId);
     expect(catalog.pack).toEqual(dataset.pack);
-    expect(catalog.machineHandlerIcons).toEqual([]);
+    expect(catalog.machineHandlerIcons).toEqual(dataset.machineHandlerIcons);
     const index = JSON.parse(
       gunzipSync(
         readFileSync(
@@ -116,6 +132,13 @@ describe("Monifactory dataset to server to board", () => {
       ),
     ).toBe(true);
     const bronze = await getDatasetRecipe(dataset.datasetVersionId, "gtceu:mixer/bronze");
+    expect(bronze.outputs.find((r) => r.id === "gtceu:bronze_dust").iconAtlas).toMatchObject({
+      renderScale: 0.5,
+    });
+    const catalog = await getDatasetCatalog(dataset.datasetVersionId);
+    expect(
+      catalog.machineHandlerIcons.find((m) => m.familyId === "gtceu:mv_mixer").resource.iconAtlas,
+    ).toMatchObject({ renderScale: 0.5 });
     expect(bronze.machineHandlers.some((h) => h.id === "gtceu:mv_mixer")).toBe(true);
     expect(bronze.machineHandlers.every((h) => !h.label.includes("§"))).toBe(true);
     expect(
@@ -152,6 +175,7 @@ describe("Monifactory dataset to server to board", () => {
     const recipe = dataset.recipes.find((r) => r.inputs.some((i) => i.alternatives?.length > 1));
     const input = recipe.inputs.find((i) => i.alternatives?.length > 1);
     const candidate = input.alternatives[0];
+    expect(candidate.iconAtlas).toMatchObject({ renderScale: 0.5 });
     const resources = await queryDatasetResources(dataset.datasetVersionId, {
       query: candidate.id,
       offset: 0,

@@ -10,6 +10,9 @@ export const resourceIconAtlasRefSchema = z.object({
   y: z.number().int().min(0),
   width: z.number().int().positive(),
   height: z.number().int().positive(),
+  // Scale relative to the legacy 256px captures with 128px of centered art.
+  // Tight EMI captures use 0.5 so callers do not crop half the item away.
+  renderScale: z.number().positive().max(1).optional(),
   dominantColor: z
     .string()
     .regex(/^#[0-9a-fA-F]{6}$/)

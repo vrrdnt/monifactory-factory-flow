@@ -173,3 +173,24 @@ Search summaries and full recipe hydration preserve pack and calculation-engine 
 Portable integration tests build indexes from real exported examples, load them through the server query/hydration path, search concrete ingredient alternatives and calculate the bronze board with the MV handler. This completes the loader/search milestone above. Remaining major work is multiblocks, generators, conditions/NBT, other-mod recipes, rendered icons and complete fork branding/hosting.
 
 Browser verification confirmed recipe search, adding the bronze mixer, selecting MV, and retaining that selection after reload, with no reported browser exceptions or framework error overlay. The final checks passed typecheck, all 123 test files (1,338 passing tests plus the suite's one expected failure), and all 53 Monifactory checks. Targeted ESLint reported three pre-existing React-rule errors (two set-state-in-effect findings in ExportImageDialog and one render-time ref assignment in RecipeSearchOverlay), reproduced against the unchanged HEAD versions. No new lint errors were found.
+
+## Runtime textures and reference UI comparison
+
+The copied instance's installed EMI renderer captured **30,120 nonempty default-stack icons in 118 PNG atlases**. Of 30,160 registry entries, Minecraft's empty-fluid sentinel raised an error and 39 item IDs rendered transparent (air and items requiring additional state, including painted blocks and microblocks). These cases are recorded explicitly. **Every concrete resource used by the supported recipes and all 262 admitted machines have an icon.** This does not add NBT variants, animated icons, unsupported recipes or more machine calculation coverage.
+
+Items use the game's own models, resource packs, tints and fluid rendering. Capture runs client-side in a temporary offscreen render target and releases GPU buffers after each page. The collector checks page identity, registry completeness, duplicate IDs, PNG dimensions and crop bounds, and pixel alpha. Atlas filenames contain their SHA-256 hash; publishing checks those hashes. Tight 64px captures carry `renderScale: 0.5` to compensate for the UI's older, padded GTNH art convention. Recipe slots, alternatives, machine families and category icons retain atlas references through the compact indexes and full recipe hydration.
+
+```powershell
+npm run monifactory:textures -- prepare "C:\path\to\Monifactory-PLANNER" ".pipeline/monifactory/0.13.7-expert/capacity/capacity-catalog.json"
+# Press F3+T once in the copied game; keep a world open until report.json is complete.
+npm run monifactory:textures -- collect "C:\path\to\minecraft\local\monifactory-planner\textures\<token>" ".pipeline/monifactory/0.13.7-expert/capacity/capacity-catalog.json" ".pipeline/monifactory/0.13.7-expert/textures"
+npm run monifactory:dataset -- ".pipeline/monifactory/0.13.7-expert/capacity/capacity-catalog.json" ".pipeline/monifactory/0.13.7-expert/capacity/inventory-reference.json" ".pipeline/monifactory/0.13.7-expert/textures/texture-index.json"
+```
+
+Preparation records the input catalog checksum and original instance fingerprint. This fingerprint remains the recipe export's prelaunch snapshot, not proof that resource packs or client files have remained unchanged since then. The initial development capture predates request provenance; its collector records this limitation and verifies the complete registry against the selected catalog. Generated textures and indexes stay local and ignored by git, alongside the other staging data.
+
+Remove `kubejs/client_scripts/monifactory_planner_textures.js` when finished and press F3+T, or write `{"action":"reload","token":"cleanup"}` to `local/monifactory-planner/texture-request.json` while the helper is still loaded. After the acknowledgement, remove that control file. The helper only supports capture and client-script reload, never arbitrary commands. It was removed from the tested copy and the client confirmed 11 scripts loaded with zero errors; exports remain available.
+
+The comparison site was v2.57.0 while this fork starts from v2.58.0. Several toolbar changes therefore come from upstream: Build/Solve/Pool, consolidated plan actions and rearranged tools. The mod filter is restored beside sorting, and GTCEu categories show readable names while retaining native IDs for queries. The newer toolbar remains. Verification covered the actual icon grid, mod filtering, bronze recipe search, tier-specific mixer artwork and settings after a page reload. The full suite passed 124 files (1,346 tests plus one expected failure), all 60 Monifactory checks passed, and typecheck passed. Hosting, multiblocks, generators and other recipe adapters remain separate milestones.
+
+Targeted lint found an existing synchronous state update in `RecipeBrowser`'s search-focus effect; the same error was reproduced on its unchanged HEAD file. The category-label change adds no new lint errors.
