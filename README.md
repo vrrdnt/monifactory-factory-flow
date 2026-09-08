@@ -4,9 +4,11 @@ Work in progress: a fork of [jackwrichards/gtnh-factory-flow](https://github.com
 
 The first milestone is a verified runtime catalog. The included KubeJS exporter reads final GT recipes, machine definitions, item/fluid registries and tags from a prepared instance. The collector validates the export and links recipe types to real registered machines. It preserves native recipe details instead of guessing machine behavior.
 
-**The inherited web UI and solver still use GTNH rules. The Monifactory catalog is a staging format and is deliberately not accepted as a planner dataset yet.** Machine calculation adapters, rendered icons, and other mods' recipes are subsequent milestones.
+The ordinary-machine calculator now matches **17,952 live reference cases across 272 machines**. Its separate adapter normalizes **25,010 recipes**, retaining tags, catalysts, circuits and output chances, with an explicit exclusion report.
 
-See [the Monifactory setup guide](docs/monifactory.md) for preparation, export, collection, limitations and the port roadmap. Generated data and local instance files are not committed.
+**The inherited web UI and solver still use GTNH rules. Monifactory catalogs are staging formats and are deliberately not accepted as planner datasets yet.** Ordinary-machine inventory/tank constraints, board integration, multiblocks, rendered icons, and other mods' recipes remain to be implemented.
+
+See [the Monifactory setup guide](docs/monifactory.md) for preparation, export, calculation checks, limitations and the port roadmap. Full catalogs and local instance files are not committed; the compact machine-reference fixture is included for regression tests.
 
 ```powershell
 npm ci

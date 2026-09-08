@@ -69,12 +69,48 @@ The catalog is **not** the inherited app's `RecipeDataset`. Keeping it separate 
 - The original codec JSON is retained as `nativeRecipeJson` text to avoid rounding native long-valued fields through JavaScript numbers. Use an integer-preserving parser when normalizing those fields. Derived duration is validated as a safe integer; total energy values are decimal strings.
 - Instance preparation records hashes and relative paths, not config contents, accounts, saves, player data, or credentials. Keep local snapshots and generated data out of git.
 
+## Ordinary machine calculation milestone
+
+On 2026-09-08, the copied instance returned **17,952 reference cases across 272 ordinary singleblocks (34 families, LV through UV)**. Every result matched the separate TypeScript calculator in `src/lib/packs/monifactory/ordinary.ts`. The committed gzipped fixture contains the actual game results, including rejected over-voltage cases; tests compare all of them, rather than regenerating the expected values from our formula.
+
+The probe creates actual machine objects from registered definitions and invokes each definition's recipe modifier on synthetic recipes. It never places blocks, registers recipes, or touches player inventories. These checks establish **modifier power and timing**, not complete recipe execution: inventory capacity, input matching, output blocking, and world-dependent behavior have not been exercised. Environmental hazards must be disabled, as they are in the tested instance. The report ties the results to the export request's prelaunch fingerprint; that fingerprint is not a fresh audit of files changed since launch.
+
+The calculator imports no GTNH machine tables or tier aliases. It follows GTCEu's ordinary non-perfect overclock: four times EU/t and half the duration, skipping the first ULV step, stopping before a step would go below one tick, and truncating the final duration to an integer. A one-tick recipe therefore does not spend extra EU on unusable overclocks. Zero-EU recipes keep their original duration. A machine below a recipe's voltage is rejected, rather than silently promoted.
+
+The audited primary source is GTCEu tag `v7.5.3-1.20.1`, commit `91a79b8a7a2b62ec6277423e6c0ded4af89a831e`:
+
+- [OverclockingLogic.java](https://github.com/GregTechCEu/GregTech-Modern/blob/91a79b8a7a2b62ec6277423e6c0ded4af89a831e/src/main/java/com/gregtechceu/gtceu/api/recipe/OverclockingLogic.java): `getModifier` and `standardOC`.
+- [GTRecipeModifiers.java](https://github.com/GregTechCEu/GregTech-Modern/blob/91a79b8a7a2b62ec6277423e6c0ded4af89a831e/src/main/java/com/gregtechceu/gtceu/common/data/GTRecipeModifiers.java): ordinary electric voltage rejection.
+- [GTMachineUtils.java](https://github.com/GregTechCEu/GregTech-Modern/blob/91a79b8a7a2b62ec6277423e6c0ded4af89a831e/src/main/java/com/gregtechceu/gtceu/common/data/machines/GTMachineUtils.java): ordinary registration/modifier selection. `ordinary-policy.mjs` records the reviewed families from `GTMachines.java`.
+- `ModifierFunction.FunctionBuilder.apply` / `ContentModifier.apply(int)` establish final integer duration conversion; `ChanceLogic` and `Content` establish per-slot chance denominators.
+
+### Reproduce the reference and normalization
+
+These new CLIs use Node's native TypeScript support (**Node 22.18+ or 24+**). The original export/collection commands are unchanged.
+
+```powershell
+npm run monifactory:probe -- "C:\path\to\Monifactory-PLANNER" ".pipeline/monifactory/0.13.7-expert/catalog.json"
+# Reload or reopen the copied world, then wait for ordinary-machine-probe.json to say complete.
+npm run monifactory:normalize -- ".pipeline/monifactory/0.13.7-expert/catalog.json" "C:\path\to\minecraft\local\monifactory-planner\ordinary-machine-probe.json" ".pipeline/monifactory/0.13.7-expert/ordinary"
+npm run monifactory:calculate -- ".pipeline/monifactory/0.13.7-expert/ordinary/ordinary-catalog.json" "gtceu:mixer/bronze" "gtceu:mv_mixer"
+```
+
+Normalization requires a complete reference matrix for every machine it admits, the matching profile/fingerprint, environmental hazards disabled, and exact agreement with the calculator. Results are a separate `monifactory-ordinary-calculated-catalog`, **not the inherited app's `RecipeDataset`**. The existing browser/board still uses GTNH and must not consume this file directly.
+
+The tested instance normalizes **25,010 of 38,313 GT recipes**. It retains typed tag selectors and all candidates without selecting a preferred item, nonconsumed catalysts, circuit configurations (including zero), and unboosted output chances with their native denominators. Output rates are long-run expectations. Unsafe native integers are excluded before arithmetic; original codec text remains in the raw catalog. Resource quantities retain item counts and fluid millibuckets.
+
+The 13,303 excluded recipes have their IDs and primary exclusion reason recorded in `ordinary-catalog.json`; `ordinary-summary.json` includes coverage counts and input/output checksums. The largest groups are 11,865 recipes with no verified ordinary-machine association, 1,036 unsupported/NBT-sensitive ingredients, and 274 recipe conditions. The rest include custom data/chance logic, probabilistic inputs, unsupported tick/energy contents, excessive voltage, and invalid/no-output recipes. Each excluded recipe appears once, under its first encountered reason.
+
+Multiblocks, steam machines, generators, macerator output truncation, tiers above UV, special conditions, dynamic recipes, non-GT serializers, and icons remain outside this calculated subset. Numeric reference cases do not establish that every normalized recipe fits every listed machine's inventory/tanks. **Before board integration, export and enforce those constraints, then isolate all GTNH handler bonuses and automatic container conversions.**
+
+The probe is opt-in and separate from the normal exporter. Remove `kubejs/server_scripts/monifactory_planner_probe.js` and reload/reopen the world when finished. During development the loaded probe can consume `{ "reload": true }` from `local/monifactory-planner/probe-request.json` to request a reload; it supports no arbitrary commands. Remove that control file after unloading. The temporary probe and helper were removed from the tested instance after this milestone; the ordinary export script remains installed.
+
 ## Next implementation milestones
 
 1. Audit this runtime catalog against GT recipe categories/proxies and EMI; add missing dynamic recipe sources with explicit provenance.
-2. Export representative **actual machine** calculations at different tiers, coil/hatch settings and parallel counts. Include an ordinary machine, EBF, large chemical reactor and a MoniLabs/custom machine. Use these as regression fixtures.
-3. Introduce a pack-specific calculation interface and generic dataset identity. Keep GTNH tests passing while preventing its curated tables from handling Monifactory recipes.
-4. Normalize GT ingredients, conditions, resource variants and unsupported capability markers into the planner model; add icons and searchable indexes.
+2. Extend the completed ordinary-machine modifier references to formed EBF, large chemical reactor and MoniLabs/custom machines, including hatch/coil settings and parallels. Export ordinary-machine inventory/tank limits and verify actual input/output matching.
+3. Connect the independent pack calculator to the board with generic dataset identity. Keep GTNH tests passing while preventing its curated tables and free container conversions from handling Monifactory recipes.
+4. Extend the ordinary ingredient adapter to conditions and NBT resource variants, then add icons and searchable indexes.
 5. Add generation and other-mod adapters, prioritizing the Expert progression. Test realistic closed loops, byproducts and catalysts against in-game runs.
 6. Replace branding/default dataset configuration and configure hosting for this fork.
 
