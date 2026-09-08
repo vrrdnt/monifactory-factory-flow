@@ -1,4 +1,5 @@
 import { getEnergyHatchType } from "@/lib/machines/energy-hatches";
+import { applyMonifactoryHandler, isMonifactoryRecipe } from "../packs/monifactory/bridge";
 import { getMachineBehaviour } from "@/lib/machines/machine-table";
 import {
   getRecipeMinimumVoltageTier,
@@ -13,9 +14,11 @@ import type { FactoryNode, MachineTier, Recipe } from "@/lib/model/types";
 
 type VoltageTier = Exclude<MachineTier, "DEMO">;
 type PowerRecipeInput = Partial<
-  Pick<Recipe, "machineType" | "machineHandlers" | "machineProfile">
+  Pick<Recipe, "machineType" | "machineHandlers" | "machineProfile" | "source">
 >;
-type PowerNodeInput = Partial<Pick<FactoryNode, "energyHatches" | "energyHatchType" | "powerEuT">>;
+type PowerNodeInput = Partial<
+  Pick<FactoryNode, "energyHatches" | "energyHatchType" | "powerEuT" | "machineHandlerId">
+>;
 
 /**
  * The typed EU/t budget, when the node carries a usable one. A multiblock's
@@ -24,7 +27,10 @@ type PowerNodeInput = Partial<Pick<FactoryNode, "energyHatches" | "energyHatchTy
  * the product directly instead of building it from hatches. Singleblocks
  * never have one: their tier is the block.
  */
-export function getNodePowerBudget(recipe: PowerRecipeInput, node: PowerNodeInput): number | undefined {
+export function getNodePowerBudget(
+  recipe: PowerRecipeInput,
+  node: PowerNodeInput,
+): number | undefined {
   if (!isMultiblockRecipe(recipe)) {
     return undefined;
   }
@@ -44,6 +50,7 @@ export function getNodePowerBudget(recipe: PowerRecipeInput, node: PowerNodeInpu
  * instead, whose entries are multiblocks unless marked `kind: "single"`.
  */
 export function isMultiblockRecipe(recipe: PowerRecipeInput): boolean {
+  if (isMonifactoryRecipe(recipe)) return false;
   if ((recipe.machineHandlers?.length ?? 0) > 0) {
     return recipe.machineProfile?.kind === "multiblock";
   }
@@ -62,6 +69,8 @@ export function getNodeRunTier(
   recipe: PowerRecipeInput & Pick<Recipe, "eut" | "minimumTier">,
   node: PowerNodeInput & Partial<Pick<FactoryNode, "overclockTier">>,
 ): VoltageTier {
+  if (isMonifactoryRecipe(recipe))
+    return applyMonifactoryHandler(recipe as Recipe, node).minimumTier as VoltageTier;
   if (!isMultiblockRecipe(recipe)) {
     return getRunVoltageTier(recipe, node.overclockTier);
   }
@@ -106,6 +115,7 @@ export function getHatchAmps(hatches: number): number {
  * hatch is 64 amps, no clamp - which is `getMaxWorkingInputAmpsMulti`.
  */
 export function getNodePowerAmps(recipe: PowerRecipeInput, node: PowerNodeInput): number {
+  if (isMonifactoryRecipe(recipe)) return 1;
   if (isMultiblockRecipe(recipe)) {
     // A typed budget is the whole supply: whatever is left over the tier's
     // voltage is amps, fractional or not - the game multiplies the two back
@@ -157,9 +167,7 @@ export function getEffectiveVoltageOrdinal(
     // once there is more than one, so the summed voltage is half the
     // budget, and never under the tier's own voltage (one hatch, one amp).
     // Mega-style machines count the amps themselves, so the budget stands.
-    const summedVoltage = fullPowerPool
-      ? budget
-      : Math.max(getVoltageTierMaxEuT(tier), budget / 2);
+    const summedVoltage = fullPowerPool ? budget : Math.max(getVoltageTierMaxEuT(tier), budget / 2);
     return getVoltageTierIndex(getVoltageTierForEuT(summedVoltage));
   }
   const hatches = getNodeEnergyHatches(recipe, node);

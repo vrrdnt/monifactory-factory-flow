@@ -1,5 +1,6 @@
 import { applyRecipeInputOverrides } from "@/lib/model/recipe-input-overrides";
 import { applyMachineHandlerToRecipe } from "@/lib/model/recipe-rules";
+import { isMonifactoryRecipe } from "../packs/monifactory/bridge";
 import {
   getChanceMultiplier,
   isRecipeInputConsumed,
@@ -1390,7 +1391,9 @@ function buildRatePlan(node: FactoryNode, recipe: Recipe | undefined): RatePlan 
   const overclockedRecipe = getOverclockedRecipeStats(nodeRecipe, node);
   const machineParallelMultiplier = getMachineParallelMultiplier(effectiveRecipe, node);
   const operationRatePerMachine =
-    (node.parallel * machineParallelMultiplier * TICKS_PER_SECOND) /
+    ((isMonifactoryRecipe(nodeRecipe) ? 1 : node.parallel) *
+      machineParallelMultiplier *
+      TICKS_PER_SECOND) /
     overclockedRecipe.durationTicks;
   const inputs = new Map<ResourceKey, number>();
   const outputs = new Map<ResourceKey, number>();

@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { profile, resolveMinecraftDirectory } from "./prepare.mjs";
 import { isOrdinaryMachine } from "./ordinary-policy.mjs";
 
-export async function prepareProbe(instance, catalogPath) {
+export async function prepareProbe(instance, catalogPath, inventory = false) {
   const minecraft = await resolveMinecraftDirectory(instance);
   const catalog = JSON.parse(await readFile(catalogPath, "utf8"));
   const root = path.join(minecraft, "local/monifactory-planner");
@@ -24,30 +24,41 @@ export async function prepareProbe(instance, catalogPath) {
   }
   const machineIds = catalog.machines.filter(isOrdinaryMachine).map((m) => m.id);
   if (!machineIds.length) throw new Error("No ordinary machines to probe. No files changed.");
-  const destination = path.join(minecraft, "kubejs/server_scripts/monifactory_planner_probe.js");
+  const script = inventory ? "monifactory_planner_inventory.js" : "monifactory_planner_probe.js";
+  const destination = path.join(minecraft, "kubejs/server_scripts", script);
   try {
     await copyFile(destination, destination + ".bak");
   } catch (error) {
     if (error.code !== "ENOENT") throw error;
   }
-  await copyFile(new URL("./kubejs/monifactory_planner_probe.js", import.meta.url), destination);
+  await copyFile(new URL(`./kubejs/${script}`, import.meta.url), destination);
   await writeFile(
-    path.join(root, "probe-request.json"),
-    JSON.stringify({ run: true, machineIds }, null, 2) + "\n",
+    path.join(root, inventory ? "inventory-request.json" : "probe-request.json"),
+    JSON.stringify(
+      inventory ? { action: "limits", machineIds } : { run: true, machineIds },
+      null,
+      2,
+    ) + "\n",
   );
   return {
     machineCount: machineIds.length,
-    output: path.join(root, "ordinary-machine-probe.json"),
+    output: path.join(root, inventory ? "inventory-limits.json" : "ordinary-machine-probe.json"),
     instruction:
       "Reload or reopen the copied world once. The probe runs after 100 server ticks; no blocks or recipes are registered.",
   };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const [instance, catalog] = process.argv.slice(2);
+  const [instance, catalog] = process.argv.slice(2).filter((arg) => arg !== "--inventory");
   if (!instance || !catalog)
     throw new Error(
       "Usage: node tools/monifactory/prepare-probe.mjs <copied instance> <catalog.json>",
     );
-  console.log(JSON.stringify(await prepareProbe(instance, catalog), null, 2));
+  console.log(
+    JSON.stringify(
+      await prepareProbe(instance, catalog, process.argv.includes("--inventory")),
+      null,
+      2,
+    ),
+  );
 }

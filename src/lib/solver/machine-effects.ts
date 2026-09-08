@@ -1,3 +1,4 @@
+import { isMonifactoryRecipe } from "../packs/monifactory/bridge";
 import {
   getRecipeCoilTierControl,
   getRecipeMachineConfigTierControls,
@@ -24,11 +25,7 @@ import {
   isBeeFrameSlotControlId,
   isBeeProductionRecipe,
 } from "@/lib/model/passive-production";
-import {
-  getVoltageTierForEuT,
-  getVoltageTierIndex,
-  getVoltageTierMaxEuT,
-} from "@/lib/model/tiers";
+import { getVoltageTierForEuT, getVoltageTierIndex } from "@/lib/model/tiers";
 import { getHeatDiscountMultiplier } from "./heat";
 import { getEffectiveVoltageOrdinal, getNodeRunTier, getPowerPoolEuT } from "./power";
 import {
@@ -51,7 +48,9 @@ type MachineEffectRecipe = Pick<
 
 /** What it needs off the node the user configured. */
 type MachineEffectNode = Pick<FactoryNode, "machineConfigTiers" | "coilTier"> &
-  Partial<Pick<FactoryNode, "overclockTier" | "machineHandlerId" | "energyHatches" | "energyHatchType">>;
+  Partial<
+    Pick<FactoryNode, "overclockTier" | "machineHandlerId" | "energyHatches" | "energyHatchType">
+  >;
 
 /**
  * Reads the machine config tiers a node has selected as the zero-based indices
@@ -110,11 +109,7 @@ export function buildMachineContext(
     // What GTUtility.getTier(getMaxInputVoltage()) reports: the tier of the
     // SUMMED hatch voltage, so stacked hatches raise the ordinal the
     // "parallels per voltage tier" formulas scale on.
-    voltageTier: getEffectiveVoltageOrdinal(
-      recipe,
-      node,
-      getNodeRunTier(recipe as Recipe, node),
-    ),
+    voltageTier: getEffectiveVoltageOrdinal(recipe, node, getNodeRunTier(recipe as Recipe, node)),
     recipeVoltageTier: getVoltageTierIndex(getVoltageTierForEuT(Math.abs(recipe.eut ?? 0))),
     recipeSpecialValue: getRecipeSpecialValue(recipe),
   };
@@ -126,6 +121,7 @@ export function getMachineOutputMultiplier(
   output: RecipeOutput,
   tier: VoltageTier,
 ): number {
+  if (isMonifactoryRecipe(recipe)) return 1;
   const cropStats = getCropsNhStats(recipe);
   if (cropStats) {
     const setup = cropsNhHarvesterFromTiers(
@@ -320,6 +316,7 @@ export function getMachineParallelMultiplier(
   recipe: MachineEffectRecipe,
   node: MachineEffectNode,
 ): number {
+  if (isMonifactoryRecipe(recipe)) return 1;
   // GT++ "Voltage Tier * n Parallels" scales with the tier the machine runs
   // at; the GT tier ordinal counts ULV as 0, LV as 1, and so on. Stacked
   // hatches raise it, because the game reads the tier of the SUMMED voltage.
@@ -385,6 +382,7 @@ export function getMachineDurationMultiplier(
   recipe: MachineEffectRecipe,
   node: MachineEffectNode,
 ): number {
+  if (isMonifactoryRecipe(recipe)) return 1;
   const cropStats = getCropsNhStats(recipe);
   if (cropStats) {
     const setup = cropsNhHarvesterFromTiers(
@@ -431,6 +429,7 @@ export function getMachineEutMultiplier(
   recipe: MachineEffectRecipe,
   node: MachineEffectNode,
 ): number {
+  if (isMonifactoryRecipe(recipe)) return 1;
   const behaviour = getMachineBehaviour(recipe.machineType);
   if (behaviour) {
     return resolveCoefficient(behaviour.power, buildMachineContext(recipe, node), 1);

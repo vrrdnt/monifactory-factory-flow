@@ -1,0 +1,2193 @@
+{
+  "catalog": {
+    "schemaVersion": 1,
+    "format": "monifactory-capacity-checked-catalog",
+    "engine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+    "profile": {
+      "id": "monifactory-0.13.7-expert",
+      "packId": "monifactory",
+      "packVersion": "0.13.7",
+      "mode": "Expert",
+      "minecraftVersion": "1.20.1",
+      "forgeVersion": "47.4.13",
+      "requiredMods": {
+        "gtceu": "7.5.3",
+        "monilabs": "0.21.6",
+        "kubejs": "2001.6.5-build.16"
+      },
+      "source": {
+        "repository": "https://github.com/Omicron-Industries/Monifactory",
+        "tag": "0.13.7",
+        "commit": "6e3c9995f402c709fdeff0171ca382b5e921de16",
+        "clientArchiveSha256": "88ca112e9f91b3556039fd711f5f4fbfe0186b6601a055025b82e1eb09fbe1b2"
+      }
+    },
+    "instanceFingerprint": "d088cbd800f24ec17e3ebfba52e48653861dc83e4e5ac0d8b2427654d1989e86",
+    "validation": {
+      "machineModifierCases": 17952,
+      "machineModifierStatus": "runtime-verified",
+      "recipeExecutionStatus": "not-tested",
+      "environmentalHazards": false,
+      "inventoryStatus": "conservative-capacity-checked"
+    },
+    "coverage": {
+      "totalGTRecipes": 38313,
+      "included": 24877,
+      "excluded": 13436,
+      "verifiedMachines": 272,
+      "exclusionsByReason": {
+        "no-verified-ordinary-machine": 11865,
+        "no-supported-output": 1,
+        "unsupported-ingredient-or-nbt": 1036,
+        "probabilistic-input": 5,
+        "above-supported-machine-voltage": 74,
+        "recipe-conditions": 274,
+        "unsupported-fluid-content": 1,
+        "unsupported-energy-content": 1,
+        "custom-chance-logic": 15,
+        "tier-boosted-chance": 2,
+        "custom-recipe-data": 28,
+        "unsupported-native-shape": 1,
+        "no-proven-inventory-layout": 133
+      },
+      "nonGTRecipes": "not-exported",
+      "icons": "not-exported",
+      "inventoryExcludedMachinePairs": 1266,
+      "inventoryExclusionsByReason": {
+        "input-fluid-capacity": 1265,
+        "output-fluid-capacity": 1
+      }
+    },
+    "resources": [
+      {
+        "kind": "fluid",
+        "id": "gtceu:oxygen",
+        "displayName": "Oxygen Gas"
+      },
+      {
+        "kind": "fluid",
+        "id": "minecraft:water",
+        "displayName": "Water"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_bronze_bolted",
+        "displayName": "Block of Bronze"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_bronze_caution",
+        "displayName": "Block of Bronze"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_bronze_egregious",
+        "displayName": "Block of Bronze"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_bronze_industrial_relic",
+        "displayName": "Block of Bronze"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_bronze_scaffold",
+        "displayName": "Block of Bronze"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_bronze_shipping_crate",
+        "displayName": "Block of Bronze"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_bronze_thermal",
+        "displayName": "Block of Bronze"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:acid_hazard_sign_block",
+        "displayName": "Acid Hazard Sign Block"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:apatite_dust",
+        "displayName": "Apatite Dust"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:apatite_gem",
+        "displayName": "Apatite"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:bronze_block",
+        "displayName": "Block of Bronze"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:bronze_dust",
+        "displayName": "Bronze Dust"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:bronze_ingot",
+        "displayName": "Bronze Ingot"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:copper_dust",
+        "displayName": "Copper Dust"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:ev_alloy_smelter",
+        "displayName": "§5Advanced Alloy Smelter III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:ev_arc_furnace",
+        "displayName": "§5Advanced Arc Furnace III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:ev_autoclave",
+        "displayName": "§5Advanced Autoclave III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:ev_mixer",
+        "displayName": "§5Advanced Mixer III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:hv_alloy_smelter",
+        "displayName": "§6Advanced Alloy Smelter II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:hv_arc_furnace",
+        "displayName": "§6Advanced Arc Furnace II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:hv_autoclave",
+        "displayName": "§6Advanced Autoclave II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:hv_mixer",
+        "displayName": "§6Advanced Mixer II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:ingot_casting_mold",
+        "displayName": "Casting Mold (Ingot)"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:iv_alloy_smelter",
+        "displayName": "§9Elite Alloy Smelter §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:iv_arc_furnace",
+        "displayName": "§9Elite Arc Furnace §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:iv_autoclave",
+        "displayName": "§9Elite Autoclave §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:iv_mixer",
+        "displayName": "§9Elite Mixer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:luv_alloy_smelter",
+        "displayName": "§dElite Alloy Smelter II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:luv_arc_furnace",
+        "displayName": "§dElite Arc Furnace II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:luv_autoclave",
+        "displayName": "§dElite Autoclave II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:luv_mixer",
+        "displayName": "§dElite Mixer II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:lv_alloy_smelter",
+        "displayName": "Basic Alloy Smelter §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:lv_arc_furnace",
+        "displayName": "Basic Arc Furnace §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:lv_autoclave",
+        "displayName": "Basic Autoclave §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:lv_mixer",
+        "displayName": "Basic Mixer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:mv_alloy_smelter",
+        "displayName": "§bAdvanced Alloy Smelter §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:mv_arc_furnace",
+        "displayName": "§bAdvanced Arc Furnace §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:mv_autoclave",
+        "displayName": "§bAdvanced Autoclave §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:mv_mixer",
+        "displayName": "§bAdvanced Mixer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:steel_ingot",
+        "displayName": "Steel Ingot"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:tin_dust",
+        "displayName": "Tin Dust"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uv_alloy_smelter",
+        "displayName": "§3Ultimate Alloy Smelter §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uv_arc_furnace",
+        "displayName": "§3Ultimate Arc Furnace §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uv_autoclave",
+        "displayName": "§3Ultimate Autoclave §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uv_mixer",
+        "displayName": "§3Ultimate Mixer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:zpm_alloy_smelter",
+        "displayName": "§cElite Alloy Smelter III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:zpm_arc_furnace",
+        "displayName": "§cElite Arc Furnace III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:zpm_autoclave",
+        "displayName": "§cElite Autoclave III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:zpm_mixer",
+        "displayName": "§cElite Mixer III§r"
+      }
+    ],
+    "tags": [],
+    "machines": [
+      {
+        "id": "gtceu:ev_alloy_smelter",
+        "itemId": "gtceu:ev_alloy_smelter",
+        "tier": 4,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:alloy_smelter"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:ev_arc_furnace",
+        "itemId": "gtceu:ev_arc_furnace",
+        "tier": 4,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:arc_furnace"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:ev_autoclave",
+        "itemId": "gtceu:ev_autoclave",
+        "tier": 4,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:autoclave"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:ev_mixer",
+        "itemId": "gtceu:ev_mixer",
+        "tier": 4,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:mixer"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:hv_alloy_smelter",
+        "itemId": "gtceu:hv_alloy_smelter",
+        "tier": 3,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:alloy_smelter"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:hv_arc_furnace",
+        "itemId": "gtceu:hv_arc_furnace",
+        "tier": 3,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:arc_furnace"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:hv_autoclave",
+        "itemId": "gtceu:hv_autoclave",
+        "tier": 3,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:autoclave"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:hv_mixer",
+        "itemId": "gtceu:hv_mixer",
+        "tier": 3,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:mixer"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:iv_alloy_smelter",
+        "itemId": "gtceu:iv_alloy_smelter",
+        "tier": 5,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:alloy_smelter"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:iv_arc_furnace",
+        "itemId": "gtceu:iv_arc_furnace",
+        "tier": 5,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:arc_furnace"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:iv_autoclave",
+        "itemId": "gtceu:iv_autoclave",
+        "tier": 5,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:autoclave"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:iv_mixer",
+        "itemId": "gtceu:iv_mixer",
+        "tier": 5,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:mixer"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:luv_alloy_smelter",
+        "itemId": "gtceu:luv_alloy_smelter",
+        "tier": 6,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:alloy_smelter"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:luv_arc_furnace",
+        "itemId": "gtceu:luv_arc_furnace",
+        "tier": 6,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:arc_furnace"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:luv_autoclave",
+        "itemId": "gtceu:luv_autoclave",
+        "tier": 6,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:autoclave"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:luv_mixer",
+        "itemId": "gtceu:luv_mixer",
+        "tier": 6,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:mixer"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:lv_alloy_smelter",
+        "itemId": "gtceu:lv_alloy_smelter",
+        "tier": 1,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:alloy_smelter"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:lv_arc_furnace",
+        "itemId": "gtceu:lv_arc_furnace",
+        "tier": 1,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:arc_furnace"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:lv_autoclave",
+        "itemId": "gtceu:lv_autoclave",
+        "tier": 1,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:autoclave"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:lv_mixer",
+        "itemId": "gtceu:lv_mixer",
+        "tier": 1,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:mixer"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:mv_alloy_smelter",
+        "itemId": "gtceu:mv_alloy_smelter",
+        "tier": 2,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:alloy_smelter"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:mv_arc_furnace",
+        "itemId": "gtceu:mv_arc_furnace",
+        "tier": 2,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:arc_furnace"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:mv_autoclave",
+        "itemId": "gtceu:mv_autoclave",
+        "tier": 2,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:autoclave"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:mv_mixer",
+        "itemId": "gtceu:mv_mixer",
+        "tier": 2,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:mixer"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:uv_alloy_smelter",
+        "itemId": "gtceu:uv_alloy_smelter",
+        "tier": 8,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:alloy_smelter"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:uv_arc_furnace",
+        "itemId": "gtceu:uv_arc_furnace",
+        "tier": 8,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:arc_furnace"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:uv_autoclave",
+        "itemId": "gtceu:uv_autoclave",
+        "tier": 8,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:autoclave"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:uv_mixer",
+        "itemId": "gtceu:uv_mixer",
+        "tier": 8,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:mixer"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:zpm_alloy_smelter",
+        "itemId": "gtceu:zpm_alloy_smelter",
+        "tier": 7,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:alloy_smelter"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:zpm_arc_furnace",
+        "itemId": "gtceu:zpm_arc_furnace",
+        "tier": 7,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:arc_furnace"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:zpm_autoclave",
+        "itemId": "gtceu:zpm_autoclave",
+        "tier": 7,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:autoclave"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:zpm_mixer",
+        "itemId": "gtceu:zpm_mixer",
+        "tier": 7,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:mixer"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      }
+    ],
+    "recipes": [
+      {
+        "id": "gtceu:mixer/bronze",
+        "recipeType": "gtceu:mixer",
+        "engine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+        "durationTicks": 400,
+        "eut": 7,
+        "machines": [
+          {
+            "id": "gtceu:ev_mixer",
+            "tier": 4
+          },
+          {
+            "id": "gtceu:hv_mixer",
+            "tier": 3
+          },
+          {
+            "id": "gtceu:iv_mixer",
+            "tier": 5
+          },
+          {
+            "id": "gtceu:luv_mixer",
+            "tier": 6
+          },
+          {
+            "id": "gtceu:lv_mixer",
+            "tier": 1
+          },
+          {
+            "id": "gtceu:mv_mixer",
+            "tier": 2
+          },
+          {
+            "id": "gtceu:uv_mixer",
+            "tier": 8
+          },
+          {
+            "id": "gtceu:zpm_mixer",
+            "tier": 7
+          }
+        ],
+        "circuit": 1,
+        "inputs": [
+          {
+            "kind": "item",
+            "amount": 3,
+            "selector": {
+              "tag": "forge:dusts/copper"
+            },
+            "candidates": [
+              "gtceu:copper_dust"
+            ],
+            "consumed": true
+          },
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "tag": "forge:dusts/tin"
+            },
+            "candidates": [
+              "gtceu:tin_dust"
+            ],
+            "consumed": true
+          }
+        ],
+        "outputs": [
+          {
+            "kind": "item",
+            "amount": 4,
+            "selector": {
+              "item": "gtceu:bronze_dust"
+            },
+            "candidates": [
+              "gtceu:bronze_dust"
+            ],
+            "chance": 1
+          }
+        ]
+      },
+      {
+        "id": "gtceu:alloy_smelter/alloy_smelt_bronze_to_ingot",
+        "recipeType": "gtceu:alloy_smelter",
+        "engine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+        "durationTicks": 684,
+        "eut": 7,
+        "machines": [
+          {
+            "id": "gtceu:ev_alloy_smelter",
+            "tier": 4
+          },
+          {
+            "id": "gtceu:hv_alloy_smelter",
+            "tier": 3
+          },
+          {
+            "id": "gtceu:iv_alloy_smelter",
+            "tier": 5
+          },
+          {
+            "id": "gtceu:luv_alloy_smelter",
+            "tier": 6
+          },
+          {
+            "id": "gtceu:lv_alloy_smelter",
+            "tier": 1
+          },
+          {
+            "id": "gtceu:mv_alloy_smelter",
+            "tier": 2
+          },
+          {
+            "id": "gtceu:uv_alloy_smelter",
+            "tier": 8
+          },
+          {
+            "id": "gtceu:zpm_alloy_smelter",
+            "tier": 7
+          }
+        ],
+        "inputs": [
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "tag": "forge:storage_blocks/bronze"
+            },
+            "candidates": [
+              "chisel_chipped_integration:metal_bronze_bolted",
+              "chisel_chipped_integration:metal_bronze_caution",
+              "chisel_chipped_integration:metal_bronze_egregious",
+              "chisel_chipped_integration:metal_bronze_industrial_relic",
+              "chisel_chipped_integration:metal_bronze_scaffold",
+              "chisel_chipped_integration:metal_bronze_shipping_crate",
+              "chisel_chipped_integration:metal_bronze_thermal",
+              "gtceu:bronze_block"
+            ],
+            "consumed": true
+          },
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:ingot_casting_mold"
+            },
+            "candidates": [
+              "gtceu:ingot_casting_mold"
+            ],
+            "consumed": false
+          }
+        ],
+        "outputs": [
+          {
+            "kind": "item",
+            "amount": 9,
+            "selector": {
+              "item": "gtceu:bronze_ingot"
+            },
+            "candidates": [
+              "gtceu:bronze_ingot"
+            ],
+            "chance": 1
+          }
+        ]
+      },
+      {
+        "id": "gtceu:autoclave/autoclave_dust_apatite_water",
+        "recipeType": "gtceu:autoclave",
+        "engine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+        "durationTicks": 1200,
+        "eut": 24,
+        "machines": [
+          {
+            "id": "gtceu:ev_autoclave",
+            "tier": 4
+          },
+          {
+            "id": "gtceu:hv_autoclave",
+            "tier": 3
+          },
+          {
+            "id": "gtceu:iv_autoclave",
+            "tier": 5
+          },
+          {
+            "id": "gtceu:luv_autoclave",
+            "tier": 6
+          },
+          {
+            "id": "gtceu:lv_autoclave",
+            "tier": 1
+          },
+          {
+            "id": "gtceu:mv_autoclave",
+            "tier": 2
+          },
+          {
+            "id": "gtceu:uv_autoclave",
+            "tier": 8
+          },
+          {
+            "id": "gtceu:zpm_autoclave",
+            "tier": 7
+          }
+        ],
+        "inputs": [
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "tag": "forge:dusts/apatite"
+            },
+            "candidates": [
+              "gtceu:apatite_dust"
+            ],
+            "consumed": true
+          },
+          {
+            "kind": "fluid",
+            "amount": 250,
+            "selector": [
+              {
+                "tag": "forge:water"
+              }
+            ],
+            "candidates": [
+              "minecraft:water"
+            ],
+            "consumed": true
+          }
+        ],
+        "outputs": [
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:apatite_gem"
+            },
+            "candidates": [
+              "gtceu:apatite_gem"
+            ],
+            "chance": 0.75
+          }
+        ]
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_acid_hazard_sign_block",
+        "recipeType": "gtceu:arc_furnace",
+        "engine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+        "durationTicks": 224,
+        "eut": 30,
+        "machines": [
+          {
+            "id": "gtceu:ev_arc_furnace",
+            "tier": 4
+          },
+          {
+            "id": "gtceu:hv_arc_furnace",
+            "tier": 3
+          },
+          {
+            "id": "gtceu:iv_arc_furnace",
+            "tier": 5
+          },
+          {
+            "id": "gtceu:luv_arc_furnace",
+            "tier": 6
+          },
+          {
+            "id": "gtceu:lv_arc_furnace",
+            "tier": 1
+          },
+          {
+            "id": "gtceu:mv_arc_furnace",
+            "tier": 2
+          },
+          {
+            "id": "gtceu:uv_arc_furnace",
+            "tier": 8
+          },
+          {
+            "id": "gtceu:zpm_arc_furnace",
+            "tier": 7
+          }
+        ],
+        "inputs": [
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:acid_hazard_sign_block"
+            },
+            "candidates": [
+              "gtceu:acid_hazard_sign_block"
+            ],
+            "consumed": true
+          },
+          {
+            "kind": "fluid",
+            "amount": 224,
+            "selector": [
+              {
+                "tag": "forge:oxygen"
+              }
+            ],
+            "candidates": [
+              "gtceu:oxygen"
+            ],
+            "consumed": true
+          }
+        ],
+        "outputs": [
+          {
+            "kind": "item",
+            "amount": 4,
+            "selector": {
+              "item": "gtceu:steel_ingot"
+            },
+            "candidates": [
+              "gtceu:steel_ingot"
+            ],
+            "chance": 1
+          }
+        ]
+      }
+    ],
+    "excluded": [],
+    "provenance": {
+      "catalogSha256": "67e490b4ffb29ae8ca82e35cd760624318cf4a4f1bb58c863a0ed5a4920b2942",
+      "probeSha256": "dfce251505bf7fcb6ab503f44e07d986a399bbf37702d4d18c86a7ae48b75c4c",
+      "gtceuSourceCommit": "91a79b8a7a2b62ec6277423e6c0ded4af89a831e",
+      "inventoryLimitsSha256": "c57e6f4b6700b505f1ea34d6b182e8dd55a78b3b9686c626bd726fe03c76b1f5"
+    },
+    "machineLimits": [
+      {
+        "id": "gtceu:ev_alloy_smelter",
+        "tier": 4,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:ev_arc_furnace",
+        "tier": 4,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:ev_autoclave",
+        "tier": 4,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64,
+          64
+        ],
+        "inputTanks": [
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:ev_mixer",
+        "tier": 4,
+        "inputSlots": [
+          64,
+          64,
+          64,
+          64,
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [
+          16000,
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:hv_alloy_smelter",
+        "tier": 3,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:hv_arc_furnace",
+        "tier": 3,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:hv_autoclave",
+        "tier": 3,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64,
+          64
+        ],
+        "inputTanks": [
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:hv_mixer",
+        "tier": 3,
+        "inputSlots": [
+          64,
+          64,
+          64,
+          64,
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [
+          16000,
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:iv_alloy_smelter",
+        "tier": 5,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:iv_arc_furnace",
+        "tier": 5,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:iv_autoclave",
+        "tier": 5,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64,
+          64
+        ],
+        "inputTanks": [
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:iv_mixer",
+        "tier": 5,
+        "inputSlots": [
+          64,
+          64,
+          64,
+          64,
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [
+          16000,
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:luv_alloy_smelter",
+        "tier": 6,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:luv_arc_furnace",
+        "tier": 6,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:luv_autoclave",
+        "tier": 6,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64,
+          64
+        ],
+        "inputTanks": [
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:luv_mixer",
+        "tier": 6,
+        "inputSlots": [
+          64,
+          64,
+          64,
+          64,
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [
+          16000,
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:lv_alloy_smelter",
+        "tier": 1,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:lv_arc_furnace",
+        "tier": 1,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [
+          8000
+        ],
+        "outputTanks": [
+          8000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:lv_autoclave",
+        "tier": 1,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64,
+          64
+        ],
+        "inputTanks": [
+          8000
+        ],
+        "outputTanks": [
+          8000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:lv_mixer",
+        "tier": 1,
+        "inputSlots": [
+          64,
+          64,
+          64,
+          64,
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [
+          8000,
+          8000
+        ],
+        "outputTanks": [
+          8000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:mv_alloy_smelter",
+        "tier": 2,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:mv_arc_furnace",
+        "tier": 2,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [
+          12000
+        ],
+        "outputTanks": [
+          12000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:mv_autoclave",
+        "tier": 2,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64,
+          64
+        ],
+        "inputTanks": [
+          12000
+        ],
+        "outputTanks": [
+          12000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:mv_mixer",
+        "tier": 2,
+        "inputSlots": [
+          64,
+          64,
+          64,
+          64,
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [
+          12000,
+          12000
+        ],
+        "outputTanks": [
+          12000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:uv_alloy_smelter",
+        "tier": 8,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:uv_arc_furnace",
+        "tier": 8,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:uv_autoclave",
+        "tier": 8,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64,
+          64
+        ],
+        "inputTanks": [
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:uv_mixer",
+        "tier": 8,
+        "inputSlots": [
+          64,
+          64,
+          64,
+          64,
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [
+          16000,
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:zpm_alloy_smelter",
+        "tier": 7,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:zpm_arc_furnace",
+        "tier": 7,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:zpm_autoclave",
+        "tier": 7,
+        "inputSlots": [
+          64,
+          64
+        ],
+        "outputSlots": [
+          64,
+          64
+        ],
+        "inputTanks": [
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:zpm_mixer",
+        "tier": 7,
+        "inputSlots": [
+          64,
+          64,
+          64,
+          64,
+          64,
+          64
+        ],
+        "outputSlots": [
+          64
+        ],
+        "inputTanks": [
+          16000,
+          16000
+        ],
+        "outputTanks": [
+          16000
+        ],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      }
+    ],
+    "itemStackLimits": [
+      {
+        "id": "chisel_chipped_integration:metal_bronze_bolted",
+        "maxStackSize": 64
+      },
+      {
+        "id": "chisel_chipped_integration:metal_bronze_caution",
+        "maxStackSize": 64
+      },
+      {
+        "id": "chisel_chipped_integration:metal_bronze_egregious",
+        "maxStackSize": 64
+      },
+      {
+        "id": "chisel_chipped_integration:metal_bronze_industrial_relic",
+        "maxStackSize": 64
+      },
+      {
+        "id": "chisel_chipped_integration:metal_bronze_scaffold",
+        "maxStackSize": 64
+      },
+      {
+        "id": "chisel_chipped_integration:metal_bronze_shipping_crate",
+        "maxStackSize": 64
+      },
+      {
+        "id": "chisel_chipped_integration:metal_bronze_thermal",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:acid_hazard_sign_block",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:apatite_dust",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:apatite_gem",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:bronze_block",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:bronze_dust",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:bronze_ingot",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:copper_dust",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:ev_alloy_smelter",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:ev_arc_furnace",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:ev_autoclave",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:ev_mixer",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:hv_alloy_smelter",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:hv_arc_furnace",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:hv_autoclave",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:hv_mixer",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:ingot_casting_mold",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:iv_alloy_smelter",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:iv_arc_furnace",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:iv_autoclave",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:iv_mixer",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:luv_alloy_smelter",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:luv_arc_furnace",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:luv_autoclave",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:luv_mixer",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:lv_alloy_smelter",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:lv_arc_furnace",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:lv_autoclave",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:lv_mixer",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:mv_alloy_smelter",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:mv_arc_furnace",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:mv_autoclave",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:mv_mixer",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:steel_ingot",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:tin_dust",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:uv_alloy_smelter",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:uv_arc_furnace",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:uv_autoclave",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:uv_mixer",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:zpm_alloy_smelter",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:zpm_arc_furnace",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:zpm_autoclave",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:zpm_mixer",
+        "maxStackSize": 64
+      }
+    ],
+    "excludedMachinePairs": []
+  },
+  "reference": {
+    "schemaVersion": 1,
+    "kind": "monifactory-inventory-reference",
+    "instanceFingerprint": "d088cbd800f24ec17e3ebfba52e48653861dc83e4e5ac0d8b2427654d1989e86",
+    "status": "complete",
+    "coverage": "one-layout-per-recipe-plus-every-used-machine-and-empty-controls",
+    "cases": [
+      {
+        "id": "gtceu:alloy_smelter/alloy_smelt_bronze_to_ingot@gtceu:lv_alloy_smelter",
+        "recipeId": "gtceu:alloy_smelter/alloy_smelt_bronze_to_ingot",
+        "machineId": "gtceu:lv_alloy_smelter",
+        "items": [
+          {
+            "slot": 0,
+            "id": "chisel_chipped_integration:metal_bronze_bolted",
+            "amount": 1
+          },
+          {
+            "slot": 1,
+            "id": "gtceu:ingot_casting_mold",
+            "amount": 1
+          }
+        ],
+        "fluids": [],
+        "expected": true,
+        "matched": true
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_acid_hazard_sign_block@gtceu:lv_arc_furnace",
+        "recipeId": "gtceu:arc_furnace/arc_acid_hazard_sign_block",
+        "machineId": "gtceu:lv_arc_furnace",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:acid_hazard_sign_block",
+            "amount": 1
+          }
+        ],
+        "fluids": [
+          {
+            "slot": 0,
+            "id": "gtceu:oxygen",
+            "amount": 224
+          }
+        ],
+        "expected": true,
+        "matched": true
+      },
+      {
+        "id": "gtceu:autoclave/autoclave_dust_apatite_water@gtceu:lv_autoclave",
+        "recipeId": "gtceu:autoclave/autoclave_dust_apatite_water",
+        "machineId": "gtceu:lv_autoclave",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:apatite_dust",
+            "amount": 1
+          }
+        ],
+        "fluids": [
+          {
+            "slot": 0,
+            "id": "minecraft:water",
+            "amount": 250
+          }
+        ],
+        "expected": true,
+        "matched": true
+      },
+      {
+        "id": "gtceu:mixer/bronze@gtceu:lv_mixer",
+        "recipeId": "gtceu:mixer/bronze",
+        "machineId": "gtceu:lv_mixer",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:copper_dust",
+            "amount": 3
+          },
+          {
+            "slot": 1,
+            "id": "gtceu:tin_dust",
+            "amount": 1
+          }
+        ],
+        "fluids": [],
+        "circuit": 1,
+        "expected": true,
+        "matched": true
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_acid_hazard_sign_block@gtceu:ev_arc_furnace",
+        "recipeId": "gtceu:arc_furnace/arc_acid_hazard_sign_block",
+        "machineId": "gtceu:ev_arc_furnace",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:acid_hazard_sign_block",
+            "amount": 1
+          }
+        ],
+        "fluids": [
+          {
+            "slot": 0,
+            "id": "gtceu:oxygen",
+            "amount": 224
+          }
+        ],
+        "expected": true,
+        "matched": true
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_acid_hazard_sign_block@gtceu:hv_arc_furnace",
+        "recipeId": "gtceu:arc_furnace/arc_acid_hazard_sign_block",
+        "machineId": "gtceu:hv_arc_furnace",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:acid_hazard_sign_block",
+            "amount": 1
+          }
+        ],
+        "fluids": [
+          {
+            "slot": 0,
+            "id": "gtceu:oxygen",
+            "amount": 224
+          }
+        ],
+        "expected": true,
+        "matched": true
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_acid_hazard_sign_block@gtceu:iv_arc_furnace",
+        "recipeId": "gtceu:arc_furnace/arc_acid_hazard_sign_block",
+        "machineId": "gtceu:iv_arc_furnace",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:acid_hazard_sign_block",
+            "amount": 1
+          }
+        ],
+        "fluids": [
+          {
+            "slot": 0,
+            "id": "gtceu:oxygen",
+            "amount": 224
+          }
+        ],
+        "expected": true,
+        "matched": true
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_acid_hazard_sign_block@gtceu:luv_arc_furnace",
+        "recipeId": "gtceu:arc_furnace/arc_acid_hazard_sign_block",
+        "machineId": "gtceu:luv_arc_furnace",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:acid_hazard_sign_block",
+            "amount": 1
+          }
+        ],
+        "fluids": [
+          {
+            "slot": 0,
+            "id": "gtceu:oxygen",
+            "amount": 224
+          }
+        ],
+        "expected": true,
+        "matched": true
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_acid_hazard_sign_block@gtceu:mv_arc_furnace",
+        "recipeId": "gtceu:arc_furnace/arc_acid_hazard_sign_block",
+        "machineId": "gtceu:mv_arc_furnace",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:acid_hazard_sign_block",
+            "amount": 1
+          }
+        ],
+        "fluids": [
+          {
+            "slot": 0,
+            "id": "gtceu:oxygen",
+            "amount": 224
+          }
+        ],
+        "expected": true,
+        "matched": true
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_acid_hazard_sign_block@gtceu:uv_arc_furnace",
+        "recipeId": "gtceu:arc_furnace/arc_acid_hazard_sign_block",
+        "machineId": "gtceu:uv_arc_furnace",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:acid_hazard_sign_block",
+            "amount": 1
+          }
+        ],
+        "fluids": [
+          {
+            "slot": 0,
+            "id": "gtceu:oxygen",
+            "amount": 224
+          }
+        ],
+        "expected": true,
+        "matched": true
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_acid_hazard_sign_block@gtceu:zpm_arc_furnace",
+        "recipeId": "gtceu:arc_furnace/arc_acid_hazard_sign_block",
+        "machineId": "gtceu:zpm_arc_furnace",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:acid_hazard_sign_block",
+            "amount": 1
+          }
+        ],
+        "fluids": [
+          {
+            "slot": 0,
+            "id": "gtceu:oxygen",
+            "amount": 224
+          }
+        ],
+        "expected": true,
+        "matched": true
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_acid_hazard_sign_block@gtceu:lv_arc_furnace/empty",
+        "recipeId": "gtceu:arc_furnace/arc_acid_hazard_sign_block",
+        "machineId": "gtceu:lv_arc_furnace",
+        "items": [],
+        "fluids": [],
+        "expected": false,
+        "matched": false
+      }
+    ],
+    "errors": []
+  }
+}

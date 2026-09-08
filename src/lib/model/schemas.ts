@@ -233,6 +233,8 @@ export const recipeSchema = z.object({
   isDemo: z.boolean().optional(),
   source: z
     .object({
+      packId: z.enum(["gtnh", "monifactory"]).optional(),
+      calculationEngine: z.string().optional(),
       datasetVersionId: z.string().optional(),
       recipeMap: z.string().optional(),
       sourceMod: z.string().optional(),
@@ -314,12 +316,7 @@ export const factoryNodeSchema = z.object({
     .positive()
     .transform((value) => Math.max(1, Math.round(value))),
   overclockTier: z.string().min(1),
-  energyHatches: z
-    .number()
-    .int()
-    .min(1)
-    .max(64)
-    .optional(),
+  energyHatches: z.number().int().min(1).max(64).optional(),
   energyHatchType: z.string().min(1).optional(),
   powerEuT: z.number().nonnegative().finite().optional(),
   machineHandlerId: z.string().min(1).optional(),
@@ -390,7 +387,10 @@ export const factoryAnnotationSchema = z.object({
   arrowDirection: z.enum(["down-right", "down-left", "up-right", "up-left"]).optional(),
   // Zone outlines: bounded so an imported plan cannot carry a pathological
   // vertex soup; a drawn zone simplifies to a handful of corners.
-  points: z.array(z.object({ x: z.number(), y: z.number() })).max(64).optional(),
+  points: z
+    .array(z.object({ x: z.number(), y: z.number() }))
+    .max(64)
+    .optional(),
   // Bounded so an imported plan cannot carry a note that swallows the board.
   fontSize: z.number().min(8).max(96).optional(),
   // Image annotations: only ever rendered as an <img> src. Bounded, and http

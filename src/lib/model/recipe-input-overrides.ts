@@ -1,4 +1,5 @@
 import type { FactoryNode, Recipe, ResourceAmount, ResourceKind } from "./types";
+import { isMonifactoryRecipe } from "../packs/monifactory/bridge";
 
 /**
  * The recipe's input amount, restated in the units of the substitute actually
@@ -39,6 +40,19 @@ export function applyRecipeInputOverrides(
     const override = node.recipeInputOverrides?.[String(index)];
     if (!override) {
       return input;
+    }
+    if (
+      isMonifactoryRecipe(recipe) &&
+      (override.kind !== input.kind ||
+        (override.amount !== undefined && override.amount !== input.amount) ||
+        (override.id !== input.id &&
+          !input.alternatives?.some(
+            (alternative) => alternative.kind === override.kind && alternative.id === override.id,
+          )))
+    ) {
+      throw new Error(
+        "Monifactory input overrides must preserve quantity and select a listed resource alternative.",
+      );
     }
     changed = true;
     return {

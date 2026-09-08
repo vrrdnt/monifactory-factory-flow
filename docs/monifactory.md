@@ -108,11 +108,36 @@ The probe is opt-in and separate from the normal exporter. Remove `kubejs/server
 ## Next implementation milestones
 
 1. Audit this runtime catalog against GT recipe categories/proxies and EMI; add missing dynamic recipe sources with explicit provenance.
-2. Extend the completed ordinary-machine modifier references to formed EBF, large chemical reactor and MoniLabs/custom machines, including hatch/coil settings and parallels. Export ordinary-machine inventory/tank limits and verify actual input/output matching.
-3. Connect the independent pack calculator to the board with generic dataset identity. Keep GTNH tests passing while preventing its curated tables and free container conversions from handling Monifactory recipes.
+2. Extend the completed ordinary-machine modifier/inventory references to formed EBF, large chemical reactor and MoniLabs/custom machines, including hatch/coil settings and parallels.
+3. Add generic pack/version identity to the browser dataset loader, publish local indexes, and connect the checked recipe artifact to search and board creation. The backend now dispatches Monifactory recipes separately; GTNH formulas and container conversions are isolated there.
 4. Extend the ordinary ingredient adapter to conditions and NBT resource variants, then add icons and searchable indexes.
 5. Add generation and other-mod adapters, prioritizing the Expert progression. Test realistic closed loops, byproducts and catalysts against in-game runs.
 6. Replace branding/default dataset configuration and configure hosting for this fork.
+
+## Inventory and board calculation milestone
+
+The copied instance exported slot/tank limits for all 272 audited machines and default stack sizes for all 27,761 registered items. A conservative layout check removed **1,266 machine–recipe pairs** (1,265 input-fluid limits, one output-fluid limit). **133 recipes** had no supported layout at any admitted tier, leaving **24,877 recipes and 191,552 capacity-checked pairs**. This does not assert that the removed pairs are impossible under every inventory arrangement: the first implementation proves dedicated item-slot layouts and one tank per distinct fluid, and declines overlapping fluid alternatives.
+
+The runtime matcher then checked **25,120 layouts with zero mismatches**: at least one layout per retained recipe (using the lowest admitted tier), every one of the 262 machines used by that subset, and 33 empty-inventory negative controls. The ten audited electric-furnace/scanner definitions not used by this subset are not counted as runtime inventory-tested. Every positive case calls the registered definition modifier and `RecipeHelper.matchRecipe` on an unplaced machine object holding the specified inputs, with empty output slots/tanks. It does not call `onLoad`, place blocks, consume player items, or run a world tick for those objects. Chanced outputs must fit their full possible amount, and circuits use the machine's dedicated circuit inventory.
+
+These are **input/output matching checks**, not completed production cycles, persistent output-blocking tests, power delivery tests, or an exhaustive test of every ingredient alternative. The committed `inventory-reference.json.gz` contains all recorded results and the actual tested layouts; `inventory-examples.json` provides representative normalized recipes and limits for portable conversion/solver regression tests.
+
+```powershell
+# The raw and ordinary catalogs from the earlier steps are prerequisites.
+npm run monifactory:inventory -- "C:\path\to\Monifactory-PLANNER" ".pipeline/monifactory/0.13.7-expert/catalog.json"
+# Reload/reopen once. Wait for inventory-limits.json to say complete.
+npm run monifactory:constrain -- ".pipeline/monifactory/0.13.7-expert/ordinary/ordinary-catalog.json" "C:\path\to\minecraft\local\monifactory-planner\inventory-limits.json" ".pipeline/monifactory/0.13.7-expert/capacity"
+npm run monifactory:verify-inventory -- "C:\path\to\Monifactory-PLANNER" ".pipeline/monifactory/0.13.7-expert/capacity/inventory-jobs.json" ".pipeline/monifactory/0.13.7-expert/capacity/capacity-catalog.json" ".pipeline/monifactory/0.13.7-expert/capacity/inventory-reference.json"
+npm run monifactory:planner -- ".pipeline/monifactory/0.13.7-expert/capacity/capacity-catalog.json" ".pipeline/monifactory/0.13.7-expert/capacity/inventory-reference.json" ".pipeline/monifactory/0.13.7-expert/capacity/planner-recipes.json"
+```
+
+The verification CLI sends batches of 750 checks to the loaded inventory helper. It validates response identity, profile, completeness and case counts; the conversion step refuses missing, failed or stale layout references. Each converted recipe keeps `source.packId` and `source.calculationEngine` through the planner schema, with only actual capacity-checked machines as fixed-tier handlers. Multiple ingredient choices remain a virtual same-kind resource with explicit alternatives; quantities cannot be changed by overrides. Native selectors are retained in metadata even when a resolved tag has only one member.
+
+The board's overclock, power, throughput and machine-count paths now dispatch these ordinary Monifactory recipes separately. GTNH curated bonuses, heat discounts, hatch amperage, extra node parallels, fuel estimates and free cell/fluid bridges do not apply. Unknown Monifactory engines or absent machine handlers fail explicitly. Verification covered the complete converted corpus against the recipe schema and one real graph per retained recipe map (33 maps). For example, the real bronze recipe in an MV mixer reports 200 ticks, 28 EU/t and 0.4 bronze dust/s.
+
+`planner-recipes.json` is a **recipe artifact**, not a `RecipeDataset` manifest. The browser still loads GTNH by default; generic pack/version identity, resource/search indexes, dataset routing and UI wiring are the next milestone. No server or production site was deployed.
+
+After verification, remove `kubejs/server_scripts/monifactory_planner_inventory.js` and reload/reopen. The loaded helper accepts only `limits`, `check`, or `reload` via `inventory-request.json`; delete that control file after unloading. The temporary helper was removed from the copied instance after this milestone, while the ordinary export script and saved reports remain.
 
 ## Verification
 

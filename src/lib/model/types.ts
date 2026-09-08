@@ -262,6 +262,8 @@ export interface Recipe {
   runtimeCalculation?: RuntimeCalculation;
   isDemo?: boolean;
   source?: {
+    packId?: "gtnh" | "monifactory";
+    calculationEngine?: string;
     datasetVersionId?: string;
     recipeMap?: string;
     sourceMod?: string;

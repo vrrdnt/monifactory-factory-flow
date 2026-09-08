@@ -1,4 +1,5 @@
-import type { SetupRules } from "./types";
+import type { Recipe, SetupRules } from "./types";
+import { isMonifactoryRecipe } from "../packs/monifactory/bridge";
 
 /** Both rules, always answered - the closed setup is `false, false`. */
 export type ResolvedSetupRules = Required<SetupRules>;
@@ -25,11 +26,14 @@ const RULES: ResolvedSetupRules = Object.freeze({
   looseCellWires: true,
 });
 
-export function getSetupRules(_project: {
+export function getSetupRules(project: {
   setupRules?: SetupRules;
   assumeBoundaries?: boolean;
   poolMode?: boolean;
+  recipes?: Recipe[];
 }): ResolvedSetupRules {
+  if (project.recipes?.some(isMonifactoryRecipe))
+    return { freeInputs: false, freeOutputs: false, looseCellWires: false };
   return RULES;
 }
 

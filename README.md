@@ -6,7 +6,9 @@ The first milestone is a verified runtime catalog. The included KubeJS exporter 
 
 The ordinary-machine calculator now matches **17,952 live reference cases across 272 machines**. Its separate adapter normalizes **25,010 recipes**, retaining tags, catalysts, circuits and output chances, with an explicit exclusion report.
 
-**The inherited web UI and solver still use GTNH rules. Monifactory catalogs are staging formats and are deliberately not accepted as planner datasets yet.** Ordinary-machine inventory/tank constraints, board integration, multiblocks, rendered icons, and other mods' recipes remain to be implemented.
+Inventory limits now narrow that subset to **24,877 recipes**, checked against **25,120 live inventory-matching cases**. Converted recipes have an explicit Monifactory calculation path through the board solver, including power, throughput and machine counts. GTNH bonuses and automatic container conversions are disabled for those recipes.
+
+**The browser still defaults to GTNH.** The Monifactory recipe artifact is ready for dataset-loader integration; it is not a published browser dataset. Generic pack/version selection, searchable indexes, multiblocks, icons and other mods' recipes remain to be implemented.
 
 See [the Monifactory setup guide](docs/monifactory.md) for preparation, export, calculation checks, limitations and the port roadmap. Full catalogs and local instance files are not committed; the compact machine-reference fixture is included for regression tests.
 

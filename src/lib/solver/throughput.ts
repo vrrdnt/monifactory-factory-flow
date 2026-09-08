@@ -26,6 +26,7 @@ import { applyRecipeInputOverrides } from "../model/recipe-input-overrides";
 import { applyMachineHandlerToRecipe } from "../model/recipe-rules";
 import { getStorageRoles } from "../model/storage-role";
 import { calculateEffectiveBalances, splitBalances } from "./balances";
+import { isMonifactoryRecipe } from "../packs/monifactory/bridge";
 import {
   addRequiredRate,
   clampUtilization,
@@ -189,7 +190,10 @@ export function calculateThroughput(
       : undefined;
     const powerStall = powerReport && isPowerStalled(powerReport) ? powerReport : undefined;
     const operationRatePerSecond =
-      (node.machineCount * node.parallel * machineParallelMultiplier * TICKS_PER_SECOND) /
+      (node.machineCount *
+        (isMonifactoryRecipe(nodeRecipe) ? 1 : node.parallel) *
+        machineParallelMultiplier *
+        TICKS_PER_SECOND) /
       overclockedRecipe.durationTicks;
     const inputs: FlowRecord = {};
     const outputs: FlowRecord = {};
@@ -215,7 +219,10 @@ export function calculateThroughput(
     }
 
     const euT =
-      overclockedRecipe.eut * node.machineCount * node.parallel * machineParallelMultiplier;
+      overclockedRecipe.eut *
+      node.machineCount *
+      (isMonifactoryRecipe(nodeRecipe) ? 1 : node.parallel) *
+      machineParallelMultiplier;
     totalEuT += euT;
 
     nodes[node.id] = {
@@ -523,10 +530,7 @@ function finalizeSolveModeResult(
 ): ThroughputResult {
   const roles = getStorageRoles(project);
   const targets = projectStorages
-    .filter(
-      (storage) =>
-        roles.get(storage.id) === "product" && (storage.targetPerSecond ?? 0) > 0,
-    )
+    .filter((storage) => roles.get(storage.id) === "product" && (storage.targetPerSecond ?? 0) > 0)
     .map((storage) => ({
       storageId: storage.id,
       amountPerSecond: storage.targetPerSecond!,
@@ -542,7 +546,8 @@ function finalizeSolveModeResult(
       id: "solve-pins",
       kind: "resource-deficit",
       severity: "critical",
-      message: "The pinned machine counts cannot run together. Check their outputs have somewhere to go.",
+      message:
+        "The pinned machine counts cannot run together. Check their outputs have somewhere to go.",
     });
   }
 
@@ -770,7 +775,6 @@ function writeEdgeResultsFromEquilibrium(
   }
 }
 
-
 function refreshStorageResultsFromEdges(
   projectStorages: FactoryStorage[],
   storages: Record<string, StorageThroughputResult>,
@@ -969,8 +973,7 @@ function finalizeNodeReports(
     if (storagesById.has(edge.source) && edgeResult?.constraint !== "supply") {
       honest = Number.POSITIVE_INFINITY;
     } else {
-      const allocated =
-        edgeResult?.availablePerSecond ?? edgeResult?.transferredPerSecond ?? 0;
+      const allocated = edgeResult?.availablePerSecond ?? edgeResult?.transferredPerSecond ?? 0;
       const soleOutlet =
         (outletCounts.get(`${edge.source}|${edge.resourceKind}|${edge.resourceId}`) ?? 0) === 1;
       honest =
@@ -1048,10 +1051,7 @@ function finalizeNodeReports(
     // A pure sink — inputs but no outputs, e.g. a request-mode custom rate
     // node — has no output demand to pace it. It always wants full blast;
     // only input supply below can throttle it.
-    if (
-      Object.keys(nodeResult.outputs).length === 0 &&
-      Object.keys(nodeResult.inputs).length > 0
-    ) {
+    if (Object.keys(nodeResult.outputs).length === 0 && Object.keys(nodeResult.inputs).length > 0) {
       utilizationReport.utilization = 1;
       utilizationReport.theoreticalMachinesRequired = node.machineCount;
     }
@@ -1454,6 +1454,7 @@ function calculateFuelEstimate(
   project: FactoryProject,
   totalEuT: number,
 ): FuelEstimate | undefined {
+  if (project.recipes.some(isMonifactoryRecipe)) return undefined;
   const selectedFuel = project.fuelProfiles.find(
     (fuel) => fuel.id === project.selectedFuelProfileId,
   );
@@ -1501,4 +1502,3 @@ export function getResourceDisplayName(
 
   return resourceId;
 }
-

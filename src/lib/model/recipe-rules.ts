@@ -1,3 +1,4 @@
+import { applyMonifactoryHandler, isMonifactoryRecipe } from "../packs/monifactory/bridge";
 import type {
   FactoryNode,
   MachineConfigControl,
@@ -34,6 +35,7 @@ export function expandMachineRecipeVariants(recipes: Recipe[]): Recipe[] {
 export function getRecipeMachineHandlers(
   recipe: Pick<Recipe, "machineType" | "minimumTier" | "source" | "machineHandlers">,
 ): MachineHandler[] {
+  if (isMonifactoryRecipe(recipe)) return recipe.machineHandlers ?? [];
   // Dataset handler lists are authoritative and always start with the map's
   // primary machine. Synthesizing an extra entry from the recipe map name
   // would duplicate it under the category name ("Blast Furnace" next to the
@@ -171,6 +173,7 @@ export function applyMachineHandlerToRecipe(
   recipe: Recipe,
   node: Pick<FactoryNode, "machineHandlerId">,
 ): Recipe {
+  if (isMonifactoryRecipe(recipe)) return applyMonifactoryHandler(recipe, node);
   // Power cards (src/lib/power) bake their whole model into the synthesized
   // recipe; no handler math may touch them. Without this, a generator named
   // "... Steam Turbine" matched the steam-singleblock pattern and ran at
@@ -238,6 +241,7 @@ export function getRecipeCoilTierControl(
   recipe: Pick<Recipe, "machineType" | "source" | "nei" | "machineConfigControls">,
   node: { coilTier?: string },
 ) {
+  if (isMonifactoryRecipe(recipe)) return undefined;
   // The coil rides its own legacy path around dropHiddenControls, so the
   // table's hidesControls must be honoured here too - the Large Chemical
   // Reactor's structural coil is any tier and does nothing at runtime.
@@ -254,6 +258,7 @@ export function getRecipeMachineConfigTierControls(
   recipe: Pick<Recipe, "machineType" | "source" | "nei" | "machineConfigControls">,
   node: Pick<FactoryNode, "machineConfigTiers">,
 ): MachineConfigTierControl[] {
+  if (isMonifactoryRecipe(recipe)) return [];
   const controls = dropHiddenControls(
     mergeMachineConfigControls(
       recipe.machineConfigControls ?? [],

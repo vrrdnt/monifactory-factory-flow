@@ -11,7 +11,9 @@ if (!catalogPath || !recipeId || !machineId)
   );
 const catalog = JSON.parse(await readFile(catalogPath, "utf8"));
 if (
-  catalog.format !== "monifactory-ordinary-calculated-catalog" ||
+  !["monifactory-ordinary-calculated-catalog", "monifactory-capacity-checked-catalog"].includes(
+    catalog.format,
+  ) ||
   catalog.engine !== ORDINARY_ENGINE
 )
   throw new Error("Unsupported catalog.");

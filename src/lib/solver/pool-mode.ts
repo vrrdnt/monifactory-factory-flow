@@ -1,3 +1,4 @@
+import { isMonifactoryRecipe } from "../packs/monifactory/bridge";
 import {
   getFilledCellFluidEquivalent,
   isFluidEquivalentToFilledCell,
@@ -82,6 +83,7 @@ interface PoolExpansion {
 export function listPoolCellPairs(
   project: FactoryProject,
 ): Array<{ cellId: string; fluidId: string }> {
+  if (project.recipes.some(isMonifactoryRecipe)) return [];
   const recipesById = new Map(project.recipes.map((recipe) => [recipe.id, recipe]));
   const cells = new Map<string, ResourceAmount>();
   const fluids = new Map<string, ResourceAmount>();

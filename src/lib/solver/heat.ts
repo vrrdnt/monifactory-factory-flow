@@ -1,7 +1,5 @@
-import {
-  getRecipeCoilTierControl,
-  getRecipeSpecialValue,
-} from "@/lib/model/recipe-rules";
+import { isMonifactoryRecipe } from "../packs/monifactory/bridge";
+import { getRecipeCoilTierControl, getRecipeSpecialValue } from "@/lib/model/recipe-rules";
 import { getMachineBehaviour } from "@/lib/machines/machine-table";
 import { getVoltageTierIndex } from "@/lib/model/tiers";
 import type { FactoryNode, MachineTier, Recipe } from "@/lib/model/types";
@@ -119,5 +117,6 @@ export function getHeatDiscountMultiplier(
   tier: VoltageTier,
   voltageOrdinal?: number,
 ): number {
+  if (isMonifactoryRecipe(recipe)) return 1;
   return getHeatOverclockStats(recipe, node, tier, 0, voltageOrdinal).heatDiscountMultiplier;
 }

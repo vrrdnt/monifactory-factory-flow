@@ -1,3 +1,4 @@
+import { getMonifactoryStats, isMonifactoryRecipe } from "../packs/monifactory/bridge";
 import {
   applyMachineHandlerToRecipe,
   getSelectedMachineHandler,
@@ -101,6 +102,27 @@ export function hasPowerReport(recipe: Recipe): boolean {
 }
 
 export function getNodePowerReport(recipe: Recipe, node: PowerReportNode): NodePowerReport {
+  if (isMonifactoryRecipe(recipe)) {
+    const stats = getMonifactoryStats(recipe, node);
+    return {
+      state: "ok",
+      tier: stats.tier,
+      minimumTier: stats.minimumTier,
+      hatches: 1,
+      typedBudget: false,
+      isMultiblock: false,
+      amps: 1,
+      poolEuT: stats.poolEuT,
+      singleDrawEuT: recipe.eut,
+      parallels: 1,
+      drawEuT: stats.eut,
+      overclockSteps: stats.overclockSteps,
+      perfectOverclockSteps: 0,
+      perfectSpeedFactor: 4,
+      perfectEuFactor: 4,
+      usage: stats.eut / stats.poolEuT,
+    };
+  }
   const effectiveRecipe = recipe.machineType ? applyMachineHandlerToRecipe(recipe, node) : recipe;
   const minimumTier = getRecipeMinimumVoltageTier(effectiveRecipe);
   const tier = getNodeRunTier(effectiveRecipe, node);

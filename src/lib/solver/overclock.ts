@@ -1,3 +1,4 @@
+import { getMonifactoryStats, isMonifactoryRecipe } from "../packs/monifactory/bridge";
 import {
   getRecipeMinimumVoltageTier,
   getVoltageTierIndex,
@@ -79,6 +80,7 @@ export function getOverclockedRecipeStats(
   > &
     Partial<Pick<FactoryNode, "energyHatches" | "energyHatchType">>,
 ): OverclockedRecipeStats {
+  if (isMonifactoryRecipe(recipe)) return getMonifactoryStats(recipe as Recipe, node);
   // A power card's rates are the model's own (src/lib/power): no handler
   // stats, no overclock ladder, no steam rebilling - the recipe as written.
   if ((recipe as Recipe).power) {
@@ -135,7 +137,8 @@ export function getOverclockedRecipeStats(
       ...PLAIN_OVERCLOCK_STEPS,
       durationTicks: Math.max(
         1,
-        effectiveRecipe.durationTicks * getMachineDurationMultiplier(effectiveRecipe as Recipe, node),
+        effectiveRecipe.durationTicks *
+          getMachineDurationMultiplier(effectiveRecipe as Recipe, node),
       ),
       eut: effectiveRecipe.eut,
     };
