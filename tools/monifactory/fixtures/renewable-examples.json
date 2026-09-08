@@ -214,6 +214,48 @@
           "monilabs:hyperbolic_microverse_projector"
         ],
         "nativeRecipeJson": "{\"data\":{\"duration\":4000,\"damage_rate\":-20,\"projector_tier\":2},\"duration\":4000,\"category\":\"gtceu:microverse\",\"tickInputs\":{\"eu\":[{\"content\":7680}]},\"type\":\"gtceu:microverse\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:stabilized_microminer_t4half\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":24,\"ingredient\":{\"item\":\"kubejs:aerotheum_dust\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":64,\"ingredient\":{\"item\":\"kubejs:wither_bone\"}}}],\"microverse\":[{\"content\":2}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:stabilized_microminer_t4half\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":64,\"ingredient\":{\"item\":\"kubejs:wither_realm_data\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":16,\"ingredient\":{\"item\":\"minecraft:nether_star\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":16,\"ingredient\":{\"item\":\"minecraft:nether_star\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":16,\"ingredient\":{\"item\":\"minecraft:nether_star\"}}}]}}"
+      },
+      {
+        "id": "kubejs:atomic_reconstruction/leather",
+        "recipeType": "gtceu:atomic_reconstruction",
+        "durationTicks": 20,
+        "inputEUt": "30",
+        "outputEUt": "0",
+        "machineIds": [
+          "gtceu:ev_atomic_reconstructor",
+          "gtceu:hv_atomic_reconstructor",
+          "gtceu:iv_atomic_reconstructor",
+          "gtceu:luv_atomic_reconstructor",
+          "gtceu:lv_atomic_reconstructor",
+          "gtceu:matter_alterator",
+          "gtceu:mv_atomic_reconstructor",
+          "gtceu:uev_atomic_reconstructor",
+          "gtceu:uhv_atomic_reconstructor",
+          "gtceu:uv_atomic_reconstructor",
+          "gtceu:zpm_atomic_reconstructor"
+        ],
+        "nativeRecipeJson": "{\"duration\":20,\"category\":\"gtceu:atomic_reconstruction\",\"tickInputs\":{\"eu\":[{\"content\":30}]},\"type\":\"gtceu:atomic_reconstruction\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"minecraft:rotten_flesh\"}}}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"minecraft:leather\"}}}]}}"
+      },
+      {
+        "id": "kubejs:atomic_reconstruction/damascus_steel",
+        "recipeType": "gtceu:atomic_reconstruction",
+        "durationTicks": 20,
+        "inputEUt": "120",
+        "outputEUt": "0",
+        "machineIds": [
+          "gtceu:ev_atomic_reconstructor",
+          "gtceu:hv_atomic_reconstructor",
+          "gtceu:iv_atomic_reconstructor",
+          "gtceu:luv_atomic_reconstructor",
+          "gtceu:lv_atomic_reconstructor",
+          "gtceu:matter_alterator",
+          "gtceu:mv_atomic_reconstructor",
+          "gtceu:uev_atomic_reconstructor",
+          "gtceu:uhv_atomic_reconstructor",
+          "gtceu:uv_atomic_reconstructor",
+          "gtceu:zpm_atomic_reconstructor"
+        ],
+        "nativeRecipeJson": "{\"duration\":20,\"category\":\"gtceu:atomic_reconstruction\",\"tickInputs\":{\"eu\":[{\"content\":120}]},\"type\":\"gtceu:atomic_reconstruction\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"gtceu:steel_ingot\"}}}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"gtceu:damascus_steel_ingot\"}}}]}}"
       }
     ],
     "machines": [],
@@ -937,6 +979,61 @@
         "kind": "item",
         "id": "minecraft:nether_star",
         "displayName": "Nether Star"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:damascus_steel_ingot",
+        "displayName": "Damascus Steel Ingot"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:rubber_log",
+        "displayName": "Rubber Log"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:rubber_sapling",
+        "displayName": "Rubber Sapling"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:steel_ingot",
+        "displayName": "Steel Ingot"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:sticky_resin",
+        "displayName": "Sticky Resin"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:brain_coral",
+        "displayName": "Brain Coral"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:leather",
+        "displayName": "Leather"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:mangrove_roots",
+        "displayName": "Mangrove Roots"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:mud",
+        "displayName": "Mud"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:muddy_mangrove_roots",
+        "displayName": "Muddy Mangrove Roots"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:pink_petals",
+        "displayName": "Pink Petals"
       }
     ],
     "tags": [
@@ -1027,6 +1124,90 @@
           "item": "minecraft:stone"
         },
         "result": "minecraft:stone_bricks"
+      }
+    },
+    {
+      "id": "kubejs:thermal/insolator/rubber_sapling",
+      "data": {
+        "type": "thermal:insolator",
+        "energy_mod": 3,
+        "water_mod": 3,
+        "results": [
+          {
+            "item": "gtceu:rubber_log",
+            "count": 1,
+            "chance": 6
+          },
+          {
+            "item": "gtceu:sticky_resin",
+            "count": 1,
+            "chance": 1.25
+          },
+          {
+            "item": "gtceu:rubber_sapling",
+            "count": 1,
+            "chance": 1.1
+          }
+        ],
+        "ingredients": [
+          {
+            "item": "gtceu:rubber_sapling"
+          }
+        ]
+      }
+    },
+    {
+      "id": "kubejs:thermal/insolator/pink_petals",
+      "data": {
+        "type": "thermal:insolator",
+        "energy_mod": 1,
+        "water_mod": 1,
+        "results": [
+          {
+            "item": "minecraft:pink_petals",
+            "count": 1,
+            "chance": 2
+          }
+        ],
+        "ingredients": [
+          {
+            "item": "minecraft:pink_petals"
+          }
+        ]
+      }
+    },
+    {
+      "id": "thermal:machines/insolator/insolator_brain_coral",
+      "data": {
+        "type": "thermal:insolator",
+        "ingredient": {
+          "item": "minecraft:brain_coral"
+        },
+        "result": [
+          {
+            "item": "minecraft:brain_coral",
+            "chance": 2
+          }
+        ],
+        "energy_mod": 1.5,
+        "water_mod": 1.5
+      }
+    },
+    {
+      "id": "thermal:machines/centrifuge/centrifuge_muddy_mangrove_roots",
+      "data": {
+        "type": "thermal:centrifuge",
+        "ingredient": {
+          "item": "minecraft:muddy_mangrove_roots"
+        },
+        "result": [
+          {
+            "item": "minecraft:mud"
+          },
+          {
+            "item": "minecraft:mangrove_roots"
+          }
+        ]
       }
     }
   ]

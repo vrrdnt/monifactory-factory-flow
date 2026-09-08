@@ -28,6 +28,7 @@ export type GuideRecipe = {
   data?: Record<string, unknown>;
   circuit?: number;
   notes: string[];
+  evidence?: { title: string; url: string }[];
   reviewed: boolean;
   loop?: {
     steps: { recipeId: string; count: number; selectedInputs: string[]; recipe?: GuideRecipe }[];

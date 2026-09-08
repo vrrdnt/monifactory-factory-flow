@@ -8,6 +8,7 @@ import { renewableClosure, netRecipe, validateRenewableProofs } from "./renewabl
 import { renewableSources, guideRules } from "./renewable-sources.mjs";
 import { extendRenewableCycles } from "./renewable-cycles.mjs";
 import { hostileSource, readHostileDecay } from "./renewable-microverse.mjs";
+import { thermalGuideTypes, normalizeGuideThermal } from "./renewable-thermal.mjs";
 
 export function buildRenewables(catalog, full, textures, settings = {}) {
   if (
@@ -57,7 +58,12 @@ export function buildRenewables(catalog, full, textures, settings = {}) {
   }
   for (const raw of catalog.recipes) add(raw.id, () => normalizeGuideGT(raw, resolve, settings));
   for (const { id, data } of full?.records ?? []) {
-    if (!ids.has(id)) add(id, () => normalizeGuideCraft(id, data, resolve));
+    if (!ids.has(id))
+      add(id, () =>
+        thermalGuideTypes.has(data.type)
+          ? normalizeGuideThermal(id, data, resolve)
+          : normalizeGuideCraft(id, data, resolve),
+      );
   }
   // Vanilla smelting JSON omits fuel. Sugar cane's burn time is set explicitly
   // by this pinned pack, and its replenishment must still be proven by the graph.

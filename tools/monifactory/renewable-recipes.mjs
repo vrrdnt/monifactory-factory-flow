@@ -82,9 +82,6 @@ export function normalizeGuideGT(raw, resolve, settings = {}) {
       "gtceu:sculk_vat",
       "gtceu:antimatter_manipulation",
       "gtceu:omnic_synthesis",
-      "gtceu:atomic_reconstruction",
-      "gtceu:quintessence_infuser",
-      "gtceu:naquadah_refinery",
       "gtceu:naquadah_reactor",
     ].includes(raw.recipeType) &&
     !reviewedMicroverse
@@ -151,6 +148,28 @@ export function normalizeGuideGT(raw, resolve, settings = {}) {
     slots(native[side], side === "tickInputs" ? "input" : "output", native.duration);
   }
   if (!recipe.outputs.length) throw new Error("no-material-output");
+  if (raw.recipeType === "gtceu:atomic_reconstruction") {
+    recipe.notes.push(
+      "Use the pack's tiered Atomic Reconstructor with automated item input/output and renewable EU. Its singleblock registration uses ordinary item recipes; no lens or world-block interaction is required.",
+    );
+    recipe.evidence = [
+      {
+        title: "Pack Atomic Reconstructor registration",
+        url: "https://github.com/Omicron-Industries/Monifactory/blob/6e3c9995f402c709fdeff0171ca382b5e921de16/kubejs/startup_scripts/registry/singleblock_registry.js",
+      },
+    ];
+  }
+  if (["gtceu:quintessence_infuser", "gtceu:naquadah_refinery"].includes(raw.recipeType)) {
+    recipe.notes.push(
+      "Build the pack-defined multiblock with its item/fluid hatches and renewable EU supply. Use automatic maintenance and keep any required muffler clear. Extra ingredient state is still checked separately.",
+    );
+    recipe.evidence = [
+      {
+        title: "Pack multiblock registration",
+        url: "https://github.com/Omicron-Industries/Monifactory/blob/6e3c9995f402c709fdeff0171ca382b5e921de16/kubejs/startup_scripts/registry/multiblock_registry.js",
+      },
+    ];
+  }
   if (hostile) {
     recipe.inputs.push({ choices: ["utility:hostile_microverse"], amount: 1, consumed: true });
     recipe.notes.push(

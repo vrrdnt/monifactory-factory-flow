@@ -32,6 +32,42 @@ const tiers = [
 ];
 const number = (n: number) => n.toLocaleString("en-US", { maximumFractionDigits: 3 });
 
+function guideMachineLabel(id: string) {
+  const names: Record<string, string> = {
+    "thermal:insolator": "Phytogenic Insolator",
+    "thermal:centrifuge": "Centrifugal Separator",
+    "minecraft:crafting_shaped": "Automated crafting",
+    "minecraft:crafting_shapeless": "Automated crafting",
+    "gtceu:shaped": "Automated crafting",
+    "gtceu:shapeless": "Automated crafting",
+  };
+  return (
+    names[id] ??
+    recipeMapLabel(id)
+      .replace(/^minecraft:/, "")
+      .replace(/_/g, " ")
+  );
+}
+
+function RecipeReferences({ recipe }: { recipe: GuideRecipe }) {
+  if (!recipe.evidence?.length) return null;
+  return (
+    <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs">
+      {recipe.evidence.map((source) => (
+        <a
+          key={source.url}
+          href={source.url}
+          target="_blank"
+          rel="noreferrer"
+          className="underline underline-offset-2"
+        >
+          {source.title}
+        </a>
+      ))}
+    </div>
+  );
+}
+
 function Icon({ resource }: { resource?: GuideResource }) {
   if (!resource || resource.kind === "utility")
     return <Zap aria-hidden className="h-5 w-5 shrink-0 text-amber-300" />;
@@ -476,11 +512,7 @@ function Route({
                         {index + 1}
                       </span>
                       <h4 className="text-sm font-semibold">
-                        {step.loop
-                          ? "Recycling loop"
-                          : recipeMapLabel(step.machine)
-                              .replace(/^minecraft:/, "")
-                              .replace(/_/g, " ")}
+                        {step.loop ? "Recycling loop" : guideMachineLabel(step.machine)}
                       </h4>
                     </div>
                     {!step.reviewed && (
@@ -576,6 +608,7 @@ function Route({
                         {note}
                       </p>
                     ))}
+                    <RecipeReferences recipe={step} />
                     {step.loop && <CycleSteps recipe={step} resources={detail.resources} />}
                     <details className="mt-3 text-xs text-fg-subtle">
                       <summary className="cursor-pointer">Recipe reference</summary>
@@ -631,7 +664,7 @@ function CycleSteps({
               className="rounded border border-line bg-surface p-3"
             >
               <h5 className="mb-2 text-sm font-semibold">
-                {index + 1}. {recipeMapLabel(member.machine)} · {number(s.count)}{" "}
+                {index + 1}. {guideMachineLabel(member.machine)} · {number(s.count)}{" "}
                 {s.count === 1 ? "run" : "runs"}
               </h5>
               <div className="grid gap-3 text-xs leading-6 sm:grid-cols-2">
@@ -691,6 +724,7 @@ function CycleSteps({
                   {note}
                 </p>
               ))}
+              <RecipeReferences recipe={member} />
               <p className="mt-2 break-all text-[10px] text-fg-subtle">{s.recipeId}</p>
             </li>
           );
