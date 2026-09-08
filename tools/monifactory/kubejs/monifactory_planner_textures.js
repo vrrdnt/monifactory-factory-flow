@@ -11,7 +11,6 @@ var MPT_FluidStack = Java.loadClass('dev.emi.emi.api.stack.FluidEmiStack');
 var MPT_Registry = Java.loadClass('net.minecraftforge.registries.ForgeRegistries');
 var MPT_RL = Java.loadClass('net.minecraft.resources.ResourceLocation');
 var MPT_Base64 = Java.loadClass('java.util.Base64');
-var MPT_Client = Java.loadClass('dev.latvian.mods.kubejs.client.KubeJSClient');
 var mptTicks = 0;
 var mptJob = null;
 var mptOffset = 0;
@@ -95,11 +94,6 @@ function mptDrawPage() {
 ClientEvents.tick(function () {
   if (++mptTicks % 20 !== 0 || mptBusy) return;
   var request = JsonIO.read(mptControl);
-  if (request && request.action === 'reload') {
-    JsonIO.write(mptControl, { action: '', token: request.token });
-    MPT_Client.reloadClientScripts();
-    return;
-  }
   if (!mptJob && request && request.action === 'export' && request.token !== mptLastToken) {
     if (!/^[a-zA-Z0-9-]+$/.test(String(request.token))) return;
     mptJob = request;

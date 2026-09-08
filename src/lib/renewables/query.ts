@@ -1,0 +1,120 @@
+import type { GuideData, GuideDetail, GuideProof, GuideRoute, GuideSearch } from "./types";
+
+export function createGuideQuery(data: GuideData) {
+  const resources = new Map(data.resources.map((r) => [r.key, r]));
+  const recipes = new Map(data.recipes.map((r) => [r.id, r]));
+  const sources = new Map(data.sources.map((s) => [s.id, s]));
+  const producers = new Map<string, string[]>();
+  for (const recipe of data.recipes)
+    for (const output of recipe.outputs) {
+      if (output.amount <= 0 || output.chance <= 0) continue;
+      const list = producers.get(output.key) ?? [];
+      if (!list.includes(recipe.id)) list.push(recipe.id);
+      producers.set(output.key, list);
+    }
+  function route(key: string, candidate?: string): GuideRoute {
+    const result: GuideRoute = { sources: [], steps: [], external: [], voltage: 0 };
+    const seen = new Set<string>(),
+      steps = new Set<string>();
+    function visit(id: string, override?: string) {
+      if (seen.has(id)) return;
+      seen.add(id);
+      const proof: Partial<GuideProof> | undefined = override
+        ? { recipeId: override }
+        : data.proofs[id];
+      if (!proof) {
+        result.external.push(id);
+        return;
+      }
+      if (proof.sourceId) {
+        const source = sources.get(proof.sourceId);
+        if (source && !result.sources.includes(source)) result.sources.push(source);
+        return;
+      }
+      const recipe = proof.recipeId ? recipes.get(proof.recipeId) : undefined;
+      if (!recipe) throw new Error("Guide proof references an absent recipe.");
+      const dependencies =
+        proof.dependencies ??
+        recipe.inputs
+          .filter((i) => i.consumed)
+          .map((i) => i.choices.find((c) => data.proofs[c]) ?? i.choices[0]);
+      for (const dependency of dependencies) {
+        if (dependency === key && override) {
+          if (!result.external.includes(dependency)) result.external.push(dependency);
+        } else visit(dependency);
+      }
+      if (!steps.has(recipe.id)) {
+        result.steps.push({ ...recipe, selectedInputs: dependencies });
+        steps.add(recipe.id);
+      }
+      result.voltage = Math.max(result.voltage, recipe.voltage ?? 0);
+    }
+    visit(key, candidate);
+    return result;
+  }
+  return {
+    search(q = "", status = "renewable", offset = 0): GuideSearch {
+      const words = q.toLowerCase().trim().split(/\s+/).filter(Boolean);
+      const matching = data.resources.filter(
+        (r) =>
+          r.kind !== "utility" &&
+          words.every((w) => `${r.displayName} ${r.key}`.toLowerCase().includes(w)) &&
+          (status === "all" || (status === "renewable") === !!data.proofs[r.key]),
+      );
+      matching.sort(
+        (a, b) =>
+          Number(b.displayName.toLowerCase() === q.toLowerCase().trim()) -
+            Number(a.displayName.toLowerCase() === q.toLowerCase().trim()) ||
+          Number(!data.proofs[a.key]) - Number(!data.proofs[b.key]) ||
+          a.displayName.localeCompare(b.displayName) ||
+          a.key.localeCompare(b.key),
+      );
+      return {
+        total: matching.length,
+        offset,
+        resources: matching.slice(offset, offset + 60).map((r) => ({
+          ...r,
+          renewable: !!data.proofs[r.key],
+          voltage: data.proofs[r.key]?.voltage,
+        })),
+        coverage: data.coverage,
+        rules: data.rules,
+      };
+    },
+    detail(key: string): GuideDetail | undefined {
+      const resource = resources.get(key);
+      if (!resource) return undefined;
+      const proven = data.proofs[key] ? route(key) : undefined;
+      const candidates = proven
+        ? []
+        : (producers.get(key) ?? [])
+            .map((id) => route(key, id))
+            .sort(
+              (a, b) =>
+                a.steps.filter((s) => !s.reviewed).length -
+                  b.steps.filter((s) => !s.reviewed).length ||
+                a.external.length - b.external.length ||
+                a.voltage - b.voltage,
+            )
+            .slice(0, 3);
+      const used = new Set([key]);
+      for (const r of [...(proven ? [proven] : []), ...candidates]) {
+        for (const s of r.steps) {
+          for (const i of [...s.inputs, ...s.startup]) for (const id of i.choices) used.add(id);
+          for (const o of s.outputs) used.add(o.key);
+        }
+        for (const id of r.external) used.add(id);
+      }
+      return {
+        resource,
+        renewable: !!proven,
+        route: proven,
+        candidates,
+        candidateCount: producers.get(key)?.length ?? 0,
+        resources: Object.fromEntries(
+          [...used].flatMap((k) => (resources.has(k) ? [[k, resources.get(k)!]] : [])),
+        ),
+      };
+    },
+  };
+}

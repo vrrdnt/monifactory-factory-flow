@@ -19,6 +19,7 @@
     "monifactory:planner": "node tools/monifactory/planner-recipes.mjs",
     "monifactory:dataset": "node tools/monifactory/build-dataset.mjs",
     "monifactory:textures": "node tools/monifactory/textures.mjs",
+    "monifactory:renewables": "node tools/monifactory/build-renewables.mjs",
     "monifactory:normalize": "node tools/monifactory/normalize-ordinary.mjs",
     "monifactory:calculate": "node tools/monifactory/calculate-ordinary.mjs",
     "monifactory:test": "vitest run tools/monifactory src/lib/packs/monifactory",

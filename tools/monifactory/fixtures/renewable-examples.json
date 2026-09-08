@@ -1,0 +1,748 @@
+{
+  "catalog": {
+    "schemaVersion": 1,
+    "format": "monifactory-runtime-catalog",
+    "profile": {
+      "id": "monifactory-0.13.7-expert",
+      "packId": "monifactory",
+      "packVersion": "0.13.7",
+      "mode": "Expert",
+      "minecraftVersion": "1.20.1",
+      "forgeVersion": "47.4.13",
+      "requiredMods": {
+        "gtceu": "7.5.3",
+        "monilabs": "0.21.6",
+        "kubejs": "2001.6.5-build.16"
+      },
+      "source": {
+        "repository": "https://github.com/Omicron-Industries/Monifactory",
+        "tag": "0.13.7",
+        "commit": "6e3c9995f402c709fdeff0171ca382b5e921de16",
+        "clientArchiveSha256": "88ca112e9f91b3556039fd711f5f4fbfe0186b6601a055025b82e1eb09fbe1b2"
+      }
+    },
+    "instanceFingerprint": "d088cbd800f24ec17e3ebfba52e48653861dc83e4e5ac0d8b2427654d1989e86",
+    "calculationStatus": "unverified",
+    "recipes": [
+      {
+        "id": "gtceu:electrolyzer/water_electrolysis",
+        "recipeType": "gtceu:electrolyzer",
+        "durationTicks": 1500,
+        "inputEUt": "30",
+        "outputEUt": "0",
+        "machineIds": [
+          "gtceu:ev_electrolyzer",
+          "gtceu:hv_electrolyzer",
+          "gtceu:iv_electrolyzer",
+          "gtceu:large_electrolyzer",
+          "gtceu:luv_electrolyzer",
+          "gtceu:lv_electrolyzer",
+          "gtceu:mv_electrolyzer",
+          "gtceu:opv_electrolyzer",
+          "gtceu:uev_electrolyzer",
+          "gtceu:uhv_electrolyzer",
+          "gtceu:uiv_electrolyzer",
+          "gtceu:uv_electrolyzer",
+          "gtceu:uxv_electrolyzer",
+          "gtceu:zpm_electrolyzer"
+        ],
+        "nativeRecipeJson": "{\"duration\":1500,\"category\":\"gtceu:electrolyzer\",\"tickInputs\":{\"eu\":[{\"content\":30}]},\"type\":\"gtceu:electrolyzer\",\"inputs\":{\"fluid\":[{\"content\":{\"amount\":1000,\"value\":[{\"tag\":\"forge:water\"}]}}]},\"outputs\":{\"fluid\":[{\"content\":{\"amount\":2000,\"value\":[{\"fluid\":\"gtceu:hydrogen\"}]}},{\"content\":{\"amount\":1000,\"value\":[{\"fluid\":\"gtceu:oxygen\"}]}}]}}"
+      },
+      {
+        "id": "gtceu:gas_collector/air",
+        "recipeType": "gtceu:gas_collector",
+        "durationTicks": 200,
+        "inputEUt": "16",
+        "outputEUt": "0",
+        "machineIds": [
+          "gtceu:atmospheric_accumulator",
+          "gtceu:ev_gas_collector",
+          "gtceu:hv_gas_collector",
+          "gtceu:iv_gas_collector",
+          "gtceu:luv_gas_collector",
+          "gtceu:lv_gas_collector",
+          "gtceu:mv_gas_collector",
+          "gtceu:opv_gas_collector",
+          "gtceu:uev_gas_collector",
+          "gtceu:uhv_gas_collector",
+          "gtceu:uiv_gas_collector",
+          "gtceu:uv_gas_collector",
+          "gtceu:uxv_gas_collector",
+          "gtceu:zpm_gas_collector"
+        ],
+        "nativeRecipeJson": "{\"duration\":200,\"category\":\"gtceu:gas_collector\",\"recipeConditions\":[{\"dimension\":\"minecraft:overworld\",\"type\":\"dimension\"}],\"tickInputs\":{\"eu\":[{\"content\":16}]},\"type\":\"gtceu:gas_collector\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:circuit\",\"configuration\":1},\"chance\":0}]},\"outputs\":{\"fluid\":[{\"content\":{\"amount\":10000,\"value\":[{\"fluid\":\"gtceu:air\"}]}}]}}"
+      },
+      {
+        "id": "gtceu:rock_breaker/andesite",
+        "recipeType": "gtceu:rock_breaker",
+        "durationTicks": 16,
+        "inputEUt": "60",
+        "outputEUt": "0",
+        "machineIds": [
+          "gtceu:ev_rock_crusher",
+          "gtceu:hp_steam_rock_crusher",
+          "gtceu:hv_rock_crusher",
+          "gtceu:iv_rock_crusher",
+          "gtceu:lp_steam_rock_crusher",
+          "gtceu:luv_rock_crusher",
+          "gtceu:lv_rock_crusher",
+          "gtceu:mv_rock_crusher",
+          "gtceu:opv_rock_crusher",
+          "gtceu:uev_rock_crusher",
+          "gtceu:uhv_rock_crusher",
+          "gtceu:uiv_rock_crusher",
+          "gtceu:uv_rock_crusher",
+          "gtceu:uxv_rock_crusher",
+          "gtceu:zpm_rock_crusher"
+        ],
+        "nativeRecipeJson": "{\"duration\":16,\"category\":\"gtceu:rock_breaker\",\"recipeConditions\":[{\"fluids\":[\"#minecraft:lava\",\"#minecraft:water\"],\"type\":\"adjacent_fluid\"}],\"tickInputs\":{\"eu\":[{\"content\":60}]},\"type\":\"gtceu:rock_breaker\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"minecraft:andesite\"}},\"chance\":0}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"minecraft:andesite\"}}}]}}"
+      },
+      {
+        "id": "kubejs:forge_hammer/cobbletogravel",
+        "recipeType": "gtceu:forge_hammer",
+        "durationTicks": 10,
+        "inputEUt": "16",
+        "outputEUt": "0",
+        "machineIds": [
+          "gtceu:ev_forge_hammer",
+          "gtceu:hp_steam_forge_hammer",
+          "gtceu:hv_forge_hammer",
+          "gtceu:iv_forge_hammer",
+          "gtceu:large_material_press",
+          "gtceu:lp_steam_forge_hammer",
+          "gtceu:luv_forge_hammer",
+          "gtceu:lv_forge_hammer",
+          "gtceu:mv_forge_hammer",
+          "gtceu:opv_forge_hammer",
+          "gtceu:uev_forge_hammer",
+          "gtceu:uhv_forge_hammer",
+          "gtceu:uiv_forge_hammer",
+          "gtceu:uv_forge_hammer",
+          "gtceu:uxv_forge_hammer",
+          "gtceu:zpm_forge_hammer"
+        ],
+        "nativeRecipeJson": "{\"duration\":10,\"category\":\"gtceu:forge_hammer\",\"tickInputs\":{\"eu\":[{\"content\":16}]},\"type\":\"gtceu:forge_hammer\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"minecraft:cobblestone\"}}}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"minecraft:gravel\"}}}]}}"
+      },
+      {
+        "id": "kubejs:greenhouse/oak_sapling",
+        "recipeType": "gtceu:greenhouse",
+        "durationTicks": 1280,
+        "inputEUt": "80",
+        "outputEUt": "0",
+        "machineIds": [
+          "gtceu:greenhouse"
+        ],
+        "nativeRecipeJson": "{\"duration\":1280,\"category\":\"gtceu:greenhouse\",\"tickInputs\":{\"eu\":[{\"content\":80}]},\"type\":\"gtceu:greenhouse\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"type\":\"gtceu:circuit\",\"configuration\":1}},\"chance\":0},{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"minecraft:oak_sapling\"}},\"chance\":0}],\"fluid\":[{\"content\":{\"amount\":24000,\"value\":[{\"fluid\":\"minecraft:water\"}]}}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":64,\"ingredient\":{\"item\":\"minecraft:oak_log\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":4,\"ingredient\":{\"item\":\"minecraft:apple\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":4,\"ingredient\":{\"item\":\"minecraft:oak_sapling\"}}}]}}"
+      },
+      {
+        "id": "kubejs:greenhouse/sugar_cane",
+        "recipeType": "gtceu:greenhouse",
+        "durationTicks": 640,
+        "inputEUt": "80",
+        "outputEUt": "0",
+        "machineIds": [
+          "gtceu:greenhouse"
+        ],
+        "nativeRecipeJson": "{\"duration\":640,\"category\":\"gtceu:greenhouse\",\"tickInputs\":{\"eu\":[{\"content\":80}]},\"type\":\"gtceu:greenhouse\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"type\":\"gtceu:circuit\",\"configuration\":1}},\"chance\":0},{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"minecraft:sugar_cane\"}},\"chance\":0}],\"fluid\":[{\"content\":{\"amount\":24000,\"value\":[{\"fluid\":\"minecraft:water\"}]}}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":32,\"ingredient\":{\"item\":\"minecraft:sugar_cane\"}}}]}}"
+      }
+    ],
+    "machines": [],
+    "resources": [
+      {
+        "kind": "fluid",
+        "id": "gtceu:air",
+        "displayName": "Air"
+      },
+      {
+        "kind": "fluid",
+        "id": "gtceu:hydrogen",
+        "displayName": "Hydrogen Gas"
+      },
+      {
+        "kind": "fluid",
+        "id": "gtceu:oxygen",
+        "displayName": "Oxygen Gas"
+      },
+      {
+        "kind": "fluid",
+        "id": "minecraft:flowing_lava",
+        "displayName": "Lava"
+      },
+      {
+        "kind": "fluid",
+        "id": "minecraft:flowing_water",
+        "displayName": "Water"
+      },
+      {
+        "kind": "fluid",
+        "id": "minecraft:lava",
+        "displayName": "Lava"
+      },
+      {
+        "kind": "fluid",
+        "id": "minecraft:water",
+        "displayName": "Water"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:chiseled_glacio_stone_bricks",
+        "displayName": "Chiseled Glacio Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:chiseled_mars_stone_bricks",
+        "displayName": "Chiseled Mars Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:chiseled_mercury_stone_bricks",
+        "displayName": "Chiseled Mercury Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:chiseled_moon_stone_bricks",
+        "displayName": "Chiseled Moon Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:chiseled_venus_stone_bricks",
+        "displayName": "Chiseled Venus Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:cracked_glacio_stone_bricks",
+        "displayName": "Cracked Glacio Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:cracked_mars_stone_bricks",
+        "displayName": "Cracked Mars Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:cracked_mercury_stone_bricks",
+        "displayName": "Cracked Mercury Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:cracked_moon_stone_bricks",
+        "displayName": "Cracked Moon Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:cracked_venus_stone_bricks",
+        "displayName": "Cracked Venus Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:glacio_stone_bricks",
+        "displayName": "Glacio Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:mars_stone_bricks",
+        "displayName": "Mars Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:mercury_stone_bricks",
+        "displayName": "Mercury Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:moon_stone_bricks",
+        "displayName": "Moon Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:permafrost_bricks",
+        "displayName": "Permafrost Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:permafrost_tiles",
+        "displayName": "Permafrost Tiles"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:venus_stone_bricks",
+        "displayName": "Venus Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:atmospheric_accumulator",
+        "displayName": "Atmospheric Accumulator"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:ev_electrolyzer",
+        "displayName": "§5Advanced Electrolyzer III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:ev_forge_hammer",
+        "displayName": "§5Advanced Forge Hammer III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:ev_gas_collector",
+        "displayName": "§5Advanced Gas Collector III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:ev_rock_crusher",
+        "displayName": "§5Advanced Rock Crusher III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:greenhouse",
+        "displayName": "Greenhouse"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:hp_steam_forge_hammer",
+        "displayName": "High Pressure Steam Forge Hammer"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:hp_steam_rock_crusher",
+        "displayName": "High Pressure Steam Rock Crusher"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:hv_electrolyzer",
+        "displayName": "§6Advanced Electrolyzer II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:hv_forge_hammer",
+        "displayName": "§6Advanced Forge Hammer II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:hv_gas_collector",
+        "displayName": "§6Advanced Gas Collector II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:hv_rock_crusher",
+        "displayName": "§6Advanced Rock Crusher II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:iv_electrolyzer",
+        "displayName": "§9Elite Electrolyzer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:iv_forge_hammer",
+        "displayName": "§9Elite Forge Hammer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:iv_gas_collector",
+        "displayName": "§9Elite Gas Collector §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:iv_rock_crusher",
+        "displayName": "§9Elite Rock Crusher §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:large_electrolyzer",
+        "displayName": "Large Electrolysis Chamber"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:large_material_press",
+        "displayName": "Large Material Press"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:lp_steam_forge_hammer",
+        "displayName": "Low Pressure Steam Forge Hammer"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:lp_steam_rock_crusher",
+        "displayName": "Low Pressure Steam Rock Crusher"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:luv_electrolyzer",
+        "displayName": "§dElite Electrolyzer II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:luv_forge_hammer",
+        "displayName": "§dElite Forge Hammer II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:luv_gas_collector",
+        "displayName": "§dElite Gas Collector II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:luv_rock_crusher",
+        "displayName": "§dElite Rock Crusher II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:lv_electrolyzer",
+        "displayName": "Basic Electrolyzer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:lv_forge_hammer",
+        "displayName": "Basic Forge Hammer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:lv_gas_collector",
+        "displayName": "Basic Gas Collector §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:lv_rock_crusher",
+        "displayName": "Basic Rock Crusher §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:mv_electrolyzer",
+        "displayName": "§bAdvanced Electrolyzer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:mv_forge_hammer",
+        "displayName": "§bAdvanced Forge Hammer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:mv_gas_collector",
+        "displayName": "§bAdvanced Gas Collector §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:mv_rock_crusher",
+        "displayName": "§bAdvanced Rock Crusher §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:opv_electrolyzer",
+        "displayName": "§9§lLegendary Electrolyzer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:opv_forge_hammer",
+        "displayName": "§9§lLegendary Forge Hammer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:opv_gas_collector",
+        "displayName": "§9§lLegendary Gas Collector §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:opv_rock_crusher",
+        "displayName": "§9§lLegendary Rock Crusher §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uev_electrolyzer",
+        "displayName": "§aEpic Electrolyzer II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uev_forge_hammer",
+        "displayName": "§aEpic Forge Hammer II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uev_gas_collector",
+        "displayName": "§aEpic Gas Collector II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uev_rock_crusher",
+        "displayName": "§aEpic Rock Crusher II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uhv_electrolyzer",
+        "displayName": "§4Epic Electrolyzer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uhv_forge_hammer",
+        "displayName": "§4Epic Forge Hammer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uhv_gas_collector",
+        "displayName": "§4Epic Gas Collector §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uhv_rock_crusher",
+        "displayName": "§4Epic Rock Crusher §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uiv_electrolyzer",
+        "displayName": "§2Epic Electrolyzer III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uiv_forge_hammer",
+        "displayName": "§2Epic Forge Hammer III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uiv_gas_collector",
+        "displayName": "§2Epic Gas Collector III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uiv_rock_crusher",
+        "displayName": "§2Epic Rock Crusher III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uv_electrolyzer",
+        "displayName": "§3Ultimate Electrolyzer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uv_forge_hammer",
+        "displayName": "§3Ultimate Forge Hammer §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uv_gas_collector",
+        "displayName": "§3Ultimate Gas Collector §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uv_rock_crusher",
+        "displayName": "§3Ultimate Rock Crusher §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uxv_electrolyzer",
+        "displayName": "§eEpic Electrolyzer IV§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uxv_forge_hammer",
+        "displayName": "§eEpic Forge Hammer IV§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uxv_gas_collector",
+        "displayName": "§eEpic Gas Collector IV§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uxv_rock_crusher",
+        "displayName": "§eEpic Rock Crusher IV§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:zpm_electrolyzer",
+        "displayName": "§cElite Electrolyzer III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:zpm_forge_hammer",
+        "displayName": "§cElite Forge Hammer III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:zpm_gas_collector",
+        "displayName": "§cElite Gas Collector III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:zpm_rock_crusher",
+        "displayName": "§cElite Rock Crusher III§r"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:andesite",
+        "displayName": "Andesite"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:apple",
+        "displayName": "Apple"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:chiseled_stone_bricks",
+        "displayName": "Chiseled Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:cobblestone",
+        "displayName": "Cobblestone"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:cracked_stone_bricks",
+        "displayName": "Cracked Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:gravel",
+        "displayName": "Gravel"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:mossy_stone_bricks",
+        "displayName": "Mossy Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:oak_log",
+        "displayName": "Oak Log"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:oak_planks",
+        "displayName": "Oak Planks"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:oak_sapling",
+        "displayName": "Oak Sapling"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:oak_wood",
+        "displayName": "Oak Wood"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:stone",
+        "displayName": "Stone"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:stone_bricks",
+        "displayName": "Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:stripped_oak_log",
+        "displayName": "Stripped Oak Log"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:stripped_oak_wood",
+        "displayName": "Stripped Oak Wood"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:sugar",
+        "displayName": "Sugar"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:sugar_cane",
+        "displayName": "Sugar Cane"
+      }
+    ],
+    "tags": [
+      {
+        "kind": "fluid",
+        "id": "forge:water",
+        "members": [
+          "minecraft:water"
+        ]
+      },
+      {
+        "kind": "fluid",
+        "id": "minecraft:lava",
+        "members": [
+          "minecraft:flowing_lava",
+          "minecraft:lava"
+        ]
+      },
+      {
+        "kind": "fluid",
+        "id": "minecraft:water",
+        "members": [
+          "minecraft:flowing_water",
+          "minecraft:water"
+        ]
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:oak_logs",
+        "members": [
+          "minecraft:oak_log",
+          "minecraft:oak_wood",
+          "minecraft:stripped_oak_log",
+          "minecraft:stripped_oak_wood"
+        ]
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:stone_bricks",
+        "members": [
+          "ad_astra:chiseled_glacio_stone_bricks",
+          "ad_astra:chiseled_mars_stone_bricks",
+          "ad_astra:chiseled_mercury_stone_bricks",
+          "ad_astra:chiseled_moon_stone_bricks",
+          "ad_astra:chiseled_venus_stone_bricks",
+          "ad_astra:cracked_glacio_stone_bricks",
+          "ad_astra:cracked_mars_stone_bricks",
+          "ad_astra:cracked_mercury_stone_bricks",
+          "ad_astra:cracked_moon_stone_bricks",
+          "ad_astra:cracked_venus_stone_bricks",
+          "ad_astra:glacio_stone_bricks",
+          "ad_astra:mars_stone_bricks",
+          "ad_astra:mercury_stone_bricks",
+          "ad_astra:moon_stone_bricks",
+          "ad_astra:permafrost_bricks",
+          "ad_astra:permafrost_tiles",
+          "ad_astra:venus_stone_bricks",
+          "minecraft:chiseled_stone_bricks",
+          "minecraft:cracked_stone_bricks",
+          "minecraft:mossy_stone_bricks",
+          "minecraft:stone_bricks"
+        ]
+      }
+    ]
+  },
+  "records": [
+    {
+      "id": "gtceu:shapeless/oak_planks",
+      "data": {
+        "type": "minecraft:crafting_shapeless",
+        "ingredients": [
+          {
+            "tag": "minecraft:oak_logs"
+          }
+        ],
+        "result": {
+          "item": "minecraft:oak_planks",
+          "count": 2
+        }
+      }
+    },
+    {
+      "id": "minecraft:stone_bricks_from_stone_stonecutting",
+      "data": {
+        "type": "minecraft:stonecutting",
+        "count": 1,
+        "ingredient": {
+          "item": "minecraft:stone"
+        },
+        "result": "minecraft:stone_bricks"
+      }
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Bug, Compass, Heart, Library } from "lucide-react";
+import { Bug, Compass, Heart, Library, Leaf } from "lucide-react";
 import { leaveLibrary, openLibrary } from "@/lib/library/library-tab";
 import { openWelcomeTab } from "@/lib/welcome/welcome-tab";
 import { APP_VERSION } from "@/lib/version";
@@ -55,6 +55,14 @@ export function HeaderLinks() {
       <HeaderLink href={GITHUB_URL} label="Source on GitHub">
         <GithubMark />
       </HeaderLink>
+      <a
+        href="/renewables"
+        title="Renewable resource guide"
+        aria-label="Renewable resource guide"
+        className="inline-flex h-7 w-7 items-center justify-center rounded border border-emerald-800 bg-surface text-emerald-300 hover:bg-surface-raised"
+      >
+        <Leaf className="h-3.5 w-3.5" />
+      </a>
       <HeaderLink href={DISCORD_THREAD_URL} label="Upstream GTNH Discord thread">
         <DiscordMark />
       </HeaderLink>
@@ -144,6 +152,13 @@ export function MenuLinks({ onAction }: { onAction?: () => void }) {
       <MenuLink href={GITHUB_URL} label="Source on GitHub">
         <GithubMark />
       </MenuLink>
+      <a
+        href="/renewables"
+        className="flex h-10 items-center gap-2.5 rounded px-2 text-sm text-emerald-300 hover:bg-surface-sunken"
+        onClick={onAction}
+      >
+        <Leaf className="h-4 w-4" aria-hidden /> Renewable resource guide
+      </a>
       <MenuLink href={DISCORD_THREAD_URL} label="Upstream GTNH Discord thread">
         <DiscordMark />
       </MenuLink>
@@ -185,7 +200,11 @@ function MenuLink({
       data-umami-event-source={umamiEvent ? "menu" : undefined}
       className={[
         "flex h-10 items-center gap-2.5 rounded px-2 text-sm hover:bg-surface-sunken",
-        tone === "danger" ? "text-red-300" : tone === "support" ? "text-pink-300" : "text-fg-subtle",
+        tone === "danger"
+          ? "text-red-300"
+          : tone === "support"
+            ? "text-pink-300"
+            : "text-fg-subtle",
       ].join(" ")}
     >
       <span className="flex h-4 w-4 shrink-0 items-center justify-center">{children}</span>
