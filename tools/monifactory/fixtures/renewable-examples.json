@@ -172,6 +172,48 @@
           "monilabs:hyperbolic_microverse_projector"
         ],
         "nativeRecipeJson": "{\"data\":{\"duration\":4000,\"damage_rate\":1,\"projector_tier\":2},\"duration\":4000,\"category\":\"gtceu:microverse\",\"tickInputs\":{\"eu\":[{\"content\":3840}]},\"type\":\"gtceu:microverse\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:microminer_t4\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":16,\"ingredient\":{\"item\":\"kubejs:petrotheum_dust\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:advanced_drilling_kit\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"gtceu:cobalt_brass_drill_head\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":8,\"ingredient\":{\"item\":\"kubejs:wither_realm_data\"}}}],\"microverse\":[{\"content\":1}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:microminer_t4\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":48,\"ingredient\":{\"item\":\"gtceu:raw_chalcocite\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":48,\"ingredient\":{\"item\":\"gtceu:raw_pentlandite\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":24,\"ingredient\":{\"item\":\"gtceu:raw_bornite\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":24,\"ingredient\":{\"item\":\"gtceu:raw_cooperite\"}}}]}}"
+      },
+      {
+        "id": "kubejs:microverse/mission_t2half_3",
+        "recipeType": "gtceu:microverse",
+        "durationTicks": 1000,
+        "inputEUt": "1920",
+        "outputEUt": "0",
+        "machineIds": [
+          "monilabs:advanced_microverse_projector",
+          "monilabs:basic_microverse_projector",
+          "monilabs:elite_microverse_projector",
+          "monilabs:hyperbolic_microverse_projector"
+        ],
+        "nativeRecipeJson": "{\"data\":{\"duration\":1000,\"damage_rate\":-30,\"projector_tier\":1},\"duration\":1000,\"category\":\"gtceu:microverse\",\"tickInputs\":{\"eu\":[{\"content\":1920}]},\"type\":\"gtceu:microverse\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:microminer_t2half\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"minecraft:mossy_cobblestone\"}}}],\"fluid\":[{\"content\":{\"amount\":2000,\"value\":[{\"fluid\":\"minecraft:lava\"}]}}],\"microverse\":[{\"content\":2}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:microminer_t2half_damaged\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":64,\"ingredient\":{\"item\":\"minecraft:bone\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":64,\"ingredient\":{\"item\":\"minecraft:rotten_flesh\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":16,\"ingredient\":{\"item\":\"minecraft:rotten_flesh\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":32,\"ingredient\":{\"item\":\"minecraft:gunpowder\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":24,\"ingredient\":{\"item\":\"minecraft:string\"}}}]}}"
+      },
+      {
+        "id": "kubejs:microverse/mission_t2half_3_stabilized",
+        "recipeType": "gtceu:microverse",
+        "durationTicks": 1000,
+        "inputEUt": "1920",
+        "outputEUt": "0",
+        "machineIds": [
+          "monilabs:advanced_microverse_projector",
+          "monilabs:basic_microverse_projector",
+          "monilabs:elite_microverse_projector",
+          "monilabs:hyperbolic_microverse_projector"
+        ],
+        "nativeRecipeJson": "{\"data\":{\"duration\":1000,\"damage_rate\":-30,\"projector_tier\":1},\"duration\":1000,\"category\":\"gtceu:microverse\",\"tickInputs\":{\"eu\":[{\"content\":1920}]},\"type\":\"gtceu:microverse\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:stabilized_microminer_t2half\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"minecraft:mossy_cobblestone\"}}}],\"fluid\":[{\"content\":{\"amount\":2000,\"value\":[{\"fluid\":\"minecraft:lava\"}]}}],\"microverse\":[{\"content\":2}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:stabilized_microminer_t2half\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":64,\"ingredient\":{\"item\":\"minecraft:bone\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":64,\"ingredient\":{\"item\":\"minecraft:rotten_flesh\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":16,\"ingredient\":{\"item\":\"minecraft:rotten_flesh\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":32,\"ingredient\":{\"item\":\"minecraft:gunpowder\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":24,\"ingredient\":{\"item\":\"minecraft:string\"}}}]}}"
+      },
+      {
+        "id": "kubejs:microverse/mission_t4half_3_stabilized",
+        "recipeType": "gtceu:microverse",
+        "durationTicks": 4000,
+        "inputEUt": "7680",
+        "outputEUt": "0",
+        "machineIds": [
+          "monilabs:advanced_microverse_projector",
+          "monilabs:basic_microverse_projector",
+          "monilabs:elite_microverse_projector",
+          "monilabs:hyperbolic_microverse_projector"
+        ],
+        "nativeRecipeJson": "{\"data\":{\"duration\":4000,\"damage_rate\":-20,\"projector_tier\":2},\"duration\":4000,\"category\":\"gtceu:microverse\",\"tickInputs\":{\"eu\":[{\"content\":7680}]},\"type\":\"gtceu:microverse\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:stabilized_microminer_t4half\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":24,\"ingredient\":{\"item\":\"kubejs:aerotheum_dust\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":64,\"ingredient\":{\"item\":\"kubejs:wither_bone\"}}}],\"microverse\":[{\"content\":2}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:stabilized_microminer_t4half\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":64,\"ingredient\":{\"item\":\"kubejs:wither_realm_data\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":16,\"ingredient\":{\"item\":\"minecraft:nether_star\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":16,\"ingredient\":{\"item\":\"minecraft:nether_star\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":16,\"ingredient\":{\"item\":\"minecraft:nether_star\"}}}]}}"
       }
     ],
     "machines": [],
@@ -835,6 +877,66 @@
         "kind": "item",
         "id": "monilabs:hyperbolic_microverse_projector",
         "displayName": "Hyperbolic Microverse Projector"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:microminer_t2half",
+        "displayName": "§eDark Steel Plated Micro Mob Slayer [Tier Two and a Half]"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:microminer_t2half_damaged",
+        "displayName": "§7Damaged Dark Steel Plated Micro Mob Slayer [Tier Two and a Half]"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:bone",
+        "displayName": "Bone"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:gunpowder",
+        "displayName": "Gunpowder"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:mossy_cobblestone",
+        "displayName": "Mossy Cobblestone"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:rotten_flesh",
+        "displayName": "Rotten Flesh"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:string",
+        "displayName": "String"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:stabilized_microminer_t2half",
+        "displayName": "§dStabilized Dark Steel Plated Micro Mob Slayer [Tier Two and a Half]"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:aerotheum_dust",
+        "displayName": "§7Aerotheum Dust"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:stabilized_microminer_t4half",
+        "displayName": "§dStabilized Lumium Plated Micro Mob Slayer [Tier Four and Half]"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:wither_bone",
+        "displayName": "Wither Bone"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:nether_star",
+        "displayName": "Nether Star"
       }
     ],
     "tags": [

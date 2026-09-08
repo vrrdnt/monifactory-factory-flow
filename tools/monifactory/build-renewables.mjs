@@ -7,8 +7,9 @@ import { guideSelectors, normalizeGuideGT, normalizeGuideCraft } from "./renewab
 import { renewableClosure, netRecipe, validateRenewableProofs } from "./renewable-graph.mjs";
 import { renewableSources, guideRules } from "./renewable-sources.mjs";
 import { extendRenewableCycles } from "./renewable-cycles.mjs";
+import { hostileSource, readHostileDecay } from "./renewable-microverse.mjs";
 
-export function buildRenewables(catalog, full, textures) {
+export function buildRenewables(catalog, full, textures, settings = {}) {
   if (
     catalog.profile.packVersion !== "0.13.7" ||
     catalog.profile.mode !== "Expert" ||
@@ -26,6 +27,17 @@ export function buildRenewables(catalog, full, textures) {
   )
     throw new Error("Full recipe export profile or provenance mismatch.");
   const resolve = guideSelectors(catalog);
+  if (
+    settings.hostileDecayRate !== undefined &&
+    (!Number.isSafeInteger(settings.hostileDecayRate) ||
+      settings.hostileDecayRate <= 0 ||
+      settings.hostileDecayRate >= 100000)
+  )
+    throw new Error("Unsupported hostile decay rate.");
+  const sources =
+    settings.hostileDecayRate === undefined
+      ? renewableSources
+      : [...renewableSources, hostileSource(settings.hostileDecayRate)];
   const recipes = [],
     exclusions = [],
     ids = new Set(catalog.recipes.map((r) => r.id));
@@ -43,7 +55,7 @@ export function buildRenewables(catalog, full, textures) {
       exclusions.push({ id, reason: error.message });
     }
   }
-  for (const raw of catalog.recipes) add(raw.id, () => normalizeGuideGT(raw, resolve));
+  for (const raw of catalog.recipes) add(raw.id, () => normalizeGuideGT(raw, resolve, settings));
   for (const { id, data } of full?.records ?? []) {
     if (!ids.has(id)) add(id, () => normalizeGuideCraft(id, data, resolve));
   }
@@ -61,8 +73,8 @@ export function buildRenewables(catalog, full, textures) {
     ],
     reviewed: true,
   });
-  const proofs = renewableClosure(recipes, renewableSources);
-  validateRenewableProofs(recipes, renewableSources, proofs);
+  const proofs = renewableClosure(recipes, sources);
+  validateRenewableProofs(recipes, sources, proofs);
   const resources = catalog.resources.map((r) => ({
     ...r,
     displayName: r.displayName.replace(/§./g, "").trim(),
@@ -79,6 +91,7 @@ export function buildRenewables(catalog, full, textures) {
     ["renewable_electricity", "Renewable electricity"],
     ["renewable_furnace_heat", "Furnace heat (fuel ticks)"],
     ["normal_microverse", "Normal Microverse"],
+    ["hostile_microverse", "Hostile Microverse"],
   ])
     resources.push({ key: `utility:${id}`, kind: "utility", id, displayName });
   const counts = {};
@@ -103,7 +116,8 @@ export function buildRenewables(catalog, full, textures) {
       ],
     },
     rules: guideRules,
-    sources: renewableSources,
+    sources,
+    machineSettings: { hostileDecayRate: settings.hostileDecayRate },
     resources,
     recipes: recipes.map(netRecipe),
     proofs: Object.fromEntries(proofs),
@@ -117,13 +131,19 @@ if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.ar
     fullPath,
     texturePath,
     output = "public/datasets/monifactory/renewables.json.gz",
+    monilabsConfigPath,
   ] = process.argv.slice(2);
   if (!catalogPath)
     throw new Error(
-      "Usage: build-renewables.mjs catalog.json full-recipes.json|- texture-index.json|- [output.json.gz]",
+      "Usage: build-renewables.mjs catalog.json full-recipes.json|- texture-index.json|- [output.json.gz] [monilabs.yaml]",
     );
   const read = (p) => (p && p !== "-" ? JSON.parse(fs.readFileSync(p)) : undefined);
-  const guide = buildRenewables(read(catalogPath), read(fullPath), read(texturePath));
+  const settings = monilabsConfigPath
+    ? {
+        hostileDecayRate: readHostileDecay(fs.readFileSync(monilabsConfigPath, "utf8")),
+      }
+    : {};
+  const guide = buildRenewables(read(catalogPath), read(fullPath), read(texturePath), settings);
   await extendRenewableCycles(guide);
   guide.coverage.limitations[0] =
     "Deterministic recycling loops are checked with integer batch balances. Stochastic loops, unresolved tag alternatives and custom machine state are still being audited.";
@@ -132,6 +152,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.ar
       ["catalog", catalogPath],
       ["fullRecipes", fullPath],
       ["textures", texturePath],
+      ["monilabsConfig", monilabsConfigPath],
     ]
       .filter(([, p]) => p && p !== "-")
       .map(([k, p]) => [k, createHash("sha256").update(fs.readFileSync(p)).digest("hex")]),

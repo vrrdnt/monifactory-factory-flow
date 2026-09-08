@@ -193,8 +193,8 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
             inputs until replaced with a renewable source.
           </p>
         </details>
-        <div className="grid items-start gap-6 lg:grid-cols-[350px_minmax(0,1fr)]">
-          <aside className="rounded-xl border border-line bg-surface p-4 lg:sticky lg:top-4">
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[350px_minmax(0,1fr)]">
+          <aside className="min-w-0 rounded-xl border border-line bg-surface p-4 lg:sticky lg:top-4">
             <label htmlFor="resource-search" className="mb-2 block text-sm font-medium">
               Find a resource
             </label>

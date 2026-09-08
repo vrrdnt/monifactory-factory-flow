@@ -1,4 +1,5 @@
 // The guide retains recipe quantities and requirements without promising machine rates.
+import { hostileSchedule } from "./renewable-microverse.mjs";
 const positive = (n) => Number.isSafeInteger(n) && n > 0;
 const knownConditions = new Set([
   "dimension",
@@ -27,13 +28,12 @@ export function guideSelectors(catalog) {
   return resolve;
 }
 
-export function normalizeGuideGT(raw, resolve) {
+export function normalizeGuideGT(raw, resolve, settings = {}) {
   const native = JSON.parse(raw.nativeRecipeJson);
   const microverseData = native.data ?? {};
-  const normalMicroverse =
+  const plainMicroverse =
     raw.recipeType === "gtceu:microverse" &&
     native.inputs?.microverse?.length === 1 &&
-    native.inputs.microverse[0].content === 1 &&
     Object.keys(microverseData).every((k) =>
       ["duration", "damage_rate", "projector_tier"].includes(k),
     ) &&
@@ -41,8 +41,16 @@ export function normalizeGuideGT(raw, resolve) {
     microverseData.projector_tier >= 1 &&
     microverseData.projector_tier <= 4 &&
     microverseData.duration === raw.durationTicks &&
-    Number.isSafeInteger(microverseData.damage_rate ?? 0) &&
+    Number.isSafeInteger(microverseData.damage_rate ?? 0);
+  const normalMicroverse =
+    plainMicroverse &&
+    native.inputs.microverse[0].content === 1 &&
     (microverseData.damage_rate ?? 0) >= 0;
+  const hostile =
+    plainMicroverse && native.inputs.microverse[0].content === 2
+      ? hostileSchedule(raw.durationTicks, -microverseData.damage_rate, settings.hostileDecayRate)
+      : undefined;
+  const reviewedMicroverse = normalMicroverse || !!hostile;
   const recipe = {
     id: raw.id,
     machine: raw.recipeType,
@@ -62,7 +70,7 @@ export function normalizeGuideGT(raw, resolve) {
   if (!positive(raw.durationTicks)) recipe.reviewed = false;
   if (
     Object.keys(native.inputs ?? {}).some(
-      (cap) => !["item", "fluid", ...(normalMicroverse ? ["microverse"] : [])].includes(cap),
+      (cap) => !["item", "fluid", ...(reviewedMicroverse ? ["microverse"] : [])].includes(cap),
     ) ||
     Object.keys(native.outputs ?? {}).some((cap) => !["item", "fluid"].includes(cap))
   )
@@ -79,7 +87,7 @@ export function normalizeGuideGT(raw, resolve) {
       "gtceu:naquadah_refinery",
       "gtceu:naquadah_reactor",
     ].includes(raw.recipeType) &&
-    !normalMicroverse
+    !reviewedMicroverse
   )
     recipe.reviewed = false;
   if (
@@ -90,7 +98,7 @@ export function normalizeGuideGT(raw, resolve) {
           "temperature",
           "eu_to_start",
           "duration",
-          ...(normalMicroverse ? ["projector_tier", "damage_rate"] : []),
+          ...(reviewedMicroverse ? ["projector_tier", "damage_rate"] : []),
         ].includes(key),
     )
   )
@@ -143,6 +151,13 @@ export function normalizeGuideGT(raw, resolve) {
     slots(native[side], side === "tickInputs" ? "input" : "output", native.duration);
   }
   if (!recipe.outputs.length) throw new Error("no-material-output");
+  if (hostile) {
+    recipe.inputs.push({ choices: ["utility:hostile_microverse"], amount: 1, consumed: true });
+    recipe.notes.push(
+      `Use a dedicated Hostile Microverse projector, one parallel at base voltage. This mission heals ${hostile.healing} integrity per working tick; passive decay is ${hostile.decay} per tick. Allow at most ${hostile.maxIdleTicks} ticks (${hostile.maxIdleTicks / 20} seconds) of total idle or stalled time per completed mission, including the gap before the next mission. Several short interruptions count toward the same allowance.`,
+      "Buffer power and all ingredients, automate miner return/repair, and continuously extract or void outputs. Long supply interruptions, full outputs or a broken structure can destroy the Hostile Microverse; restart then requires projection and transformation again. Quantum Flux cannot repair it.",
+    );
+  }
   if (normalMicroverse) {
     recipe.inputs.push({ choices: ["utility:normal_microverse"], amount: 1, consumed: true });
     const flux = Math.ceil(((microverseData.damage_rate ?? 0) * raw.durationTicks) / 1000);
