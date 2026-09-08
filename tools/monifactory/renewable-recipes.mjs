@@ -29,6 +29,20 @@ export function guideSelectors(catalog) {
 
 export function normalizeGuideGT(raw, resolve) {
   const native = JSON.parse(raw.nativeRecipeJson);
+  const microverseData = native.data ?? {};
+  const normalMicroverse =
+    raw.recipeType === "gtceu:microverse" &&
+    native.inputs?.microverse?.length === 1 &&
+    native.inputs.microverse[0].content === 1 &&
+    Object.keys(microverseData).every((k) =>
+      ["duration", "damage_rate", "projector_tier"].includes(k),
+    ) &&
+    Number.isSafeInteger(microverseData.projector_tier) &&
+    microverseData.projector_tier >= 1 &&
+    microverseData.projector_tier <= 4 &&
+    microverseData.duration === raw.durationTicks &&
+    Number.isSafeInteger(microverseData.damage_rate ?? 0) &&
+    (microverseData.damage_rate ?? 0) >= 0;
   const recipe = {
     id: raw.id,
     machine: raw.recipeType,
@@ -46,8 +60,13 @@ export function normalizeGuideGT(raw, resolve) {
   if (recipe.conditions.some((c) => !knownConditions.has(c.type))) recipe.reviewed = false;
   if (!Number.isSafeInteger(Number(raw.inputEUt))) throw new Error("unsafe-energy-value");
   if (!positive(raw.durationTicks)) recipe.reviewed = false;
-  const caps = [...Object.keys(native.inputs ?? {}), ...Object.keys(native.outputs ?? {})];
-  if (caps.some((cap) => !["item", "fluid"].includes(cap))) recipe.reviewed = false;
+  if (
+    Object.keys(native.inputs ?? {}).some(
+      (cap) => !["item", "fluid", ...(normalMicroverse ? ["microverse"] : [])].includes(cap),
+    ) ||
+    Object.keys(native.outputs ?? {}).some((cap) => !["item", "fluid"].includes(cap))
+  )
+    recipe.reviewed = false;
   // These machines can consume or transform state outside ordinary item/fluid slots.
   if (
     [
@@ -59,12 +78,20 @@ export function normalizeGuideGT(raw, resolve) {
       "gtceu:quintessence_infuser",
       "gtceu:naquadah_refinery",
       "gtceu:naquadah_reactor",
-    ].includes(raw.recipeType)
+    ].includes(raw.recipeType) &&
+    !normalMicroverse
   )
     recipe.reviewed = false;
   if (
     Object.keys(native.data ?? {}).some(
-      (key) => !["ebf_temp", "temperature", "eu_to_start", "duration"].includes(key),
+      (key) =>
+        ![
+          "ebf_temp",
+          "temperature",
+          "eu_to_start",
+          "duration",
+          ...(normalMicroverse ? ["projector_tier", "damage_rate"] : []),
+        ].includes(key),
     )
   )
     recipe.reviewed = false;
@@ -116,6 +143,24 @@ export function normalizeGuideGT(raw, resolve) {
     slots(native[side], side === "tickInputs" ? "input" : "output", native.duration);
   }
   if (!recipe.outputs.length) throw new Error("no-material-output");
+  if (normalMicroverse) {
+    recipe.inputs.push({ choices: ["utility:normal_microverse"], amount: 1, consumed: true });
+    const flux = Math.ceil(((microverseData.damage_rate ?? 0) * raw.durationTicks) / 1000);
+    if (!Number.isSafeInteger(flux)) throw new Error("unsafe-integrity-budget");
+    if (flux > 0) {
+      recipe.inputs.push({
+        choices: resolve({ item: "kubejs:quantum_flux" }, "item"),
+        amount: flux,
+        consumed: true,
+      });
+      recipe.notes.push(
+        `Keep quantum flux in the projector's input bus for automatic integrity repair. Budget up to ${flux} per base mission and keep a buffer; this is separate from the recipe's visible ingredients.`,
+      );
+    }
+    recipe.notes.push(
+      "Use a Normal Microverse and a projector at least as high as the required projector tier. Run one parallel at base voltage for this integrity budget; supply and output blocking must not prevent repairs. Returned miners are startup stock; damaged miners need a repair loop.",
+    );
+  }
   if (recipe.inputs.some((i) => i.chance > 0 && i.chance < 1))
     recipe.notes.push("Some inputs are consumed by chance. Keep a replenished input buffer.");
   if (recipe.outputs.some((o) => o.chance < 1))

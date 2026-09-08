@@ -29,6 +29,10 @@ export type GuideRecipe = {
   circuit?: number;
   notes: string[];
   reviewed: boolean;
+  loop?: {
+    steps: { recipeId: string; count: number; selectedInputs: string[]; recipe?: GuideRecipe }[];
+    balance: { key: string; amount: number }[];
+  };
 };
 export type GuideSource = {
   id: string;

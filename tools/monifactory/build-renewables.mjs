@@ -6,6 +6,7 @@ import { pathToFileURL } from "node:url";
 import { guideSelectors, normalizeGuideGT, normalizeGuideCraft } from "./renewable-recipes.mjs";
 import { renewableClosure, netRecipe, validateRenewableProofs } from "./renewable-graph.mjs";
 import { renewableSources, guideRules } from "./renewable-sources.mjs";
+import { extendRenewableCycles } from "./renewable-cycles.mjs";
 
 export function buildRenewables(catalog, full, textures) {
   if (
@@ -77,6 +78,7 @@ export function buildRenewables(catalog, full, textures) {
   for (const [id, displayName] of [
     ["renewable_electricity", "Renewable electricity"],
     ["renewable_furnace_heat", "Furnace heat (fuel ticks)"],
+    ["normal_microverse", "Normal Microverse"],
   ])
     resources.push({ key: `utility:${id}`, kind: "utility", id, displayName });
   const counts = {};
@@ -122,6 +124,9 @@ if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.ar
     );
   const read = (p) => (p && p !== "-" ? JSON.parse(fs.readFileSync(p)) : undefined);
   const guide = buildRenewables(read(catalogPath), read(fullPath), read(texturePath));
+  await extendRenewableCycles(guide);
+  guide.coverage.limitations[0] =
+    "Deterministic recycling loops are checked with integer batch balances. Stochastic loops, unresolved tag alternatives and custom machine state are still being audited.";
   guide.provenance = Object.fromEntries(
     [
       ["catalog", catalogPath],

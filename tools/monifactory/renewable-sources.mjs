@@ -7,6 +7,33 @@ const gt =
 // from an empty ingredient list or from a resource's name.
 export const renewableSources = [
   {
+    id: "normal_microverse",
+    title: "Normal Microverse setup",
+    outputs: ["utility:normal_microverse"],
+    description:
+      "Build the appropriate Microverse Projector, then run Normal Microverse Projection once using one Universe Creation Data and 128 Quantum Flux. A Normal Microverse has no passive decay. Missions that damage it need a continuously replenished Quantum Flux buffer in the input bus; each flux restores 1,000 integrity. The guide includes that ongoing repair supply separately. Keep the projector formed and use one parallel at the base recipe voltage.",
+    startup: [
+      "Microverse Projector and its structure",
+      "1 Universe Creation Data",
+      "128 Quantum Flux for initial projection",
+      "Appropriate energy and item/fluid hatches",
+    ],
+    evidence: [
+      {
+        title: "0.13.7 projection and basic missions",
+        url: pack + "kubejs/server_scripts/microverse/basic_missions.js",
+      },
+      {
+        title: "MoniLabs 0.21.6 integrity and flux repair",
+        url: "https://github.com/Omicron-Industries/MoniLabs/blob/09ea939e53ab1acd9f996d3c08524d58be410536/src/main/java/net/neganote/monilabs/common/machine/multiblock/MicroverseProjectorMachine.java",
+      },
+      {
+        title: "Normal and hostile Microverse behavior",
+        url: "https://github.com/Omicron-Industries/MoniLabs/blob/09ea939e53ab1acd9f996d3c08524d58be410536/src/main/java/net/neganote/monilabs/common/machine/multiblock/Microverse.java",
+      },
+    ],
+  },
+  {
     id: "water",
     title: "Aqueous Accumulator",
     outputs: ["fluid:minecraft:water"],

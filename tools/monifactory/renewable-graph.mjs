@@ -13,12 +13,14 @@ export function renewableClosure(recipes, sources) {
     for (const recipe of prepared) {
       const dependencies = [];
       let voltage = recipe.voltage ?? 0;
+      let recycling = !!recipe.loop;
       let depth = 1;
       let available = true;
       for (const input of recipe.inputs.filter((i) => i.consumed)) {
         const candidates = input.choices.filter((id) => proofs.has(id));
         candidates.sort(
           (a, b) =>
+            Number(!!proofs.get(a).recycling) - Number(!!proofs.get(b).recycling) ||
             proofs.get(a).voltage - proofs.get(b).voltage ||
             proofs.get(a).depth - proofs.get(b).depth ||
             a.localeCompare(b),
@@ -31,6 +33,7 @@ export function renewableClosure(recipes, sources) {
         const proof = proofs.get(pick);
         dependencies.push(pick);
         voltage = Math.max(voltage, proof.voltage);
+        recycling ||= !!proof.recycling;
         depth = Math.max(depth, proof.depth + 1);
       }
       if (!available) continue;
@@ -39,7 +42,10 @@ export function renewableClosure(recipes, sources) {
         const current = proofs.get(output.key);
         if (
           current &&
-          (current.voltage < voltage || (current.voltage === voltage && current.depth <= depth))
+          (Number(!!current.recycling) < Number(recycling) ||
+            (!!current.recycling === recycling &&
+              (current.voltage < voltage ||
+                (current.voltage === voltage && current.depth <= depth))))
         )
           continue;
         // Reject a transitive circular certificate even if an earlier route made it reachable.
@@ -57,7 +63,7 @@ export function renewableClosure(recipes, sources) {
           visits.push(...(proofs.get(id)?.dependencies ?? []));
         }
         if (cyclic) continue;
-        proofs.set(output.key, { recipeId: recipe.id, dependencies, depth, voltage });
+        proofs.set(output.key, { recipeId: recipe.id, dependencies, depth, voltage, recycling });
         changed = true;
       }
     }

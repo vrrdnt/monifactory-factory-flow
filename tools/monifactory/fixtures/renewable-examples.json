@@ -144,6 +144,34 @@
           "gtceu:greenhouse"
         ],
         "nativeRecipeJson": "{\"duration\":640,\"category\":\"gtceu:greenhouse\",\"tickInputs\":{\"eu\":[{\"content\":80}]},\"type\":\"gtceu:greenhouse\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"type\":\"gtceu:circuit\",\"configuration\":1}},\"chance\":0},{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"minecraft:sugar_cane\"}},\"chance\":0}],\"fluid\":[{\"content\":{\"amount\":24000,\"value\":[{\"fluid\":\"minecraft:water\"}]}}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":32,\"ingredient\":{\"item\":\"minecraft:sugar_cane\"}}}]}}"
+      },
+      {
+        "id": "kubejs:microverse/mission_t1_1",
+        "recipeType": "gtceu:microverse",
+        "durationTicks": 2000,
+        "inputEUt": "480",
+        "outputEUt": "0",
+        "machineIds": [
+          "monilabs:advanced_microverse_projector",
+          "monilabs:basic_microverse_projector",
+          "monilabs:elite_microverse_projector",
+          "monilabs:hyperbolic_microverse_projector"
+        ],
+        "nativeRecipeJson": "{\"data\":{\"duration\":2000,\"projector_tier\":1},\"duration\":2000,\"category\":\"gtceu:microverse\",\"tickInputs\":{\"eu\":[{\"content\":480}]},\"type\":\"gtceu:microverse\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:microminer_t1\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:basic_drilling_kit\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"gtceu:diamond_drill_head\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:gem_sensor\"}}}],\"fluid\":[{\"content\":{\"amount\":2000,\"value\":[{\"fluid\":\"gtceu:rocket_fuel\"}]}}],\"microverse\":[{\"content\":1}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:microminer_t1\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":48,\"ingredient\":{\"item\":\"gtceu:raw_diamond\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":32,\"ingredient\":{\"item\":\"gtceu:raw_apatite\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":48,\"ingredient\":{\"item\":\"gtceu:raw_tricalcium_phosphate\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":32,\"ingredient\":{\"item\":\"gtceu:raw_nether_quartz\"}}}]}}"
+      },
+      {
+        "id": "kubejs:microverse/mission_t4_1",
+        "recipeType": "gtceu:microverse",
+        "durationTicks": 4000,
+        "inputEUt": "3840",
+        "outputEUt": "0",
+        "machineIds": [
+          "monilabs:advanced_microverse_projector",
+          "monilabs:basic_microverse_projector",
+          "monilabs:elite_microverse_projector",
+          "monilabs:hyperbolic_microverse_projector"
+        ],
+        "nativeRecipeJson": "{\"data\":{\"duration\":4000,\"damage_rate\":1,\"projector_tier\":2},\"duration\":4000,\"category\":\"gtceu:microverse\",\"tickInputs\":{\"eu\":[{\"content\":3840}]},\"type\":\"gtceu:microverse\",\"inputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:microminer_t4\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":16,\"ingredient\":{\"item\":\"kubejs:petrotheum_dust\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:advanced_drilling_kit\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"gtceu:cobalt_brass_drill_head\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":8,\"ingredient\":{\"item\":\"kubejs:wither_realm_data\"}}}],\"microverse\":[{\"content\":1}]},\"outputs\":{\"item\":[{\"content\":{\"type\":\"gtceu:sized\",\"count\":1,\"ingredient\":{\"item\":\"kubejs:microminer_t4\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":48,\"ingredient\":{\"item\":\"gtceu:raw_chalcocite\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":48,\"ingredient\":{\"item\":\"gtceu:raw_pentlandite\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":24,\"ingredient\":{\"item\":\"gtceu:raw_bornite\"}}},{\"content\":{\"type\":\"gtceu:sized\",\"count\":24,\"ingredient\":{\"item\":\"gtceu:raw_cooperite\"}}}]}}"
       }
     ],
     "machines": [],
@@ -155,6 +183,16 @@
       },
       {
         "kind": "fluid",
+        "id": "gtceu:cobalt",
+        "displayName": "Liquid Cobalt"
+      },
+      {
+        "kind": "fluid",
+        "id": "gtceu:cobalt_brass",
+        "displayName": "Liquid Cobalt Brass"
+      },
+      {
+        "kind": "fluid",
         "id": "gtceu:hydrogen",
         "displayName": "Hydrogen Gas"
       },
@@ -162,6 +200,11 @@
         "kind": "fluid",
         "id": "gtceu:oxygen",
         "displayName": "Oxygen Gas"
+      },
+      {
+        "kind": "fluid",
+        "id": "gtceu:rocket_fuel",
+        "displayName": "Rocket Fuel"
       },
       {
         "kind": "fluid",
@@ -235,8 +278,18 @@
       },
       {
         "kind": "item",
+        "id": "ad_astra:glacio_stone",
+        "displayName": "Glacio Stone"
+      },
+      {
+        "kind": "item",
         "id": "ad_astra:glacio_stone_bricks",
         "displayName": "Glacio Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:mars_stone",
+        "displayName": "Mars Stone"
       },
       {
         "kind": "item",
@@ -245,13 +298,28 @@
       },
       {
         "kind": "item",
+        "id": "ad_astra:mercury_stone",
+        "displayName": "Mercury Stone"
+      },
+      {
+        "kind": "item",
         "id": "ad_astra:mercury_stone_bricks",
         "displayName": "Mercury Stone Bricks"
       },
       {
         "kind": "item",
+        "id": "ad_astra:moon_stone",
+        "displayName": "Moon Stone"
+      },
+      {
+        "kind": "item",
         "id": "ad_astra:moon_stone_bricks",
         "displayName": "Moon Stone Bricks"
+      },
+      {
+        "kind": "item",
+        "id": "ad_astra:permafrost",
+        "displayName": "Permafrost"
       },
       {
         "kind": "item",
@@ -265,6 +333,11 @@
       },
       {
         "kind": "item",
+        "id": "ad_astra:venus_stone",
+        "displayName": "Venus Stone"
+      },
+      {
+        "kind": "item",
         "id": "ad_astra:venus_stone_bricks",
         "displayName": "Venus Stone Bricks"
       },
@@ -272,6 +345,16 @@
         "kind": "item",
         "id": "gtceu:atmospheric_accumulator",
         "displayName": "Atmospheric Accumulator"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:cobalt_brass_drill_head",
+        "displayName": "Cobalt Brass Drill Head"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:diamond_drill_head",
+        "displayName": "Diamond Drill Head"
       },
       {
         "kind": "item",
@@ -450,6 +533,46 @@
       },
       {
         "kind": "item",
+        "id": "gtceu:raw_apatite",
+        "displayName": "Raw Apatite"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:raw_bornite",
+        "displayName": "Raw Bornite"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:raw_chalcocite",
+        "displayName": "Raw Chalcocite"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:raw_cooperite",
+        "displayName": "Raw Sheldonite"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:raw_diamond",
+        "displayName": "Raw Diamond"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:raw_nether_quartz",
+        "displayName": "Raw Nether Quartz"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:raw_pentlandite",
+        "displayName": "Raw Pentlandite"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:raw_tricalcium_phosphate",
+        "displayName": "Raw Tricalcium Phosphate"
+      },
+      {
+        "kind": "item",
         "id": "gtceu:uev_electrolyzer",
         "displayName": "§aEpic Electrolyzer II§r"
       },
@@ -570,6 +693,46 @@
       },
       {
         "kind": "item",
+        "id": "kubejs:advanced_drilling_kit",
+        "displayName": "Advanced Drilling Kit"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:basic_drilling_kit",
+        "displayName": "Basic Drilling Kit"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:gem_sensor",
+        "displayName": "Gemstone Sensor"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:microminer_t1",
+        "displayName": "§eSteel Plated Micro Miner [Tier One]"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:microminer_t4",
+        "displayName": "§eSignalum Plated Micro Miner [Tier Four]"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:petrotheum_dust",
+        "displayName": "§8Petrotheum Dust"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:quantum_flux",
+        "displayName": "§dQuantum Flux"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:wither_realm_data",
+        "displayName": "§dWither Realm Data"
+      },
+      {
+        "kind": "item",
         "id": "minecraft:andesite",
         "displayName": "Andesite"
       },
@@ -652,6 +815,26 @@
         "kind": "item",
         "id": "minecraft:sugar_cane",
         "displayName": "Sugar Cane"
+      },
+      {
+        "kind": "item",
+        "id": "monilabs:advanced_microverse_projector",
+        "displayName": "Advanced Microverse Projector"
+      },
+      {
+        "kind": "item",
+        "id": "monilabs:basic_microverse_projector",
+        "displayName": "Basic Microverse Projector"
+      },
+      {
+        "kind": "item",
+        "id": "monilabs:elite_microverse_projector",
+        "displayName": "Elite Microverse Projector"
+      },
+      {
+        "kind": "item",
+        "id": "monilabs:hyperbolic_microverse_projector",
+        "displayName": "Hyperbolic Microverse Projector"
       }
     ],
     "tags": [

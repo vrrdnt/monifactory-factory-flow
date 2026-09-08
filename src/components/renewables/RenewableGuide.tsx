@@ -4,7 +4,13 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Leaf, Search, Zap } from "lucide-react";
 import { ResourceIcon } from "@/components/nei/ResourceIcon";
-import type { GuideDetail, GuideResource, GuideRoute, GuideSearch } from "@/lib/renewables/types";
+import type {
+  GuideDetail,
+  GuideRecipe,
+  GuideResource,
+  GuideRoute,
+  GuideSearch,
+} from "@/lib/renewables/types";
 import { recipeMapLabel } from "@/lib/datasets/identity";
 
 const tiers = [
@@ -306,7 +312,9 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
                   className={`mb-5 rounded-lg border px-3 py-2 text-sm ${currentDetail.renewable ? "border-emerald-800 bg-emerald-950/30 text-emerald-300" : "border-amber-900 bg-amber-950/30 text-amber-300"}`}
                 >
                   {currentDetail.renewable
-                    ? "Renewable with the sources and setup below"
+                    ? currentDetail.route?.steps.some((s) => s.loop)
+                      ? "Renewable via a recycling loop · reserve the starting stock"
+                      : "Renewable with the sources and setup below"
                     : "No fully renewable route proven yet"}
                 </p>
                 {currentDetail.route ? (
@@ -366,6 +374,14 @@ function Route({
   detail: GuideDetail;
   onSelect: (key: string) => void;
 }) {
+  const [showSupplies, setShowSupplies] = useState(false);
+  const compact = route.steps.length > 12;
+  const mainSteps = new Set(
+    route.steps.flatMap((step, index) =>
+      step.loop || index >= route.steps.length - 3 ? [index] : [],
+    ),
+  );
+  const hiddenCount = compact ? route.steps.length - mainSteps.size : 0;
   const label = (key: string) => detail.resources[key]?.displayName ?? key;
   const resourceButton = (key: string) => (
     <button
@@ -432,121 +448,148 @@ function Route({
               requirements
             </span>
           </div>
+          {hiddenCount > 0 && (
+            <div className="mb-4 rounded-lg border border-line p-3 text-xs leading-6 text-fg-muted">
+              <p>
+                The complete route includes {number(route.steps.length)} recipe steps. The
+                production end and any recycling batches are shown below; their upstream supplies
+                have also been checked.
+              </p>
+              <button
+                onClick={() => setShowSupplies(!showSupplies)}
+                aria-expanded={showSupplies}
+                className="mt-2 font-semibold text-emerald-300 underline underline-offset-2"
+              >
+                {showSupplies
+                  ? "Collapse upstream supply steps"
+                  : `Show upstream supply (${number(hiddenCount)} more steps)`}
+              </button>
+            </div>
+          )}
           <ol className="space-y-3">
-            {route.steps.map((step, index) => (
-              <li key={step.id} className="rounded-lg border border-line bg-canvas p-4">
-                <div className="mb-3 flex items-center gap-2">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface-raised text-xs text-fg-muted">
-                    {index + 1}
-                  </span>
-                  <h4 className="text-sm font-semibold">
-                    {recipeMapLabel(step.machine)
-                      .replace(/^minecraft:/, "")
-                      .replace(/_/g, " ")}
-                  </h4>
-                </div>
-                {!step.reviewed && (
-                  <p className="mb-3 text-xs text-amber-300">
-                    Machine behavior needs review. This step is not a renewable-production proof.
-                  </p>
-                )}
-                <div className="grid gap-3 text-sm sm:grid-cols-[1fr_auto_1fr]">
-                  <div>
-                    <p className="mb-2 text-xs text-fg-subtle">Consumed each recipe</p>
-                    {step.inputs
-                      .filter((i) => i.consumed)
-                      .map((input, i) => (
-                        <p key={i} className="mb-1 leading-6">
-                          {input.choices[0] !== "utility:renewable_electricity" && (
-                            <>
-                              {number(input.amount)}
-                              {input.choices[0].startsWith("fluid:") ? " mB" : ""} ×{" "}
-                            </>
-                          )}
-                          {resourceButton(step.selectedInputs?.[i] ?? input.choices[0])}
-                          {input.choices.length > 1 && (
-                            <span className="text-xs text-fg-subtle">
-                              {" "}
-                              (one of {input.choices.length} alternatives)
-                            </span>
-                          )}
-                        </p>
-                      ))}
-                    {!step.inputs.some((i) => i.consumed) && (
-                      <p className="text-fg-muted">No consumed materials</p>
-                    )}
-                  </div>
-                  <ArrowRight className="mt-6 hidden h-4 w-4 text-fg-subtle sm:block" />
-                  <div>
-                    <p className="mb-2 text-xs text-fg-subtle">
-                      Produced · after guaranteed returns
-                    </p>
-                    {step.outputs
-                      .filter((o) => o.amount > 0 && o.chance > 0)
-                      .map((output, i) => (
-                        <p key={i} className="mb-1 leading-6">
-                          {number(output.amount)}
-                          {output.key.startsWith("fluid:") ? " mB" : ""} ×{" "}
-                          {resourceButton(output.key)}
-                          {output.chance < 1 && (
-                            <span className="text-xs text-amber-300">
-                              {" "}
-                              ({number(output.chance * 100)}% chance)
-                            </span>
-                          )}
-                        </p>
-                      ))}
-                  </div>
-                </div>
-                {(step.startup.length > 0 || step.circuit !== undefined) && (
-                  <div className="mt-3 border-t border-line pt-3 text-xs leading-6">
-                    <span className="font-semibold text-fg-muted">
-                      Reusable startup inventory:{" "}
-                    </span>
-                    {step.startup.map((input, i) => (
-                      <span key={i}>
-                        {i > 0 ? " · " : ""}
-                        {number(input.amount)} × {label(input.choices[0])}
-                        {input.returned ? " (returned)" : " (not consumed)"}
+            {route.steps.map(
+              (step, index) =>
+                (!compact || showSupplies || mainSteps.has(index)) && (
+                  <li key={step.id} className="rounded-lg border border-line bg-canvas p-4">
+                    <div className="mb-3 flex items-center gap-2">
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-surface-raised text-xs text-fg-muted">
+                        {index + 1}
                       </span>
+                      <h4 className="text-sm font-semibold">
+                        {step.loop
+                          ? "Recycling loop"
+                          : recipeMapLabel(step.machine)
+                              .replace(/^minecraft:/, "")
+                              .replace(/_/g, " ")}
+                      </h4>
+                    </div>
+                    {!step.reviewed && (
+                      <p className="mb-3 text-xs text-amber-300">
+                        Machine behavior needs review. This step is not a renewable-production
+                        proof.
+                      </p>
+                    )}
+                    <div className="grid gap-3 text-sm sm:grid-cols-[1fr_auto_1fr]">
+                      <div>
+                        <p className="mb-2 text-xs text-fg-subtle">
+                          {step.loop ? "Net supply per complete batch" : "Consumed each recipe"}
+                        </p>
+                        {step.inputs
+                          .filter((i) => i.consumed)
+                          .map((input, i) => (
+                            <p key={i} className="mb-1 leading-6">
+                              {input.choices[0] !== "utility:renewable_electricity" && (
+                                <>
+                                  {number(input.amount)}
+                                  {input.choices[0].startsWith("fluid:") ? " mB" : ""} ×{" "}
+                                </>
+                              )}
+                              {resourceButton(step.selectedInputs?.[i] ?? input.choices[0])}
+                              {input.choices.length > 1 && (
+                                <span className="text-xs text-fg-subtle">
+                                  {" "}
+                                  (one of {input.choices.length} alternatives)
+                                </span>
+                              )}
+                            </p>
+                          ))}
+                        {!step.inputs.some((i) => i.consumed) && (
+                          <p className="text-fg-muted">No consumed materials</p>
+                        )}
+                      </div>
+                      <ArrowRight className="mt-6 hidden h-4 w-4 text-fg-subtle sm:block" />
+                      <div>
+                        <p className="mb-2 text-xs text-fg-subtle">
+                          Produced · after guaranteed returns
+                        </p>
+                        {step.outputs
+                          .filter((o) => o.amount > 0 && o.chance > 0)
+                          .map((output, i) => (
+                            <p key={i} className="mb-1 leading-6">
+                              {number(output.amount)}
+                              {output.key.startsWith("fluid:") ? " mB" : ""} ×{" "}
+                              {resourceButton(output.key)}
+                              {output.chance < 1 && (
+                                <span className="text-xs text-amber-300">
+                                  {" "}
+                                  ({number(output.chance * 100)}% chance)
+                                </span>
+                              )}
+                            </p>
+                          ))}
+                      </div>
+                    </div>
+                    {(step.startup.length > 0 || step.circuit !== undefined) && (
+                      <div className="mt-3 border-t border-line pt-3 text-xs leading-6">
+                        <span className="font-semibold text-fg-muted">
+                          Reusable startup inventory:{" "}
+                        </span>
+                        {step.startup.map((input, i) => (
+                          <span key={i}>
+                            {i > 0 ? " · " : ""}
+                            {number(input.amount)} × {label(input.choices[0])}
+                            {input.returned ? " (returned)" : " (not consumed)"}
+                          </span>
+                        ))}
+                        {step.circuit !== undefined && (
+                          <span>
+                            {step.startup.length ? " · " : ""}Circuit configuration {step.circuit}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                    {step.conditions.map((c, i) => (
+                      <p key={i} className="mt-2 break-words text-xs leading-5 text-amber-200">
+                        {conditionText(c)}
+                      </p>
                     ))}
-                    {step.circuit !== undefined && (
-                      <span>
-                        {step.startup.length ? " · " : ""}Circuit configuration {step.circuit}
-                      </span>
+                    {Object.keys(step.data ?? {}).length > 0 && (
+                      <p className="mt-2 break-words text-xs leading-5 text-amber-200">
+                        Recipe requirements:{" "}
+                        {Object.entries(step.data!)
+                          .map(([k, v]) => `${k.replace(/_/g, " ")} = ${JSON.stringify(v)}`)
+                          .join(" · ")}
+                      </p>
                     )}
-                  </div>
-                )}
-                {step.conditions.map((c, i) => (
-                  <p key={i} className="mt-2 break-words text-xs leading-5 text-amber-200">
-                    {conditionText(c)}
-                  </p>
-                ))}
-                {Object.keys(step.data ?? {}).length > 0 && (
-                  <p className="mt-2 break-words text-xs leading-5 text-amber-200">
-                    Recipe requirements:{" "}
-                    {Object.entries(step.data!)
-                      .map(([k, v]) => `${k.replace(/_/g, " ")} = ${JSON.stringify(v)}`)
-                      .join(" · ")}
-                  </p>
-                )}
-                {step.notes.map((note) => (
-                  <p key={note} className="mt-2 text-xs leading-5 text-fg-muted">
-                    {note}
-                  </p>
-                ))}
-                <details className="mt-3 text-xs text-fg-subtle">
-                  <summary className="cursor-pointer">Recipe reference</summary>
-                  <p className="mt-2 break-all">{step.id}</p>
-                  {step.eut && (
-                    <p className="mt-1">
-                      {step.eut} EU/t · {step.durationTicks} base ticks. Actual machine speed is not
-                      calculated here.
-                    </p>
-                  )}
-                </details>
-              </li>
-            ))}
+                    {step.notes.map((note) => (
+                      <p key={note} className="mt-2 text-xs leading-5 text-fg-muted">
+                        {note}
+                      </p>
+                    ))}
+                    {step.loop && <CycleSteps recipe={step} resources={detail.resources} />}
+                    <details className="mt-3 text-xs text-fg-subtle">
+                      <summary className="cursor-pointer">Recipe reference</summary>
+                      <p className="mt-2 break-all">{step.id}</p>
+                      {step.eut && (
+                        <p className="mt-1">
+                          {step.eut} EU/t · {step.durationTicks} base ticks. Actual machine speed is
+                          not calculated here.
+                        </p>
+                      )}
+                    </details>
+                  </li>
+                ),
+            )}
           </ol>
         </div>
       )}
@@ -557,5 +600,102 @@ function Route({
         once; consumable shortages or blocked outputs will stop production.
       </div>
     </div>
+  );
+}
+
+function CycleSteps({
+  recipe,
+  resources,
+}: {
+  recipe: GuideRecipe;
+  resources: Record<string, GuideResource>;
+}) {
+  const label = (key: string) => resources[key]?.displayName ?? key;
+  return (
+    <details open className="mt-4 rounded-lg border border-amber-800/60 p-3">
+      <summary className="cursor-pointer text-sm font-semibold text-amber-200">
+        Repeat this complete batch · {recipe.loop!.steps.reduce((s, r) => s + r.count, 0)} recipe
+        runs
+      </summary>
+      <p className="my-3 text-xs leading-5 text-fg-muted">
+        The order below restores the starting stock. Keep that inventory in the loop and export only
+        the net surplus. Reusable molds, circuits and machine requirements are in each step. Inputs
+        and outputs below are totals for this batch.
+      </p>
+      <ol className="space-y-3">
+        {recipe.loop!.steps.map((s, index) => {
+          const member = s.recipe!;
+          return (
+            <li
+              key={`${s.recipeId}:${index}`}
+              className="rounded border border-line bg-surface p-3"
+            >
+              <h5 className="mb-2 text-sm font-semibold">
+                {index + 1}. {recipeMapLabel(member.machine)} · {number(s.count)}{" "}
+                {s.count === 1 ? "run" : "runs"}
+              </h5>
+              <div className="grid gap-3 text-xs leading-6 sm:grid-cols-2">
+                <div>
+                  <p className="font-semibold text-fg-muted">Supply</p>
+                  {member.inputs
+                    .filter((i) => i.consumed)
+                    .map((input, i) => (
+                      <p key={i}>
+                        {s.selectedInputs[i] !== "utility:renewable_electricity" && (
+                          <>
+                            {number(input.amount * s.count)}
+                            {s.selectedInputs[i].startsWith("fluid:") ? " mB" : ""} ×{" "}
+                          </>
+                        )}
+                        {label(s.selectedInputs[i])}
+                      </p>
+                    ))}
+                </div>
+                <div>
+                  <p className="font-semibold text-fg-muted">Guaranteed production</p>
+                  {member.outputs
+                    .filter((o) => o.chance === 1 && o.amount > 0)
+                    .map((o, i) => (
+                      <p key={i}>
+                        {number(o.amount * s.count)}
+                        {o.key.startsWith("fluid:") ? " mB" : ""} × {label(o.key)}
+                      </p>
+                    ))}
+                </div>
+              </div>
+              {member.startup.length > 0 && (
+                <p className="mt-2 text-xs leading-6 text-fg-muted">
+                  Reusable:{" "}
+                  {member.startup
+                    .map((i) => `${number(i.amount)} × ${label(i.choices[0])}`)
+                    .join(" · ")}
+                </p>
+              )}
+              {member.circuit !== undefined && (
+                <p className="text-xs leading-6 text-fg-muted">
+                  Circuit configuration {member.circuit}
+                </p>
+              )}
+              {member.conditions.map((c, i) => (
+                <p key={i} className="text-xs leading-5 text-amber-200">
+                  {conditionText(c)}
+                </p>
+              ))}
+              {Object.keys(member.data ?? {}).length > 0 && (
+                <p className="break-words text-xs leading-5 text-amber-200">
+                  Requirements: {JSON.stringify(member.data)}
+                </p>
+              )}
+              {member.notes.map((note) => (
+                <p key={note} className="mt-2 text-xs leading-5 text-fg-muted">
+                  {note}
+                </p>
+              ))}
+              <p className="mt-2 break-all text-[10px] text-fg-subtle">{s.recipeId}</p>
+            </li>
+          );
+        })}
+      </ol>
+    </details>
   );
 }

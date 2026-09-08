@@ -14,6 +14,36 @@ const index = records.map((r) => `recipes/${r.id.replace(":", "/")}.json`);
 const full = certifyFullRecipes(records, index, catalog, "Expert");
 
 describe("renewable guide runtime examples", () => {
+  it("includes a normal Microverse's setup and extra integrity repair supply", () => {
+    const basic = normalizeGuideGT(
+      catalog.recipes.find((r) => r.id === "kubejs:microverse/mission_t1_1"),
+      resolve,
+    );
+    expect(basic.reviewed).toBe(true);
+    expect(basic.inputs).toContainEqual({
+      choices: ["utility:normal_microverse"],
+      amount: 1,
+      consumed: true,
+    });
+    expect(basic.inputs.some((i) => i.choices.includes("item:kubejs:quantum_flux"))).toBe(false);
+    const damaging = normalizeGuideGT(
+      catalog.recipes.find((r) => r.id === "kubejs:microverse/mission_t4_1"),
+      resolve,
+    );
+    expect(damaging.reviewed).toBe(true);
+    expect(damaging.inputs).toContainEqual({
+      choices: ["item:kubejs:quantum_flux"],
+      amount: 4,
+      consumed: true,
+    });
+    const hostile = structuredClone(
+      catalog.recipes.find((r) => r.id === "kubejs:microverse/mission_t1_1"),
+    );
+    const native = JSON.parse(hostile.nativeRecipeJson);
+    native.inputs.microverse[0].content = 2;
+    hostile.nativeRecipeJson = JSON.stringify(native);
+    expect(normalizeGuideGT(hostile, resolve).reviewed).toBe(false);
+  });
   it("preserves greenhouse water, reusable seed and circuit requirements", () => {
     const recipe = normalizeGuideGT(
       catalog.recipes.find((r) => r.id === "kubejs:greenhouse/oak_sapling"),

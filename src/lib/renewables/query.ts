@@ -44,7 +44,17 @@ export function createGuideQuery(data: GuideData) {
         } else visit(dependency);
       }
       if (!steps.has(recipe.id)) {
-        result.steps.push({ ...recipe, selectedInputs: dependencies });
+        const loop = recipe.loop
+          ? {
+              ...recipe.loop,
+              steps: recipe.loop.steps.map((s) => {
+                const member = recipes.get(s.recipeId);
+                if (!member || member.loop) throw new Error("Invalid recycling-loop member.");
+                return { ...s, recipe: member };
+              }),
+            }
+          : undefined;
+        result.steps.push({ ...recipe, selectedInputs: dependencies, loop });
         steps.add(recipe.id);
       }
       result.voltage = Math.max(result.voltage, recipe.voltage ?? 0);
@@ -98,10 +108,14 @@ export function createGuideQuery(data: GuideData) {
             )
             .slice(0, 3);
       const used = new Set([key]);
+      function includeRecipe(s: (typeof data.recipes)[number]) {
+        for (const i of [...s.inputs, ...s.startup]) for (const id of i.choices) used.add(id);
+        for (const o of s.outputs) used.add(o.key);
+        for (const member of s.loop?.steps ?? []) if (member.recipe) includeRecipe(member.recipe);
+      }
       for (const r of [...(proven ? [proven] : []), ...candidates]) {
         for (const s of r.steps) {
-          for (const i of [...s.inputs, ...s.startup]) for (const id of i.choices) used.add(id);
-          for (const o of s.outputs) used.add(o.key);
+          includeRecipe(s);
         }
         for (const id of r.external) used.add(id);
       }
