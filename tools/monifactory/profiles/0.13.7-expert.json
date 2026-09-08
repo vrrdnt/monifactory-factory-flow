@@ -1,0 +1,19 @@
+{
+  "id": "monifactory-0.13.7-expert",
+  "packId": "monifactory",
+  "packVersion": "0.13.7",
+  "mode": "Expert",
+  "minecraftVersion": "1.20.1",
+  "forgeVersion": "47.4.13",
+  "requiredMods": {
+    "gtceu": "7.5.3",
+    "monilabs": "0.21.6",
+    "kubejs": "2001.6.5-build.16"
+  },
+  "source": {
+    "repository": "https://github.com/Omicron-Industries/Monifactory",
+    "tag": "0.13.7",
+    "commit": "6e3c9995f402c709fdeff0171ca382b5e921de16",
+    "clientArchiveSha256": "88ca112e9f91b3556039fd711f5f4fbfe0186b6601a055025b82e1eb09fbe1b2"
+  }
+}

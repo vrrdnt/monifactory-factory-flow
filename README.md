@@ -1,4 +1,26 @@
-# GTNH Factory Flow
+# Monifactory Factory Flow
+
+Work in progress: a fork of [jackwrichards/gtnh-factory-flow](https://github.com/jackwrichards/gtnh-factory-flow), targeting **Monifactory 0.13.7 Expert** (Minecraft 1.20.1, Forge 47.4.13, GTCEu 7.5.3, MoniLabs 0.21.6).
+
+The first milestone is a verified runtime catalog. The included KubeJS exporter reads final GT recipes, machine definitions, item/fluid registries and tags from a prepared instance. The collector validates the export and links recipe types to real registered machines. It preserves native recipe details instead of guessing machine behavior.
+
+**The inherited web UI and solver still use GTNH rules. The Monifactory catalog is a staging format and is deliberately not accepted as a planner dataset yet.** Machine calculation adapters, rendered icons, and other mods' recipes are subsequent milestones.
+
+See [the Monifactory setup guide](docs/monifactory.md) for preparation, export, collection, limitations and the port roadmap. Generated data and local instance files are not committed.
+
+```powershell
+npm ci
+npm run monifactory:prepare -- "C:\path\to\Prism\instances\Monifactory-PLANNER" "Survival"
+# Open the copied world, or use /reload if it is already running.
+npm run monifactory:collect -- "C:\path\to\minecraft\local\monifactory-planner\<requestId>" ".pipeline\monifactory\0.13.7-expert"
+npm run monifactory:test
+```
+
+The upstream MIT license and attribution are retained. The original README below documents the inherited GTNH implementation; its hosting instructions do not describe this fork.
+
+---
+
+## Upstream: GTNH Factory Flow
 
 GTNH Factory Flow is a Next.js planning tool for GregTech New Horizons production chains.
 The long-term goal is to plan an entire base: recipe flowcharts, machine counts,

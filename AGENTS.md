@@ -1,5 +1,21 @@
 # AGENTS.md
 
+## Monifactory fork scope (2026-09-08)
+
+- This repository is now `vrrdnt/monifactory-factory-flow`; `origin` is the user's fork and `upstream` is `jackwrichards/gtnh-factory-flow`.
+- Target Monifactory **0.13.7 Expert**, not the pack's development branch. The pinned profile is `tools/monifactory/profiles/0.13.7-expert.json`.
+- The user authorized working on a copied Prism instance. Local paths belong in ignored local artifacts, never in portable code or published datasets.
+- Monifactory export tooling is under `tools/monifactory/`; read `docs/monifactory.md` before extending it.
+- Native exports and the normalized runtime catalog are staging data. Do not feed them into GTNH's solver or label unverified machine formulas as correct. Port the calculation boundary first.
+- Preserve GTCEu codec fields, including custom conditions, probabilistic inputs, NBT, tag alternatives and tick contents. Record unsupported coverage rather than silently dropping it.
+- No deployment or production server has been configured for this fork. The inherited server paths, domains, WSL snapshots, deployment procedures, and previous owner's preferences below are historical upstream notes, not instructions to operate those systems.
+- Keep useful upstream model and board invariants, but replace pack-specific behavior with verified Monifactory behavior as the port progresses.
+- Run `npm run typecheck`, `npm test`, and the Monifactory checks before committing. Commit and push finished work to this fork, never upstream.
+
+---
+
+The remainder documents the inherited implementation.
+
 Working notes for future agents on GTNH Factory Flow.
 
 ## Project Shape

@@ -1,5 +1,5 @@
 {
-  "name": "gtnh-factory-flow",
+  "name": "monifactory-factory-flow",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,6 +10,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "monifactory:prepare": "node tools/monifactory/prepare.mjs",
+    "monifactory:collect": "node tools/monifactory/catalog.mjs",
+    "monifactory:test": "vitest run tools/monifactory",
     "datasets:detect": "node tools/dataset-pipeline/scripts/detect-gtnh-versions.mjs",
     "datasets:manifest": "node tools/dataset-pipeline/scripts/rebuild-manifest.mjs",
     "format": "prettier --write .",
