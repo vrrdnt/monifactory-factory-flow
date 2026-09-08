@@ -9,6 +9,12 @@ import { renewableSources, guideRules } from "./renewable-sources.mjs";
 import { extendRenewableCycles } from "./renewable-cycles.mjs";
 import { hostileSource, readHostileDecay } from "./renewable-microverse.mjs";
 import { thermalGuideTypes, normalizeGuideThermal } from "./renewable-thermal.mjs";
+import {
+  ae2GuideTypes,
+  normalizeGuideAE2,
+  condenserRecipes,
+  readCondenserSettings,
+} from "./renewable-ae2.mjs";
 
 export function buildRenewables(catalog, full, textures, settings = {}) {
   if (
@@ -60,11 +66,14 @@ export function buildRenewables(catalog, full, textures, settings = {}) {
   for (const { id, data } of full?.records ?? []) {
     if (!ids.has(id))
       add(id, () =>
-        thermalGuideTypes.has(data.type)
-          ? normalizeGuideThermal(id, data, resolve)
-          : normalizeGuideCraft(id, data, resolve),
+        ae2GuideTypes.has(data.type)
+          ? normalizeGuideAE2(id, data, resolve)
+          : thermalGuideTypes.has(data.type)
+            ? normalizeGuideThermal(id, data, resolve)
+            : normalizeGuideCraft(id, data, resolve),
       );
   }
+  recipes.push(...condenserRecipes(settings.ae2Condenser, resolve));
   // Vanilla smelting JSON omits fuel. Sugar cane's burn time is set explicitly
   // by this pinned pack, and its replenishment must still be proven by the graph.
   recipes.push({
@@ -123,7 +132,10 @@ export function buildRenewables(catalog, full, textures, settings = {}) {
     },
     rules: guideRules,
     sources,
-    machineSettings: { hostileDecayRate: settings.hostileDecayRate },
+    machineSettings: {
+      hostileDecayRate: settings.hostileDecayRate,
+      ae2Condenser: settings.ae2Condenser,
+    },
     resources,
     recipes: recipes.map(netRecipe),
     proofs: Object.fromEntries(proofs),
@@ -138,17 +150,20 @@ if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.ar
     texturePath,
     output = "public/datasets/monifactory/renewables.json.gz",
     monilabsConfigPath,
+    ae2ConfigPath,
   ] = process.argv.slice(2);
   if (!catalogPath)
     throw new Error(
-      "Usage: build-renewables.mjs catalog.json full-recipes.json|- texture-index.json|- [output.json.gz] [monilabs.yaml]",
+      "Usage: build-renewables.mjs catalog.json full-recipes.json|- texture-index.json|- [output.json.gz] [monilabs.yaml|-] [ae2-common.json]",
     );
   const read = (p) => (p && p !== "-" ? JSON.parse(fs.readFileSync(p)) : undefined);
-  const settings = monilabsConfigPath
-    ? {
-        hostileDecayRate: readHostileDecay(fs.readFileSync(monilabsConfigPath, "utf8")),
-      }
-    : {};
+  const settings =
+    monilabsConfigPath && monilabsConfigPath !== "-"
+      ? {
+          hostileDecayRate: readHostileDecay(fs.readFileSync(monilabsConfigPath, "utf8")),
+        }
+      : {};
+  if (ae2ConfigPath) settings.ae2Condenser = readCondenserSettings(read(ae2ConfigPath));
   const guide = buildRenewables(read(catalogPath), read(fullPath), read(texturePath), settings);
   await extendRenewableCycles(guide);
   guide.coverage.limitations[0] =
@@ -159,6 +174,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(path.resolve(process.ar
       ["fullRecipes", fullPath],
       ["textures", texturePath],
       ["monilabsConfig", monilabsConfigPath],
+      ["ae2Config", ae2ConfigPath],
     ]
       .filter(([, p]) => p && p !== "-")
       .map(([k, p]) => [k, createHash("sha256").update(fs.readFileSync(p)).digest("hex")]),

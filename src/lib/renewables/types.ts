@@ -84,6 +84,7 @@ export type GuideRoute = {
   steps: GuideRecipe[];
   external: string[];
   voltage: number;
+  euVoltage?: number;
 };
 export type GuideDetail = {
   resource: GuideResource;

@@ -1034,6 +1034,186 @@
         "kind": "item",
         "id": "minecraft:pink_petals",
         "displayName": "Pink Petals"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:calculation_processor",
+        "displayName": "Calculation Processor"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:calculation_processor_press",
+        "displayName": "Inscriber Calculation Press"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:cell_component_1k",
+        "displayName": "1k ME Storage Component"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:cell_component_256k",
+        "displayName": "256k ME Storage Component"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:cell_component_64k",
+        "displayName": "64k ME Storage Component"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:certus_quartz_crystal",
+        "displayName": "Certus Quartz Crystal"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:charged_certus_quartz_crystal",
+        "displayName": "Charged Certus Quartz Crystal"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:charger",
+        "displayName": "Charger"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:inscriber",
+        "displayName": "Inscriber"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:matter_ball",
+        "displayName": "Matter Ball"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:printed_calculation_processor",
+        "displayName": "Printed Calculation Circuit"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:printed_silicon",
+        "displayName": "Printed Silicon"
+      },
+      {
+        "kind": "item",
+        "id": "ae2:singularity",
+        "displayName": "Singularity"
+      },
+      {
+        "kind": "item",
+        "id": "chipped:ancient_iron_block",
+        "displayName": "Ancient Iron Block"
+      },
+      {
+        "kind": "item",
+        "id": "chipped:chipped_iron_block",
+        "displayName": "Chipped Iron Block"
+      },
+      {
+        "kind": "item",
+        "id": "chipped:engraved_iron_block",
+        "displayName": "Engraved Iron Block"
+      },
+      {
+        "kind": "item",
+        "id": "chipped:layered_iron_block",
+        "displayName": "Layered Iron Block"
+      },
+      {
+        "kind": "item",
+        "id": "chipped:plated_iron_block",
+        "displayName": "Plated Iron Block"
+      },
+      {
+        "kind": "item",
+        "id": "chipped:polished_iron_block",
+        "displayName": "Polished Iron Block"
+      },
+      {
+        "kind": "item",
+        "id": "chipped:pressed_iron_block",
+        "displayName": "Pressed Iron Block"
+      },
+      {
+        "kind": "item",
+        "id": "chipped:reinforced_iron_block",
+        "displayName": "Reinforced Iron Block"
+      },
+      {
+        "kind": "item",
+        "id": "chipped:sheet_iron_block",
+        "displayName": "Sheet Iron Block"
+      },
+      {
+        "kind": "item",
+        "id": "chipped:shuttered_iron_block",
+        "displayName": "Shuttered Iron Block"
+      },
+      {
+        "kind": "item",
+        "id": "chipped:stacked_iron_block",
+        "displayName": "Stacked Iron Block"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_iron_bolted",
+        "displayName": "Block of Iron"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_iron_caution",
+        "displayName": "Block of Iron"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_iron_egregious",
+        "displayName": "Block of Iron"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_iron_industrial_relic",
+        "displayName": "Block of Iron"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_iron_scaffold",
+        "displayName": "Block of Iron"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_iron_shipping_crate",
+        "displayName": "Block of Iron"
+      },
+      {
+        "kind": "item",
+        "id": "chisel_chipped_integration:metal_iron_thermal",
+        "displayName": "Block of Iron"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:basic_electronic_circuit",
+        "displayName": "Basic Electronic Circuit"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:basic_integrated_circuit",
+        "displayName": "Basic Integrated Circuit"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:microchip_processor",
+        "displayName": "Microchip Processor"
+      },
+      {
+        "kind": "item",
+        "id": "kubejs:lv_universal_circuit",
+        "displayName": "LV Universal Circuit"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:iron_block",
+        "displayName": "Block of Iron"
       }
     ],
     "tags": [
@@ -1095,6 +1275,41 @@
           "minecraft:cracked_stone_bricks",
           "minecraft:mossy_stone_bricks",
           "minecraft:stone_bricks"
+        ]
+      },
+      {
+        "kind": "item",
+        "id": "forge:storage_blocks/iron",
+        "members": [
+          "chipped:ancient_iron_block",
+          "chipped:chipped_iron_block",
+          "chipped:engraved_iron_block",
+          "chipped:layered_iron_block",
+          "chipped:plated_iron_block",
+          "chipped:polished_iron_block",
+          "chipped:pressed_iron_block",
+          "chipped:reinforced_iron_block",
+          "chipped:sheet_iron_block",
+          "chipped:shuttered_iron_block",
+          "chipped:stacked_iron_block",
+          "chisel_chipped_integration:metal_iron_bolted",
+          "chisel_chipped_integration:metal_iron_caution",
+          "chisel_chipped_integration:metal_iron_egregious",
+          "chisel_chipped_integration:metal_iron_industrial_relic",
+          "chisel_chipped_integration:metal_iron_scaffold",
+          "chisel_chipped_integration:metal_iron_shipping_crate",
+          "chisel_chipped_integration:metal_iron_thermal",
+          "minecraft:iron_block"
+        ]
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:circuits/lv",
+        "members": [
+          "gtceu:basic_electronic_circuit",
+          "gtceu:basic_integrated_circuit",
+          "gtceu:microchip_processor",
+          "kubejs:lv_universal_circuit"
         ]
       }
     ]
@@ -1208,6 +1423,75 @@
             "item": "minecraft:mangrove_roots"
           }
         ]
+      }
+    },
+    {
+      "id": "ae2:inscriber/calculation_processor_press",
+      "data": {
+        "type": "ae2:inscriber",
+        "ingredients": {
+          "middle": {
+            "tag": "forge:storage_blocks/iron"
+          },
+          "top": {
+            "item": "ae2:calculation_processor_press"
+          }
+        },
+        "mode": "inscribe",
+        "result": {
+          "item": "ae2:calculation_processor_press"
+        }
+      }
+    },
+    {
+      "id": "ae2:inscriber/calculation_processor_print",
+      "data": {
+        "type": "ae2:inscriber",
+        "ingredients": {
+          "middle": {
+            "item": "ae2:certus_quartz_crystal"
+          },
+          "top": {
+            "item": "ae2:calculation_processor_press"
+          }
+        },
+        "mode": "inscribe",
+        "result": {
+          "item": "ae2:printed_calculation_processor"
+        }
+      }
+    },
+    {
+      "id": "kubejs:ae2/calculation_processor",
+      "data": {
+        "type": "ae2:inscriber",
+        "ingredients": {
+          "bottom": {
+            "item": "ae2:printed_silicon"
+          },
+          "middle": {
+            "tag": "gtceu:circuits/lv"
+          },
+          "top": {
+            "item": "ae2:printed_calculation_processor"
+          }
+        },
+        "mode": "press",
+        "result": {
+          "item": "ae2:calculation_processor"
+        }
+      }
+    },
+    {
+      "id": "ae2:charger/charged_certus_quartz_crystal",
+      "data": {
+        "type": "ae2:charger",
+        "ingredient": {
+          "item": "ae2:certus_quartz_crystal"
+        },
+        "result": {
+          "item": "ae2:charged_certus_quartz_crystal"
+        }
       }
     }
   ]

@@ -4,6 +4,33 @@ export function createGuideQuery(data: GuideData) {
   const resources = new Map(data.resources.map((r) => [r.key, r]));
   const recipes = new Map(data.recipes.map((r) => [r.id, r]));
   const sources = new Map(data.sources.map((s) => [s.id, s]));
+  const euVoltages = new Map<string, number | undefined>();
+  const maxVoltage = (values: (number | undefined)[]) => {
+    const present = values.filter((v): v is number => v !== undefined);
+    return present.length ? Math.max(...present) : undefined;
+  };
+  function recipeEUVoltage(recipe?: GuideData["recipes"][number]): number | undefined {
+    if (!recipe) return undefined;
+    return maxVoltage([
+      Number(recipe.eut) > 0 ? recipe.voltage : undefined,
+      ...(recipe.loop?.steps.map((s) => {
+        const member = recipes.get(s.recipeId);
+        return member && Number(member.eut) > 0 ? member.voltage : undefined;
+      }) ?? []),
+    ]);
+  }
+  function proofEUVoltage(key: string): number | undefined {
+    if (euVoltages.has(key)) return euVoltages.get(key);
+    const proof = data.proofs[key];
+    const voltage = proof
+      ? maxVoltage([
+          recipeEUVoltage(proof.recipeId ? recipes.get(proof.recipeId) : undefined),
+          ...(proof.dependencies ?? []).map(proofEUVoltage),
+        ])
+      : undefined;
+    euVoltages.set(key, voltage);
+    return voltage;
+  }
   const producers = new Map<string, string[]>();
   for (const recipe of data.recipes)
     for (const output of recipe.outputs) {
@@ -58,6 +85,7 @@ export function createGuideQuery(data: GuideData) {
         steps.add(recipe.id);
       }
       result.voltage = Math.max(result.voltage, recipe.voltage ?? 0);
+      result.euVoltage = maxVoltage([result.euVoltage, recipeEUVoltage(recipe)]);
     }
     visit(key, candidate);
     return result;
@@ -85,7 +113,7 @@ export function createGuideQuery(data: GuideData) {
         resources: matching.slice(offset, offset + 60).map((r) => ({
           ...r,
           renewable: !!data.proofs[r.key],
-          voltage: data.proofs[r.key]?.voltage,
+          voltage: proofEUVoltage(r.key),
         })),
         coverage: data.coverage,
         rules: data.rules,

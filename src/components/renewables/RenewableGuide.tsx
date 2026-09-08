@@ -36,6 +36,9 @@ function guideMachineLabel(id: string) {
   const names: Record<string, string> = {
     "thermal:insolator": "Phytogenic Insolator",
     "thermal:centrifuge": "Centrifugal Separator",
+    "ae2:condenser": "Matter Condenser",
+    "ae2:inscriber": "Inscriber",
+    "ae2:charger": "Charger",
     "minecraft:crafting_shaped": "Automated crafting",
     "minecraft:crafting_shapeless": "Automated crafting",
     "gtceu:shaped": "Automated crafting",
@@ -289,7 +292,9 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
                         <span className="block text-xs text-fg-subtle">
                           {r.kind} · {r.id.split(":")[0]}
                           {r.renewable
-                            ? ` · ${tiers[r.voltage ?? 0] ?? "High voltage"}`
+                            ? r.voltage === undefined
+                              ? ""
+                              : ` · ${tiers[r.voltage] ?? "High voltage"}`
                             : " · unproven"}
                         </span>
                       </span>
@@ -480,8 +485,9 @@ function Route({
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <h3 className="text-sm font-semibold">Production sequence</h3>
             <span className="text-xs text-fg-subtle">
-              Base recipe voltage up to {tiers[route.voltage] ?? route.voltage} · see setup
-              requirements
+              {route.euVoltage === undefined
+                ? "No EU recipe tier · see machine and power requirements"
+                : `Base recipe voltage up to ${tiers[route.euVoltage] ?? route.euVoltage} · see setup requirements`}
             </span>
           </div>
           {hiddenCount > 0 && (
