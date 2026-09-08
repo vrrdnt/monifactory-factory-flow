@@ -84,6 +84,7 @@ function useBackdropIcons(): string[] {
 }
 
 export function WelcomePage() {
+  const isMonifactory = useFactoryStore((state) => state.dataset?.pack?.id === "monifactory");
   const welcome = useWelcomeTab();
   const addDesign = useDesignStore((state) => state.addDesign);
   const [isChangelogOpen, setChangelogOpen] = useState(false);
@@ -109,7 +110,7 @@ export function WelcomePage() {
           <header className="flex flex-col items-start gap-3">
             <div className="flex items-baseline gap-3">
               <h1 className="text-[32px] font-black leading-none tracking-tight text-white compact:text-[26px]">
-                <span className="text-cyan-300">GTNH</span> Planner
+                <span className="text-cyan-300">Monifactory</span> Planner
               </h1>
               <span className="rounded border border-line-strong px-1.5 py-0.5 text-[11px] text-fg-muted">
                 v{APP_VERSION}
@@ -141,6 +142,7 @@ export function WelcomePage() {
               <SecondaryButton
                 icon={Search}
                 onClick={() => {
+                  leaveWelcomeTab();
                   writeWorkspaceView({ leftPanelOpen: true });
                   openSidebarTab("items", { focusSearch: true });
                 }}
@@ -154,9 +156,9 @@ export function WelcomePage() {
             </div>
           </header>
 
-          <CommunityShelf />
+          {isMonifactory ? <p className="text-sm text-fg-subtle">Monifactory 0.13.7 Expert · Experimental ordinary-machine catalog. Multiblocks, generators, other-mod recipes and item icons are still being added.</p> : <CommunityShelf />}
 
-          {latest ? (
+          {latest && !isMonifactory ? (
             <section className="flex flex-col gap-2">
               <SectionTitle>
                 <Sparkles className="h-3.5 w-3.5 text-cyan-300" aria-hidden />

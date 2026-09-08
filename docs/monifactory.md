@@ -152,3 +152,24 @@ Unit tests cover profile rejection, incomplete and truncated exports, duplicate 
 ## Removal
 
 Remove `kubejs/server_scripts/monifactory_planner_export.js` from the copied instance and reload or reopen the world. The saved exports remain under `local/monifactory-planner` for inspection. Alternatively set `autoExport` to `false` in `request.json`. No modpack recipes need restoring.
+
+## Browser dataset milestone
+
+The fork now defaults to Monifactory 0.13.7 Expert and reads explicit pack identity instead of presenting its version as GTNH. The local experimental catalog contains **24,877 recipes across 33 maps**, with 100 compressed recipe shards and searchable resource, recipe and reverse-lookup indexes. Concrete tag alternatives are searchable even when they appear only inside a choice. Missing icons use labeled placeholders rather than hiding otherwise valid recipes.
+
+Build it from the capacity catalog and its runtime inventory reference:
+
+```powershell
+npm run monifactory:dataset -- ".pipeline/monifactory/0.13.7-expert/capacity/capacity-catalog.json" ".pipeline/monifactory/0.13.7-expert/capacity/inventory-reference.json"
+npm run dev -- --hostname 127.0.0.1 --port 3000
+```
+
+Open http://127.0.0.1:3000. Choose **Find a recipe**, search **Bronze Dust**, add the mixer recipe, then click the machine name to choose an actual machine tier. The MV Advanced Mixer comparison reports 10 seconds and 28 EU/t; a supplied machine can produce 0.4 bronze dust/s. A card with unconnected inputs correctly shows no supply until sources and an output destination are connected. Each tier is a distinct registered machine, so change the machine selection to change tier.
+
+Generated files live under `public/datasets/monifactory/` and remain ignored by git. A fresh clone needs the generated dataset or the two staging inputs above. No hosting or remote dataset publication is configured. Legacy GTNH manifests remain parseable; local server overrides use `DATASET_MANIFEST_PATH`, with the matching browser URL in `NEXT_PUBLIC_DATASET_MANIFEST_URL`.
+
+Search summaries and full recipe hydration preserve pack and calculation-engine identity. GTNH passive-production enrichment, cell-search substitutions, synthetic machine controls and generator/crop creation are excluded for this catalog. The machine picker uses the verified ordinary calculator for each listed tier. The export image footer and pack selector show Monifactory's version and Expert mode. The old upstream first-visit release popup is disabled for this fork; remaining upstream release history and community UI have not yet been replaced.
+
+Portable integration tests build indexes from real exported examples, load them through the server query/hydration path, search concrete ingredient alternatives and calculate the bronze board with the MV handler. This completes the loader/search milestone above. Remaining major work is multiblocks, generators, conditions/NBT, other-mod recipes, rendered icons and complete fork branding/hosting.
+
+Browser verification confirmed recipe search, adding the bronze mixer, selecting MV, and retaining that selection after reload, with no reported browser exceptions or framework error overlay. The final checks passed typecheck, all 123 test files (1,338 passing tests plus the suite's one expected failure), and all 53 Monifactory checks. Targeted ESLint reported three pre-existing React-rule errors (two set-state-in-effect findings in ExportImageDialog and one render-time ref assignment in RecipeSearchOverlay), reproduced against the unchanged HEAD versions. No new lint errors were found.

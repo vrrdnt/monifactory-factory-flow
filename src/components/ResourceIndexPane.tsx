@@ -80,6 +80,7 @@ export function ResourceIndexPane({
   // actually build. A typed query still ranks name relevance first server-side,
   // so the sort only decides the untyped list and ties.
   const [resourceSort, setResourceSort] = useState<ResourceSortMode>("popular");
+  const isMonifactory = useFactoryStore((state) => state.dataset?.pack?.id === "monifactory");
   const [resourceFilter, setResourceFilter] = useState<ResourceFilterMode>("all");
   const [resourceMods, setResourceMods] = useState<Array<{ id: string; count: number }>>([]);
   const [resourceSearchOutcome, setResourceSearchOutcome] = useState<SearchOutcome>(EXACT_SEARCH);
@@ -338,7 +339,7 @@ export function ResourceIndexPane({
               mod filter went on 2026-09-06): the six filters, then the sort
               across the last two cells so the grid closes square. */}
           <div className="mt-1 grid grid-cols-4 gap-1">
-            {RESOURCE_FILTER_CHOICES.map((choice) => (
+            {RESOURCE_FILTER_CHOICES.filter((choice) => !isMonifactory || !["plants", "bees"].includes(choice.mode)).map((choice) => (
               <button
                 key={choice.mode}
                 type="button"

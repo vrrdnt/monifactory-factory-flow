@@ -1,5 +1,7 @@
 "use client";
 
+import { datasetLabel } from "@/lib/datasets/identity";
+
 import { Check, Link2, LoaderCircle, Share2, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { normalizeBlueprintTags } from "@/lib/blueprints/types";
@@ -109,7 +111,7 @@ export function SharePlanDialog({ onClose }: { onClose: () => void }) {
       const payload = {
         name,
         description,
-        gameVersion: datasetVersion?.gtnhVersion ?? "",
+        gameVersion: datasetLabel(datasetVersion),
         datasetVersionId: selectedDatasetVersionId ?? "",
         // The workspace goes with the plan: the author arranged the board and
         // the resource panel to make this build readable, and that arrangement
@@ -312,9 +314,7 @@ export function SharePlanDialog({ onClose }: { onClose: () => void }) {
                 <span className="ml-auto text-fg-muted">
                   Game version:{" "}
                   <span className="text-fg-subtle">
-                    {datasetVersion?.gtnhVersion
-                      ? `GTNH ${datasetVersion.gtnhVersion}`
-                      : "unknown"}
+                    {datasetLabel(datasetVersion)}
                   </span>
                 </span>
               </div>

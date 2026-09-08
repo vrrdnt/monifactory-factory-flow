@@ -1,6 +1,7 @@
 "use client";
 
 import { useDropdownDismiss } from "@/lib/hooks/use-dropdown-dismiss";
+import { getMonifactoryStats, isMonifactoryRecipe } from "@/lib/packs/monifactory/bridge";
 
 import {
   ArrowLeftRight,
@@ -1916,11 +1917,14 @@ const CompactRecipeCard = memo(function CompactRecipeCard({
   // crafting maps are exported instant), so the card and its rate views read
   // the workbench's LV seed instead of claiming twenty crafts a second.
   const isAutoWorkbench = primary?.id === AUTO_WORKBENCH_HANDLER_ID;
+  const monifactoryStats = isMonifactoryRecipe(preview)
+    ? getMonifactoryStats(preview, { machineHandlerId: primary?.id })
+    : undefined;
   const durationTicks =
-    isAutoWorkbench && primary.durationTicks !== undefined
+    monifactoryStats?.durationTicks ?? (isAutoWorkbench && primary.durationTicks !== undefined
       ? primary.durationTicks
-      : recipe.durationTicks;
-  const eut = isAutoWorkbench ? (primary.eut ?? recipe.eut) : recipe.eut;
+      : recipe.durationTicks);
+  const eut = monifactoryStats?.eut ?? (isAutoWorkbench ? (primary.eut ?? recipe.eut) : recipe.eut);
   const minimumTier = isAutoWorkbench ? primary.minimumTier : recipe.minimumTier;
   const seconds = durationTicks / 20;
   const secondsText = `${formatRate(seconds, seconds >= 10 ? 0 : 1)}s`;
@@ -2063,6 +2067,11 @@ const CompactRecipeCard = memo(function CompactRecipeCard({
             {powerText}
           </span>
         </span>
+        {monifactoryStats && recipe.programmedCircuit !== undefined ? (
+          <span className="text-[11px] text-[var(--mc-ink)]" title="Required circuit setting; not consumed">
+            Circuit {recipe.programmedCircuit}
+          </span>
+        ) : null}
         <button
           type="button"
           aria-label="Add recipe node"

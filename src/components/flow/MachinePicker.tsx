@@ -6,6 +6,7 @@ import { useDropdownDismiss } from "@/lib/hooks/use-dropdown-dismiss";
 import { getUiScale } from "@/lib/ui-scale";
 import type { FactoryNode, MachineHandler, Recipe } from "@/lib/model/types";
 import { getNodeSteamReport } from "@/lib/solver/power-report";
+import { getMonifactoryStats, isMonifactoryRecipe } from "@/lib/packs/monifactory/bridge";
 import { applyMachineHandlerToRecipe, formatRate, isSteamMachineHandler } from "@/lib/model";
 import { ResourceIcon } from "@/components/nei/ResourceIcon";
 import type { MachineHandlerIcon } from "./machine-icons";
@@ -46,6 +47,15 @@ export interface HandlerRecipeStats {
 }
 
 export function getHandlerRecipeStats(recipe: Recipe, handler: MachineHandler): HandlerRecipeStats {
+  if (isMonifactoryRecipe(recipe)) {
+    const stats = getMonifactoryStats(recipe, { machineHandlerId: handler.id });
+    return {
+      seconds: stats.durationTicks / 20, eut: stats.eut,
+      totalEu: stats.eut * stats.durationTicks, minimumTier: stats.minimumTier,
+      steam: false, perfectOverclock: false, scalingParallels: [],
+      controlSummaries: [], exactOverclocks: false,
+    };
+  }
   const applied = applyMachineHandlerToRecipe(recipe, { machineHandlerId: handler.id });
   const scalingParallels: { label: string; max: number }[] = [];
   let fixedParallels: number | undefined;

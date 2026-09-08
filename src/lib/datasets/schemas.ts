@@ -2,7 +2,7 @@ import { z } from "zod";
 import { dominantColorSchema, recipeSchema, resourceIconAtlasRefSchema } from "../model/schemas";
 
 export const datasetSourceInfoSchema = z.object({
-  sourceId: z.enum(["nesql", "recex", "nerd", "gtnh-oracle", "unknown"]),
+  sourceId: z.enum(["nesql", "recex", "nerd", "gtnh-oracle", "monifactory-kubejs", "unknown"]),
   sourceVersion: z.string().optional(),
   generatedAt: z.string(),
   gitCommit: z.string().optional(),
@@ -78,34 +78,51 @@ export const machineHandlerIconEntrySchema = z.object({
     .optional(),
 });
 
-export const recipeDatasetSchema = z.object({
-  schemaVersion: z.literal(1),
-  datasetVersionId: z.string().min(1),
-  gtnhVersion: z.string().min(1),
-  sourceInfo: datasetSourceInfoSchema,
-  resources: z.array(datasetResourceSchema).default([]),
-  resourceIndex: z.array(datasetResourceIndexEntrySchema).optional(),
-  recipes: z.array(recipeSchema),
-  oreDictionary: z.record(z.string(), z.array(z.string())),
-  recipeMaps: z.array(z.string()),
-  recipeMapIcons: z.array(recipeMapIconEntrySchema).optional(),
-  machineHandlerIcons: z.array(machineHandlerIconEntrySchema).optional(),
-  generatedAt: z.string(),
+export const datasetPackSchema = z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  version: z.string().min(1),
+  mode: z.string().min(1).optional(),
 });
 
-export const datasetVersionSchema = z.object({
-  id: z.string().min(1),
-  gtnhVersion: z.string().min(1),
-  channel: z.enum(["stable", "daily", "experimental"]),
-  publishedAt: z.string(),
-  manifestPath: z.string(),
-  recipeDatasetPath: z.string(),
-  resourceIndexPath: z.string().optional(),
-  recipeIndexPath: z.string().optional(),
-  recipeLookupIndexPath: z.string().optional(),
-  checksumSha256: z.string().optional(),
-  sourceInfo: datasetSourceInfoSchema,
-});
+export const recipeDatasetSchema = z
+  .object({
+    schemaVersion: z.literal(1),
+    datasetVersionId: z.string().min(1),
+    pack: datasetPackSchema.optional(),
+    gtnhVersion: z.string().min(1).optional(),
+    sourceInfo: datasetSourceInfoSchema,
+    resources: z.array(datasetResourceSchema).default([]),
+    resourceIndex: z.array(datasetResourceIndexEntrySchema).optional(),
+    recipes: z.array(recipeSchema),
+    oreDictionary: z.record(z.string(), z.array(z.string())),
+    recipeMaps: z.array(z.string()),
+    recipeMapIcons: z.array(recipeMapIconEntrySchema).optional(),
+    machineHandlerIcons: z.array(machineHandlerIconEntrySchema).optional(),
+    generatedAt: z.string(),
+  })
+  .refine((dataset) => Boolean(dataset.pack || dataset.gtnhVersion), {
+    message: "A pack identity or legacy GTNH version is required.",
+  });
+
+export const datasetVersionSchema = z
+  .object({
+    id: z.string().min(1),
+    pack: datasetPackSchema.optional(),
+    gtnhVersion: z.string().min(1).optional(),
+    channel: z.enum(["stable", "daily", "experimental"]),
+    publishedAt: z.string(),
+    manifestPath: z.string(),
+    recipeDatasetPath: z.string(),
+    resourceIndexPath: z.string().optional(),
+    recipeIndexPath: z.string().optional(),
+    recipeLookupIndexPath: z.string().optional(),
+    checksumSha256: z.string().optional(),
+    sourceInfo: datasetSourceInfoSchema,
+  })
+  .refine((version) => Boolean(version.pack || version.gtnhVersion), {
+    message: "A pack identity or legacy GTNH version is required.",
+  });
 
 export const datasetManifestSchema = z.object({
   schemaVersion: z.literal(1),

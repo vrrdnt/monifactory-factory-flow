@@ -22,7 +22,7 @@ import { WhatsNewPreview } from "./WhatsNewPreview";
  * The pack picker's switch. See the note where it renders; flip this back to
  * true when there is more than one pack to pick from.
  */
-export const SHOW_PACK_PICKER = false;
+export const SHOW_PACK_PICKER = true;
 
 interface AppHeaderProps {
   onLoadDatasetVersion: (versionId: string) => void;
@@ -74,7 +74,7 @@ export function AppHeader({ onLoadDatasetVersion }: AppHeaderProps) {
     <header className="relative flex shrink-0 items-center justify-between gap-3 border-b border-line bg-surface px-3 py-1.5">
       <h1 className="flex min-w-0 items-center gap-2 text-sm font-bold tracking-tight">
         <span className="shrink-0">
-          GTNH <span className="text-cyan-500">Planner</span>
+          Monifactory <span className="text-cyan-500">Planner</span>
         </span>
         <button
           type="button"

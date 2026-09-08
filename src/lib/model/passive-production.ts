@@ -741,6 +741,7 @@ const ic2DropMultiplierCache = new Map<string, number>();
 const ic2GrowthCycleCache = new Map<string, number>();
 
 export function enrichPassiveProductionRecipe(recipe: Recipe): Recipe {
+  if (recipe.source?.packId === "monifactory") return recipe;
   if (isCropProductionRecipe(recipe)) {
     return enrichCropProductionRecipe(recipe);
   }

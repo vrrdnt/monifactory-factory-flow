@@ -2393,6 +2393,8 @@ function CircuitChip({ circuit }: { circuit: RecipeProgrammedCircuit }) {
             showConsumedState={false}
             className="!h-9 !w-9 origin-center scale-150"
           />
+        ) : setting !== undefined ? (
+          <span className="text-sm font-bold tabular-nums">{setting}</span>
         ) : (
           // Not an item, a silhouette: the same drawn circuit the recipe book
           // card wears, at a fraction of the ink. An empty slot with nothing

@@ -1,5 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
+import { DEFAULT_MANIFEST_PATH } from "@/lib/datasets/identity";
 import { promisify } from "node:util";
 import { gunzip } from "node:zlib";
 import type {
@@ -196,7 +197,6 @@ const BEE_RECIPE_MAPS = new Set(["Bee Produce"]);
 
 export type ResourceSourceFilter = "plants" | "bees";
 
-const datasetRoot = path.join(process.cwd(), "public", "datasets", "gtnh");
 const loadedCatalogs = new Map<string, LoadedRecipeIndex>();
 const pendingCatalogLoads = new Map<string, Promise<LoadedRecipeIndex>>();
 const pendingRecipeIndexLoads = new Map<string, Promise<LoadedRecipeIndex>>();
@@ -218,6 +218,7 @@ export async function getDatasetCatalog(versionId: string) {
     schemaVersion: 1 as const,
     datasetVersionId: catalog.version.id,
     gtnhVersion: catalog.version.gtnhVersion,
+    pack: catalog.version.pack,
     sourceInfo: catalog.version.sourceInfo,
     resources: [],
     resourceIndex: getMachineConfigResources(catalog),
@@ -300,6 +301,7 @@ export function withTankMapFace(
 
 function withSynthesizedHandlerIcons(catalog: LoadedRecipeIndex): MachineHandlerIconEntry[] {
   const icons = [...(catalog.machineHandlerIcons ?? [])];
+  if (catalog.version.pack?.id === "monifactory") return icons;
   const byName = new Map(catalog.resources.map((resource) => [resource.displayName, resource] as const));
   for (const { familyId, displayNames, tierNames } of SYNTHESIZED_HANDLER_FACES) {
     if (icons.some((entry) => entry.familyId === familyId)) {
@@ -323,6 +325,7 @@ function withSynthesizedHandlerIcons(catalog: LoadedRecipeIndex): MachineHandler
 }
 
 function getMachineConfigResources(catalog: LoadedRecipeIndex): DatasetResourceIndexEntry[] {
+  if (catalog.version.pack?.id === "monifactory") return [];
   // The curated machine table names its control blocks by dataset id (field
   // restriction coils); ship those faces too, or the client can only draw
   // its labelled-slot fallback for them.
@@ -635,7 +638,7 @@ export async function queryDatasetResources(
         if (
           !resource ||
           isVirtualChoiceResource(resource) ||
-          (!resource.iconPath && !resource.iconAtlas)
+          (catalog.version.pack?.id !== "monifactory" && !resource.iconPath && !resource.iconAtlas)
         ) {
           continue;
         }
@@ -1652,7 +1655,8 @@ export async function getDatasetRecipe(
 }
 
 async function loadManifest(): Promise<DatasetManifest> {
-  const manifestPath = path.join(datasetRoot, "datasets.manifest.json");
+  const manifestPath = process.env.DATASET_MANIFEST_PATH ??
+    path.join(process.cwd(), "public", DEFAULT_MANIFEST_PATH);
   const stat = await fs.stat(manifestPath);
   const stamp = `${stat.mtimeMs}:${stat.size}`;
   if (manifestCache && manifestCacheStamp === stamp) {
@@ -1689,7 +1693,7 @@ async function loadCatalog(versionId: string): Promise<LoadedRecipeIndex> {
     const loaded = {
       ...catalog,
       version,
-      recipeMapIcons: withTankMapFace(catalog),
+      recipeMapIcons: version.pack?.id === "monifactory" ? catalog.recipeMapIcons : withTankMapFace(catalog),
     };
     loadedCatalogs.set(cacheKey, loaded);
     return loaded;
@@ -2242,9 +2246,7 @@ function toRecipeSummary(
       hydrateResource(resource, resourcesByKey, choiceAlternatives),
     ),
     outputs: enrichedRecipe.outputs.map((resource) => hydrateResource(resource, resourcesByKey)),
-    source: enrichedRecipe.source?.recipeMap
-      ? { recipeMap: enrichedRecipe.source.recipeMap }
-      : undefined,
+    source: enrichedRecipe.source,
     nei: enrichedRecipe.nei,
     slots: [],
   };
@@ -2403,6 +2405,11 @@ function getRecipeResourceScope(
   mode: "recipes" | "uses",
 ): RecipeResourceScope {
   const resources = [resource];
+  if (catalog.version.pack?.id === "monifactory") {
+    // Lookup entries already include same-kind ingredient alternatives.
+    // Never widen Monifactory searches using GTNH cell or wildcard rules.
+    return { resource, resources };
+  }
   const resourcesByKey = getCatalogResourcesByKey(catalog);
   const indexed = resourcesByKey.get(`${resource.kind}:${resource.id}`);
   for (const equivalent of getFilledCellEquivalentResources(

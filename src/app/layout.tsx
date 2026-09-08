@@ -15,7 +15,6 @@ import { uiScaleBootScript } from "@/lib/ui-scale-boot";
 import { COMPACT_MAX_HEIGHT, COMPACT_MAX_WIDTH, SNUG_MAX_WIDTH } from "@/lib/viewport-breakpoints";
 import { Analytics } from "./Analytics";
 import { AnalyticsHeartbeat } from "./AnalyticsHeartbeat";
-import { WhatsNewGate } from "@/components/WhatsNewGate";
 import { GlobalTitleTooltip } from "@/components/nei/GlobalTitleTooltip";
 import "./globals.css";
 
@@ -113,14 +112,14 @@ const uiScaleBoot = uiScaleBootScript({
   snugMaxWidth: SNUG_MAX_WIDTH,
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://gtnhplanner.com";
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  applicationName: "GTNH Planner",
-  title: "GTNH Planner | GregTech New Horizons Factory Calculator",
+  applicationName: "Monifactory Planner",
+  title: "Monifactory Planner | Monifactory Factory Calculator",
   description:
-    "Plan and optimize GregTech: New Horizons factories on an interactive flowchart. Full recipe data for GTNH 2.9, throughput and power calculation, machine ratios, and community-shared plans.",
+    "Plan and optimize Monifactory factories on an interactive flowchart. Experimental ordinary-machine recipes for Monifactory 0.13.7 Expert, throughput and power calculation, machine ratios, and community-shared plans.",
   alternates: {
     canonical: "/",
   },
@@ -136,26 +135,26 @@ export const metadata: Metadata = {
     },
   },
   keywords: [
-    "GTNH Planner",
-    "GregTech New Horizons planner",
-    "GTNH factory planner",
-    "GTNH recipe calculator",
-    "GTNH throughput calculator",
+    "Monifactory Planner",
+    "Monifactory planner",
+    "Monifactory factory planner",
+    "Monifactory recipe calculator",
+    "Monifactory throughput calculator",
     "GregTech factory calculator",
   ],
   openGraph: {
-    title: "GTNH Planner | GregTech New Horizons Factory Calculator",
+    title: "Monifactory Planner | Monifactory Factory Calculator",
     description:
-      "Free factory planner for GregTech: New Horizons with full recipe data for GTNH 2.9. Draw production chains, balance machine ratios, find bottlenecks, and share plans with the community.",
-    siteName: "GTNH Planner",
+      "Free factory planner for Monifactory with an experimental ordinary-machine catalog for Monifactory 0.13.7 Expert. Draw production chains, balance machine ratios, find bottlenecks, and share plans with the community.",
+    siteName: "Monifactory Planner",
     type: "website",
     url: "/",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GTNH Planner | GregTech New Horizons Factory Calculator",
+    title: "Monifactory Planner | Monifactory Factory Calculator",
     description:
-      "Free factory planner for GregTech: New Horizons with full recipe data for GTNH 2.9. Draw production chains, balance machine ratios, find bottlenecks, and share plans with the community.",
+      "Free factory planner for Monifactory with an experimental ordinary-machine catalog for Monifactory 0.13.7 Expert. Draw production chains, balance machine ratios, find bottlenecks, and share plans with the community.",
   },
   icons: {
     icon: [
@@ -182,7 +181,7 @@ export const viewport: Viewport = {
 /**
  * What the site is, said in schema.org's terms for crawlers that read
  * structured data. Kept to claims a machine can verify: free, runs in a
- * browser, about GregTech: New Horizons.
+ * browser, about Monifactory.
  */
 const structuredData = {
   "@context": "https://schema.org",
@@ -191,16 +190,16 @@ const structuredData = {
       "@type": "WebSite",
       "@id": `${siteUrl}/#website`,
       url: `${siteUrl}/`,
-      name: "GTNH Planner",
+      name: "Monifactory Planner",
     },
     {
       "@type": "WebApplication",
       "@id": `${siteUrl}/#app`,
       url: `${siteUrl}/`,
-      name: "GTNH Planner",
-      alternateName: "GregTech New Horizons Factory Planner",
+      name: "Monifactory Planner",
+      alternateName: "Monifactory Factory Planner",
       description:
-        "Free factory planner and recipe calculator for GregTech: New Horizons. Draw production chains on a flowchart, balance machine ratios, compute power and throughput, and share plans.",
+        "Free factory planner and recipe calculator for Monifactory. Draw production chains on a flowchart, balance machine ratios, compute power and throughput, and share plans.",
       applicationCategory: "GameApplication",
       operatingSystem: "Any",
       browserRequirements: "Requires JavaScript",
@@ -208,7 +207,7 @@ const structuredData = {
       offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
       about: {
         "@type": "VideoGame",
-        name: "GregTech: New Horizons",
+        name: "Monifactory",
         gamePlatform: "Minecraft",
       },
     },
@@ -239,7 +238,6 @@ export default function RootLayout({
         {/* Above the app rather than inside it: what changed is a fact about
             the whole planner, not about whichever tab happens to be open. */}
         <div className="ui-zoom">
-          <WhatsNewGate />
         </div>
         {/* Puts the saved font back if anything took it off after the boot
             script above; see the component. */}

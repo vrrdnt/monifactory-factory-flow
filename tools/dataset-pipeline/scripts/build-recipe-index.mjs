@@ -17,6 +17,10 @@ if (!datasetPath || !datasetOutDir) {
 const shardSize = positiveIntEnv("GTNH_RECIPE_SHARD_SIZE", 250);
 const dataset = await readDataset(datasetPath);
 const versionId = dataset.datasetVersionId;
+const packId = dataset.pack?.id ?? "gtnh";
+if (!/^[a-z0-9-]+$/.test(packId) || !/^[a-zA-Z0-9._-]+$/.test(versionId) || versionId === "." || versionId === "..") {
+  throw new Error("Dataset pack and version must be safe path segments.");
+}
 const shardDir = path.join(datasetOutDir, "recipes-shards");
 const resourcesByKey = buildResourcesByKey(dataset);
 
@@ -24,6 +28,10 @@ if (!versionId) {
   throw new Error("Dataset must include datasetVersionId.");
 }
 
+// Verify the resolved directory before replacing generated shards.
+if (!path.resolve(shardDir).startsWith(path.resolve(datasetOutDir) + path.sep)) {
+  throw new Error("Shard directory is outside the dataset output directory.");
+}
 await fs.rm(shardDir, { recursive: true, force: true });
 await fs.mkdir(shardDir, { recursive: true });
 
@@ -35,7 +43,7 @@ for (
 ) {
   const end = Math.min(dataset.recipes.length, start + shardSize);
   const fileName = `shard-${String(shardIndex).padStart(4, "0")}.json.gz`;
-  const publicPath = `/datasets/gtnh/${versionId}/recipes-shards/${fileName}`;
+  const publicPath = `/datasets/${packId}/${versionId}/recipes-shards/${fileName}`;
   const shard = {
     schemaVersion: 1,
     datasetVersionId: versionId,
@@ -53,6 +61,7 @@ const recipeIndex = {
   schemaVersion: 1,
   datasetVersionId: versionId,
   gtnhVersion: dataset.gtnhVersion,
+  pack: dataset.pack,
   sourceInfo: dataset.sourceInfo,
   recipeMaps: dataset.recipeMaps ?? [],
   generatedAt: dataset.generatedAt,
@@ -70,6 +79,7 @@ const resourceCatalog = {
   schemaVersion: 1,
   datasetVersionId: versionId,
   gtnhVersion: dataset.gtnhVersion,
+  pack: dataset.pack,
   sourceInfo: dataset.sourceInfo,
   resources: dataset.resources ?? [],
   resourceIndex: dataset.resourceIndex ?? [],
@@ -291,7 +301,7 @@ function toRecipeSummary(recipe, index) {
     eut: recipe.eut,
     programmedCircuit: recipe.programmedCircuit,
     specialValue: recipe.specialValue,
-    source: recipe.source?.recipeMap ? { recipeMap: recipe.source.recipeMap } : undefined,
+    source: recipe.source,
     metadata: recipe.metadata,
     shardIndex: Math.floor(index / shardSize),
   };

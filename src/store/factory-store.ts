@@ -1769,6 +1769,7 @@ export const useFactoryStore = create<FactoryStore>((set, get) => ({
     });
   },
   addCropFarmNode: () => {
+    if (get().dataset?.pack?.id === "monifactory") return;
     // Crop sources spawn green by default, like drawers/tanks spawn with the
     // active paint color; the user can still repaint them.
     set((state) =>
@@ -1777,9 +1778,13 @@ export const useFactoryStore = create<FactoryStore>((set, get) => ({
       }),
     );
   },
-  openPowerMenu: () => set({ powerMenuOpen: true }),
+  openPowerMenu: () => {
+    if (get().dataset?.pack?.id === "monifactory") return;
+    set({ powerMenuOpen: true });
+  },
   closePowerMenu: () => set({ powerMenuOpen: false }),
   addPowerSourceNode: (sourceId, settings) => {
+    if (get().dataset?.pack?.id === "monifactory") return;
     set((state) => {
       // Each power card owns its recipe, custom-rate style; settings are
       // defaults until the card's knobs write machineConfigTiers.

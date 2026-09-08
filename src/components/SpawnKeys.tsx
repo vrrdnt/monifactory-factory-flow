@@ -18,6 +18,7 @@ import { useFactoryStore } from "@/store/factory-store";
  * which sits at the row's start rather than in the search box.
  */
 export function SpawnKeys({ leading }: { leading?: ReactNode }) {
+  const isMonifactory = useFactoryStore((state) => state.dataset?.pack?.id === "monifactory");
   const openPowerMenu = useFactoryStore((state) => state.openPowerMenu);
   const addCustomRateNode = useFactoryStore((state) => state.addCustomRateNode);
   const addCropFarmNode = useFactoryStore((state) => state.addCropFarmNode);
@@ -29,16 +30,18 @@ export function SpawnKeys({ leading }: { leading?: ReactNode }) {
   return (
     <div className="mx-2 mt-2 flex shrink-0 gap-1">
       {leading}
-      <button
-        type="button"
-        onClick={openPowerMenu}
-        className={key}
-        title="Place a generator"
-        aria-label="Place a generator"
-      >
-        <Zap className="h-3.5 w-3.5 shrink-0" />
-        Power
-      </button>
+      {!isMonifactory && (
+        <button
+          type="button"
+          onClick={openPowerMenu}
+          className={key}
+          title="Place a generator"
+          aria-label="Place a generator"
+        >
+          <Zap className="h-3.5 w-3.5 shrink-0" />
+          Power
+        </button>
+      )}
       <button
         type="button"
         onClick={addCustomRateNode}
@@ -49,16 +52,18 @@ export function SpawnKeys({ leading }: { leading?: ReactNode }) {
         <Gauge className="h-3.5 w-3.5 shrink-0" />
         Custom
       </button>
-      <button
-        type="button"
-        onClick={addCropFarmNode}
-        className={key}
-        title="Add crop farm"
-        aria-label="Add crop farm"
-      >
-        <Sprout className="h-3.5 w-3.5 shrink-0" />
-        Farm
-      </button>
+      {!isMonifactory && (
+        <button
+          type="button"
+          onClick={addCropFarmNode}
+          className={key}
+          title="Add crop farm"
+          aria-label="Add crop farm"
+        >
+          <Sprout className="h-3.5 w-3.5 shrink-0" />
+          Farm
+        </button>
+      )}
     </div>
   );
 }

@@ -1,8 +1,11 @@
 import { parseDatasetManifestJson, parseRecipeDatasetJson } from "../import-export";
 import type { DatasetManifest, DatasetVersion, RecipeDataset } from "./types";
+import { DEFAULT_MANIFEST_PATH } from "./identity";
 
 export const DEFAULT_DATASET_MANIFEST_URL =
-  process.env.NEXT_PUBLIC_GTNH_DATASET_MANIFEST_URL ?? "/datasets/gtnh/datasets.manifest.json";
+  process.env.NEXT_PUBLIC_DATASET_MANIFEST_URL ??
+  process.env.NEXT_PUBLIC_GTNH_DATASET_MANIFEST_URL ??
+  DEFAULT_MANIFEST_PATH;
 
 export async function fetchDatasetManifest(
   manifestUrl = DEFAULT_DATASET_MANIFEST_URL,

@@ -1,5 +1,7 @@
 "use client";
 
+import { datasetLabel } from "@/lib/datasets/identity";
+
 import { Check, Eye, EyeOff, ImageDown, LoaderCircle, X } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { toBlob, toSvg } from "html-to-image";
@@ -129,9 +131,9 @@ export function ExportImageDialog({ onClose }: { onClose: () => void }) {
   // clash.
   const borderColor =
     background === "transparent" ? "#454a52" : getCanvasTheme(background).patternColor;
-  const gameVersion = manifest?.versions.find(
+  const gameVersion = datasetLabel(manifest?.versions.find(
     (version) => version.id === selectedDatasetVersionId,
-  )?.gtnhVersion;
+  ));
   const planName = project.name || activeTabName || "My factory";
 
   const needs = useMemo(

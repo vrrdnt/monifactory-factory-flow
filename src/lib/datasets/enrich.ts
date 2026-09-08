@@ -78,6 +78,7 @@ function enrichRecipe(
   resourcesByKey: Map<string, DatasetResource>,
   slotCapacitiesByRecipeMap: Map<string, RecipeMapSlotCapacity>,
 ): Recipe {
+  if (recipe.source?.packId === "monifactory") return recipe;
   const recipeMap = recipe.source?.recipeMap ?? recipe.machineType;
   const slotCapacity = mergeRecipeMapSlotCapacity(
     slotCapacitiesByRecipeMap.get(recipeMap),

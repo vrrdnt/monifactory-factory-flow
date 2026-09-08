@@ -26,6 +26,7 @@ export function isVirtualChoiceResource(
   resource: Pick<ResourceAmount, "id" | "displayName">,
 ): boolean {
   return (
+    resource.id.startsWith("monifactory_choice:") ||
     isOreDictionaryResource(resource) ||
     Boolean(resource.displayName?.match(/^Ore Dictionary:\s*/i)) ||
     isWildcardChoiceResource(resource)

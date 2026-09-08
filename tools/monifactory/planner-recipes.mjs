@@ -23,7 +23,12 @@ export function buildPlannerRecipes(catalog, reference) {
     if (!positive.has(row.recipeId)) positive.set(row.recipeId, []);
     positive.get(row.recipeId).push(row);
   }
-  const names = new Map(catalog.resources.map((r) => [`${r.kind}:${r.id}`, r.displayName ?? r.id]));
+  const names = new Map(
+    catalog.resources.map((r) => [
+      `${r.kind}:${r.id}`,
+      (r.displayName ?? r.id).replace(/§[0-9a-fk-or]/gi, "").trim(),
+    ]),
+  );
   function slot(entry) {
     const candidates = entry.candidates.map((id) => ({
       kind: entry.kind,

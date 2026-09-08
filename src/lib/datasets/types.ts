@@ -7,7 +7,7 @@ import type {
 } from "../model/types";
 
 export interface DatasetSourceInfo {
-  sourceId: "nesql" | "recex" | "nerd" | "gtnh-oracle" | "unknown";
+  sourceId: "nesql" | "recex" | "nerd" | "gtnh-oracle" | "monifactory-kubejs" | "unknown";
   sourceVersion?: string;
   generatedAt: string;
   gitCommit?: string;
@@ -60,9 +60,17 @@ export interface MachineHandlerIconEntry {
   tiers?: Array<{ tier: string; resource: RecipeMapIconEntry["resource"] }>;
 }
 
+export interface DatasetPack {
+  id: string;
+  name: string;
+  version: string;
+  mode?: string;
+}
+
 export interface DatasetVersion {
   id: string;
-  gtnhVersion: string;
+  pack?: DatasetPack;
+  gtnhVersion?: string;
   channel: "stable" | "daily" | "experimental";
   publishedAt: string;
   manifestPath: string;
@@ -84,7 +92,8 @@ export interface DatasetManifest {
 export interface RecipeDataset {
   schemaVersion: 1;
   datasetVersionId: string;
-  gtnhVersion: string;
+  pack?: DatasetPack;
+  gtnhVersion?: string;
   sourceInfo: DatasetSourceInfo;
   resources: DatasetResource[];
   resourceIndex?: DatasetResourceIndexEntry[];

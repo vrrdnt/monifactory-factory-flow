@@ -119,7 +119,11 @@ function buildResourceIndex(dataset) {
   const index = new Map();
 
   for (const recipe of dataset.recipes ?? []) {
-    for (const resource of [...(recipe.inputs ?? []), ...(recipe.outputs ?? [])]) {
+    const slots = [...(recipe.inputs ?? []), ...(recipe.outputs ?? [])];
+    const searchable = dataset.pack?.id === "monifactory"
+      ? [...new Map(slots.flatMap((resource) => [resource, ...(resource.alternatives ?? [])]).map((resource) => [resourceKey(resource), resource])).values()]
+      : slots;
+    for (const resource of searchable) {
       const key = resourceKey(resource);
       const existing = index.get(key);
       if (existing) {
