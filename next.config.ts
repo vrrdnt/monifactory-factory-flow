@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const datasetBackendUrl = process.env.GTNH_DATASET_BACKEND_URL?.replace(/\/+$/, "");
 
 const nextConfig: NextConfig = {
+  output: "standalone",
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH ?? "",
   outputFileTracingRoot: process.cwd(),
   turbopack: {
     root: process.cwd(),

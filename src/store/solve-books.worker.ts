@@ -1,3 +1,4 @@
+import { appPath } from "@/lib/app-path";
 import { calculateThroughput } from "@/lib/solver";
 import { initLpEngine } from "@/lib/solver/lp-engine";
 import { attachClogLocks } from "@/components/flow/clog-lock";
@@ -7,7 +8,7 @@ import type { FactoryProject } from "@/lib/model/types";
 // settle: a board routed here is slow by definition, so a one-time wasm
 // fetch is always the better trade than a minutes-long homegrown walk. A
 // failed load resolves too - solves then run on the homegrown simplex.
-const engineReady = initLpEngine({ glueUrl: "/highs.js", wasmUrl: "/highs.wasm" });
+const engineReady = initLpEngine({ glueUrl: appPath("/highs.js"), wasmUrl: appPath("/highs.wasm") });
 
 /**
  * The solver, off the main thread. One message in (a plan and the content key

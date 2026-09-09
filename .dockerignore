@@ -10,4 +10,6 @@ coverage
 *.log
 .env*
 dev-server*.log
-public/datasets/gtnh
+public/datasets
+data
+.wrangler

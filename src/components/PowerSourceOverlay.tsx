@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { ArrowLeft, ArrowRight, Search, X, Zap } from "lucide-react";
@@ -333,7 +335,7 @@ function PowerSourceCard({
         {structureArt ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={structureArt}
+            src={appPath(structureArt)}
             alt=""
             draggable={false}
             className="max-h-full max-w-full object-contain [image-rendering:pixelated]"

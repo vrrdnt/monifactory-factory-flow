@@ -1,3 +1,4 @@
+import { APP_SITE_URL } from "@/lib/app-path";
 import type { MetadataRoute } from "next";
 import { getCommunityDb, isCommunityConfigured } from "@/lib/server/community";
 
@@ -12,7 +13,7 @@ export const revalidate = 3600;
  * rule the unfurler uses.
  */
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://gtnhplanner.com";
+  const base = APP_SITE_URL;
   const entries: MetadataRoute.Sitemap = [
     { url: `${base}/`, lastModified: new Date(), changeFrequency: "weekly", priority: 1 },
   ];

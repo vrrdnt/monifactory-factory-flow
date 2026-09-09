@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import type { MachineTier, Recipe, ResourceAmount } from "@/lib/model/types";
 import type { RecipeContentRef } from "@/lib/import-export/recipe-ref-match";
 import { APP_VERSION } from "@/lib/version";
@@ -99,7 +101,7 @@ export async function initRecipeDatasetVersion(
   options: { signal?: AbortSignal } = {},
 ): Promise<RecipeDataset> {
   const url = new URL(
-    `/api/datasets/${encodeURIComponent(version.id)}/catalog`,
+    appPath(`/api/datasets/${encodeURIComponent(version.id)}/catalog`),
     window.location.origin,
   );
   addDatasetCacheKey(url, version);
@@ -130,7 +132,7 @@ export async function getRecipeDatasetRecipe(
   options: { signal?: AbortSignal } = {},
 ): Promise<Recipe> {
   const url = new URL(
-    `/api/datasets/${encodeURIComponent(version.id)}/recipes/${encodeURIComponent(recipeId)}`,
+    appPath(`/api/datasets/${encodeURIComponent(version.id)}/recipes/${encodeURIComponent(recipeId)}`),
     window.location.origin,
   );
   addDatasetCacheKey(url, version);
@@ -165,7 +167,7 @@ export async function getRecipeDatasetRecipeIds(
   version: DatasetVersion,
 ): Promise<string[]> {
   const url = new URL(
-    `/api/datasets/${encodeURIComponent(version.id)}/recipe-ids`,
+    appPath(`/api/datasets/${encodeURIComponent(version.id)}/recipe-ids`),
     window.location.origin,
   );
   addDatasetCacheKey(url, version);
@@ -179,7 +181,7 @@ export async function resolveRecipeDatasetRecipes(
   recipes: RecipeDatasetResolveRef[],
 ): Promise<RecipeDatasetResolveResult> {
   const url = new URL(
-    `/api/datasets/${encodeURIComponent(version.id)}/resolve-recipes`,
+    appPath(`/api/datasets/${encodeURIComponent(version.id)}/resolve-recipes`),
     window.location.origin,
   );
   addDatasetCacheKey(url, version);
@@ -196,7 +198,7 @@ export async function queryRecipeDatasetRecipes(
   options: { signal?: AbortSignal } = {},
 ): Promise<RecipeDatasetQueryResult> {
   const url = new URL(
-    `/api/datasets/${encodeURIComponent(version.id)}/recipes`,
+    appPath(`/api/datasets/${encodeURIComponent(version.id)}/recipes`),
     window.location.origin,
   );
   url.searchParams.set("query", query.query);
@@ -240,7 +242,7 @@ export async function listRecipeDatasetCrops(
   options: { signal?: AbortSignal } = {},
 ): Promise<{ crops: RecipeSummary[] }> {
   const url = new URL(
-    `/api/datasets/${encodeURIComponent(version.id)}/crops`,
+    appPath(`/api/datasets/${encodeURIComponent(version.id)}/crops`),
     window.location.origin,
   );
   addDatasetCacheKey(url, version);
@@ -254,7 +256,7 @@ export async function queryRecipeDatasetResources(
   options: { signal?: AbortSignal } = {},
 ): Promise<RecipeDatasetResourceQueryResult> {
   const url = new URL(
-    `/api/datasets/${encodeURIComponent(version.id)}/resources`,
+    appPath(`/api/datasets/${encodeURIComponent(version.id)}/resources`),
     window.location.origin,
   );
   url.searchParams.set("query", query.query);

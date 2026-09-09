@@ -1,0 +1,19 @@
+services:
+  planner:
+    image: ghcr.io/vrrdnt/monifactory-factory-flow:${PLANNER_TAG:-latest}
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_BASE_PATH: /moni-planner
+        NEXT_PUBLIC_SITE_URL: https://vrrdnt.dev
+    restart: unless-stopped
+    init: true
+    ports:
+      - "127.0.0.1:8580:3000"
+    volumes:
+      - type: bind
+        source: ${MONIFACTORY_DATA_DIR:-./data/monifactory}
+        target: /app/public/datasets/monifactory
+        read_only: true
+        bind:
+          create_host_path: false

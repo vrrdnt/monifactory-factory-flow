@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import { useDropdownDismiss } from "@/lib/hooks/use-dropdown-dismiss";
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -55,7 +57,7 @@ export function EnergyHatchArt({
     >
       {entry?.iconPath ? (
         <img
-          src={entry.iconPath}
+          src={appPath(entry.iconPath)}
           alt={entry.displayName}
           draggable={false}
           className="minecraft-pixel-art h-[220%] w-[220%] max-w-none object-contain"

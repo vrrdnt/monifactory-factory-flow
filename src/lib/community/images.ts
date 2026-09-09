@@ -1,5 +1,7 @@
 "use client";
 
+import { appFetch } from "@/lib/app-path";
+
 import { BOARD_IMAGE_MAX_BYTES } from "./types";
 import { getDeviceId } from "./client";
 
@@ -18,7 +20,7 @@ export async function uploadBoardImage(file: File | Blob): Promise<string> {
   form.set("image", file);
   form.set("deviceId", getDeviceId());
 
-  const response = await fetch("/api/community/images", { method: "POST", body: form });
+  const response = await appFetch("/api/community/images", { method: "POST", body: form });
   const body = (await response.json().catch(() => undefined)) as
     | { url?: string; error?: string }
     | undefined;

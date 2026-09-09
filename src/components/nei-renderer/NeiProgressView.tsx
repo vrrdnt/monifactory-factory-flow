@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import type { NeiProgressCommand } from "@/lib/nei-renderer/core/commands";
 import { NEI_TEXTURES } from "@/lib/nei-renderer/theme/textures";
 
@@ -21,7 +23,7 @@ export function NeiProgressView({
         top: command.y * scale,
         width: command.width * scale,
         height: command.height * scale,
-        backgroundImage: `url('${NEI_TEXTURES.progressBar(command.texture ?? "arrow")}')`,
+        backgroundImage: `url('${appPath(NEI_TEXTURES.progressBar(command.texture ?? "arrow"))}')`,
         backgroundPosition: `0 -${frameOffset}px`,
         backgroundSize: `${command.width * scale}px auto`,
       }}

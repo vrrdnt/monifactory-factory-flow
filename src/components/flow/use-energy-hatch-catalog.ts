@@ -1,3 +1,4 @@
+import { appFetch } from "@/lib/app-path";
 import { useEffect, useState } from "react";
 import { ENERGY_HATCH_TYPES } from "@/lib/machines/energy-hatches";
 import type { ResourceIconAtlasRef } from "@/lib/model/types";
@@ -59,7 +60,7 @@ async function fetchCatalog(datasetVersionId: string): Promise<EnergyHatchCatalo
         const url =
           `/api/datasets/${encodeURIComponent(datasetVersionId)}/resources` +
           `?query=${encodeURIComponent(query)}&kind=item&limit=400`;
-        const response = await fetch(url);
+        const response = await appFetch(url);
         if (!response.ok) {
           return;
         }

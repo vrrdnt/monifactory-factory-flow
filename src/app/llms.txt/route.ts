@@ -1,3 +1,4 @@
+import { APP_SITE_URL } from "@/lib/app-path";
 import {
   getCommunityDb,
   isCommunityConfigured,
@@ -41,7 +42,7 @@ async function topPlans(base: string): Promise<string[]> {
 }
 
 export async function GET() {
-  const base = process.env.NEXT_PUBLIC_SITE_URL ?? "https://gtnhplanner.com";
+  const base = APP_SITE_URL;
   const plans = await topPlans(base);
 
   const lines = [

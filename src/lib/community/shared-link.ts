@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 /**
  * The link you send someone: `/?plan=<community id>`, which opens that setup in
  * a tab of its own.
@@ -35,7 +37,7 @@ const gonePlanIds = new Set<string>();
 
 /** The link to put on someone's clipboard. */
 export function sharedPlanLink(planId: string): string {
-  return `${window.location.origin}/?${SHARED_PLAN_PARAM}=${encodeURIComponent(planId)}`;
+  return `${window.location.origin}${appPath("/")}?${SHARED_PLAN_PARAM}=${encodeURIComponent(planId)}`;
 }
 
 /** The setup this page load was opened for, if the address named one. */

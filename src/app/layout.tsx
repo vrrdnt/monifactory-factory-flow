@@ -1,3 +1,4 @@
+import { APP_SITE_URL, appPath } from "@/lib/app-path";
 import type { Metadata, Viewport } from "next";
 import {
   Andika,
@@ -112,16 +113,16 @@ const uiScaleBoot = uiScaleBootScript({
   snugMaxWidth: SNUG_MAX_WIDTH,
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+const siteUrl = APP_SITE_URL;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   applicationName: "Monifactory Planner",
   title: "Monifactory Planner | Monifactory Factory Calculator",
   description:
     "Plan and optimize Monifactory factories on an interactive flowchart. Experimental ordinary-machine recipes for Monifactory 0.13.7 Expert, throughput and power calculation, machine ratios, and community-shared plans.",
   alternates: {
-    canonical: "/",
+    canonical: appPath("/"),
   },
   robots: {
     index: true,
@@ -148,7 +149,7 @@ export const metadata: Metadata = {
       "Free factory planner for Monifactory with an experimental ordinary-machine catalog for Monifactory 0.13.7 Expert. Draw production chains, balance machine ratios, find bottlenecks, and share plans with the community.",
     siteName: "Monifactory Planner",
     type: "website",
-    url: "/",
+    url: appPath("/"),
   },
   twitter: {
     card: "summary_large_image",
@@ -158,10 +159,10 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/icon-192.png", type: "image/png", sizes: "192x192" },
-      { url: "/icon-512.png", type: "image/png", sizes: "512x512" },
+      { url: appPath("/icon-192.png"), type: "image/png", sizes: "192x192" },
+      { url: appPath("/icon-512.png"), type: "image/png", sizes: "512x512" },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: appPath("/apple-touch-icon.png"),
   },
   other: {
     // The app is already dark. Without this, the Dark Reader extension

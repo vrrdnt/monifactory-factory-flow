@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import { memo, useEffect, useRef, useState, type CSSProperties } from "react";
 import { Zap } from "lucide-react";
 import type { ResourceAmount, ResourceIconAtlasRef, ResourceKind } from "@/lib/model/types";
@@ -420,7 +422,7 @@ function SpriteImage({
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         ref={imageRef}
-        src={iconPath}
+        src={appPath(iconPath)}
         alt={resourceLabel(resource)}
         draggable={false}
         onLoad={() => setStatus("loaded")}
@@ -485,8 +487,8 @@ function AspectIconImage({
       <span
         className="absolute inset-0 bg-black opacity-45"
         style={{
-          WebkitMaskImage: `url('${iconPath}')`,
-          maskImage: `url('${iconPath}')`,
+          WebkitMaskImage: `url('${appPath(iconPath)}')`,
+          maskImage: `url('${appPath(iconPath)}')`,
           WebkitMaskSize: "100% 100%",
           maskSize: "100% 100%",
           transform: "translate(1px, 1px)",
@@ -496,8 +498,8 @@ function AspectIconImage({
         className="absolute inset-0"
         style={{
           backgroundColor: color,
-          WebkitMaskImage: `url('${iconPath}')`,
-          maskImage: `url('${iconPath}')`,
+          WebkitMaskImage: `url('${appPath(iconPath)}')`,
+          maskImage: `url('${appPath(iconPath)}')`,
           WebkitMaskSize: "100% 100%",
           maskSize: "100% 100%",
         }}
@@ -735,7 +737,7 @@ function AtlasIconImage({
       style={{
         width: pixels ?? `calc(${200 * scale}% - ${8 * scale}px)`,
         height: pixels ?? `calc(${200 * scale}% - ${8 * scale}px)`,
-        backgroundImage: `url('${atlas.imagePath}')`,
+        backgroundImage: `url('${appPath(atlas.imagePath)}')`,
         backgroundSize: `${(atlas.atlasWidth / atlas.width) * 100}% ${
           (atlas.atlasHeight / atlas.height) * 100
         }%`,

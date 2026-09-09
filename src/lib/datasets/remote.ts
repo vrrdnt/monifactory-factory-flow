@@ -1,3 +1,4 @@
+import { appPath } from "@/lib/app-path";
 import { parseDatasetManifestJson, parseRecipeDatasetJson } from "../import-export";
 import type { DatasetManifest, DatasetVersion, RecipeDataset } from "./types";
 import { DEFAULT_MANIFEST_PATH } from "./identity";
@@ -80,10 +81,10 @@ export function pickDefaultDatasetVersion(manifest: DatasetManifest): DatasetVer
 
 export function resolveDatasetUrl(manifestUrl: string, datasetPath: string): string {
   if (/^https?:\/\//i.test(datasetPath) || datasetPath.startsWith("/")) {
-    return datasetPath;
+    return appPath(datasetPath);
   }
 
-  return new URL(datasetPath, new URL(manifestUrl, window.location.origin)).toString();
+  return new URL(datasetPath, new URL(appPath(manifestUrl), window.location.origin)).toString();
 }
 
 async function readDatasetResponseText(response: Response, datasetUrl: string): Promise<string> {
@@ -100,7 +101,7 @@ async function readDatasetResponseText(response: Response, datasetUrl: string): 
 }
 
 function withCacheBust(url: string): string {
-  const resolvedUrl = new URL(url, window.location.origin);
+  const resolvedUrl = new URL(appPath(url), window.location.origin);
   resolvedUrl.searchParams.set("t", String(Date.now()));
   return resolvedUrl.toString();
 }

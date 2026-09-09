@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import type { NeiTextureCommand } from "@/lib/nei-renderer/core/commands";
 
 export function NeiTextureView({ command, scale }: { command: NeiTextureCommand; scale: number }) {
@@ -21,7 +23,7 @@ export function NeiTextureView({ command, scale }: { command: NeiTextureCommand;
         width: command.width * scale,
         height: command.height * scale,
         opacity: command.opacity,
-        backgroundImage: `url('${command.imagePath}')`,
+        backgroundImage: `url('${appPath(command.imagePath)}')`,
         backgroundSize: hasSprite
           ? `${command.textureWidth! * scaleX}px ${command.textureHeight! * scaleY}px`
           : "100% 100%",

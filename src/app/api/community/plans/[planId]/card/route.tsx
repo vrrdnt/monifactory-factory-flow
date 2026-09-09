@@ -1,3 +1,4 @@
+import { appPath } from "@/lib/app-path";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { ImageResponse } from "next/og";
@@ -167,7 +168,7 @@ export async function GET(
   if (!row) {
     // The site's one generic face, rather than an error a chat would show
     // as a broken embed.
-    return NextResponse.redirect(new URL("/opengraph-image.png", request.url), 302);
+    return NextResponse.redirect(new URL(appPath("/opengraph-image.png"), request.url), 302);
   }
 
   const fonts = await loadFonts();

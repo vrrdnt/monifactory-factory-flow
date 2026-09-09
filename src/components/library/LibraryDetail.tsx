@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import {
   ArrowBigUp,
   ArrowLeft,
@@ -40,7 +42,7 @@ import { PlanComments } from "./PlanComments";
 
 /** The board photograph a post carries, taken when it was shared. */
 export function previewUrlFor(planId: string): string {
-  return `/api/community/plans/${encodeURIComponent(planId)}/preview`;
+  return appPath(`/api/community/plans/${encodeURIComponent(planId)}/preview`);
 }
 
 export interface DetailKey {

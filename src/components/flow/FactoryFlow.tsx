@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import { ChecklistKeys, useChecklistBoard, checklistCursorStyle } from "./ChecklistMode";
 
 import { emitBoardCameraMove } from "@/lib/board-camera-signal";
@@ -7775,7 +7777,7 @@ const ModeKeys = memo(function ModeKeys() {
                   screens the tooltip is mostly read on. */}
               <div className="border-t border-line pt-3">
                 <img
-                  src={`/mode-art/${key}.webp`}
+                  src={appPath(`/mode-art/${key}.webp`)}
                   alt=""
                   width={640}
                   draggable={false}

@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import type { ReactNode } from "react";
 import type { ResourceAmount } from "@/lib/model/types";
 import type { NeiPositionedSlot } from "@/lib/nei/layout";
@@ -111,8 +113,8 @@ function AspectGlyph({
       <span
         className="absolute inset-0 bg-black opacity-45"
         style={{
-          WebkitMaskImage: `url('${iconPath}')`,
-          maskImage: `url('${iconPath}')`,
+          WebkitMaskImage: `url('${appPath(iconPath)}')`,
+          maskImage: `url('${appPath(iconPath)}')`,
           WebkitMaskSize: "100% 100%",
           maskSize: "100% 100%",
           transform: "translate(1px, 1px)",
@@ -122,8 +124,8 @@ function AspectGlyph({
         className="absolute inset-0"
         style={{
           backgroundColor: color ?? "#ffffff",
-          WebkitMaskImage: `url('${iconPath}')`,
-          maskImage: `url('${iconPath}')`,
+          WebkitMaskImage: `url('${appPath(iconPath)}')`,
+          maskImage: `url('${appPath(iconPath)}')`,
           WebkitMaskSize: "100% 100%",
           maskSize: "100% 100%",
         }}

@@ -1,5 +1,7 @@
 "use client";
 
+import { appFetch, appPath } from "@/lib/app-path";
+
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Leaf, Search, Zap } from "lucide-react";
@@ -113,7 +115,7 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
     const controller = new AbortController();
     const timer = setTimeout(async () => {
       try {
-        const response = await fetch(
+        const response = await appFetch(
           `/api/renewables?${new URLSearchParams({ q, status, offset: String(offset) })}`,
           { signal: controller.signal },
         );
@@ -137,7 +139,7 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
     const controller = new AbortController();
     async function load() {
       try {
-        const response = await fetch(
+        const response = await appFetch(
           `/api/renewables?${new URLSearchParams({ resource: selected })}`,
           { signal: controller.signal },
         );
@@ -156,7 +158,7 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
 
   function select(key: string) {
     setSelected(key);
-    window.history.replaceState(null, "", `/renewables?${new URLSearchParams({ resource: key })}`);
+    window.history.replaceState(null, "", appPath(`/renewables?${new URLSearchParams({ resource: key })}`));
   }
   const currentDetail = detail?.resource.key === selected ? detail : undefined;
   const loading = requestKey !== searchKey;

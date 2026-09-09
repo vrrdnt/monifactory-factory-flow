@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import type { NeiSlotCommand } from "@/lib/nei-renderer/core/commands";
 
 export function NeiSlotView({ command, scale }: { command: NeiSlotCommand; scale: number }) {
@@ -16,7 +18,7 @@ export function NeiSlotView({ command, scale }: { command: NeiSlotCommand; scale
         height: command.height * scale,
         backgroundColor:
           command.framed === false || hasTexture ? undefined : "rgba(0, 0, 0, 0.18)",
-        backgroundImage: hasTexture ? `url('${command.texturePath}')` : undefined,
+        backgroundImage: hasTexture ? `url('${appPath(command.texturePath!)}')` : undefined,
         backgroundSize: hasTexture ? "100% 100%" : undefined,
       }}
     />

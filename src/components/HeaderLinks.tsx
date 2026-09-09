@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import { Bug, Compass, Heart, Library, Leaf } from "lucide-react";
 import { leaveLibrary, openLibrary } from "@/lib/library/library-tab";
 import { openWelcomeTab } from "@/lib/welcome/welcome-tab";
@@ -56,7 +58,7 @@ export function HeaderLinks() {
         <GithubMark />
       </HeaderLink>
       <a
-        href="/renewables"
+        href={appPath("/renewables")}
         title="Renewable resource guide"
         aria-label="Renewable resource guide"
         className="inline-flex h-7 w-7 items-center justify-center rounded border border-emerald-800 bg-surface text-emerald-300 hover:bg-surface-raised"
@@ -153,9 +155,8 @@ export function MenuLinks({ onAction }: { onAction?: () => void }) {
         <GithubMark />
       </MenuLink>
       <a
-        href="/renewables"
+        href={appPath("/renewables")}
         className="flex h-10 items-center gap-2.5 rounded px-2 text-sm text-emerald-300 hover:bg-surface-sunken"
-        onClick={onAction}
       >
         <Leaf className="h-4 w-4" aria-hidden /> Renewable resource guide
       </a>

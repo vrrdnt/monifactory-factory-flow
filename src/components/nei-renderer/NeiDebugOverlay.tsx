@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import type { NeiDrawCommand } from "@/lib/nei-renderer/core/commands";
 import { NEI_TEXTURES } from "@/lib/nei-renderer/theme/textures";
 
@@ -40,7 +42,7 @@ export function NeiDebugOverlay({
           top: command.y * scale,
           width: command.width * scale,
           height: command.height * scale,
-          backgroundImage: `url('${NEI_TEXTURES.progressBar(command.texture ?? "arrow")}')`,
+          backgroundImage: `url('${appPath(NEI_TEXTURES.progressBar(command.texture ?? "arrow"))}')`,
           backgroundPosition: frameOffset === undefined ? "top left" : `0 -${frameOffset}px`,
           backgroundSize: frameOffset === undefined ? "100% 200%" : "100% auto",
         }}
@@ -61,7 +63,7 @@ export function NeiDebugOverlay({
         width: command.width * scale,
         height: command.height * scale,
         opacity: command.opacity,
-        backgroundImage: `url('${command.imagePath}')`,
+        backgroundImage: `url('${appPath(command.imagePath)}')`,
         backgroundSize: hasSource
           ? `${command.textureWidth! * scaleX}px ${command.textureHeight! * scaleY}px`
           : "100% 100%",

@@ -1,5 +1,7 @@
 "use client";
 
+import { appFetch } from "@/lib/app-path";
+
 import type {
   DesignUpsertBody,
   FolderUpsertBody,
@@ -35,14 +37,14 @@ async function parseJsonOrThrow<T>(response: Response): Promise<T> {
 }
 
 export async function fetchRemoteLibrary(): Promise<LibraryListResponse> {
-  const response = await fetch("/api/library", { cache: "no-store" });
+  const response = await appFetch("/api/library", { cache: "no-store" });
   return parseJsonOrThrow<LibraryListResponse>(response);
 }
 
 export async function fetchRemoteDesignPlan(
   id: string,
 ): Promise<{ design: RemoteDesignMeta; plan: unknown }> {
-  const response = await fetch(`/api/library/designs/${encodeURIComponent(id)}`, {
+  const response = await appFetch(`/api/library/designs/${encodeURIComponent(id)}`, {
     cache: "no-store",
   });
   return parseJsonOrThrow<{ design: RemoteDesignMeta; plan: unknown }>(response);
@@ -52,7 +54,7 @@ export async function pushRemoteDesign(
   id: string,
   body: DesignUpsertBody,
 ): Promise<{ design: RemoteDesignMeta; behind: boolean }> {
-  const response = await fetch(`/api/library/designs/${encodeURIComponent(id)}`, {
+  const response = await appFetch(`/api/library/designs/${encodeURIComponent(id)}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -61,7 +63,7 @@ export async function pushRemoteDesign(
 }
 
 export async function deleteRemoteDesign(id: string): Promise<void> {
-  const response = await fetch(`/api/library/designs/${encodeURIComponent(id)}`, {
+  const response = await appFetch(`/api/library/designs/${encodeURIComponent(id)}`, {
     method: "DELETE",
   });
   await parseJsonOrThrow<{ ok: true }>(response);
@@ -71,7 +73,7 @@ export async function pushRemoteFolder(
   id: string,
   body: FolderUpsertBody,
 ): Promise<{ folder: RemoteFolder; behind: boolean }> {
-  const response = await fetch(`/api/library/folders/${encodeURIComponent(id)}`, {
+  const response = await appFetch(`/api/library/folders/${encodeURIComponent(id)}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -80,7 +82,7 @@ export async function pushRemoteFolder(
 }
 
 export async function deleteRemoteFolder(id: string): Promise<void> {
-  const response = await fetch(`/api/library/folders/${encodeURIComponent(id)}`, {
+  const response = await appFetch(`/api/library/folders/${encodeURIComponent(id)}`, {
     method: "DELETE",
   });
   await parseJsonOrThrow<{ ok: true }>(response);

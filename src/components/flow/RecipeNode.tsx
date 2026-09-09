@@ -1,5 +1,7 @@
 "use client";
 
+import { appPath } from "@/lib/app-path";
+
 import { Handle, Position, type Node, type NodeProps } from "@xyflow/react";
 import {
   Fragment,
@@ -2532,7 +2534,7 @@ function GlanceMachineArt({
     return (
       // eslint-disable-next-line @next/next/no-img-element
       <img
-        src={artSrc}
+        src={appPath(artSrc)}
         alt=""
         draggable={false}
         className={["object-contain [image-rendering:pixelated]", box, shadow].join(" ")}
@@ -3351,7 +3353,7 @@ function PowerStructureWindow({
       {art ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={art}
+          src={appPath(art)}
           alt=""
           draggable={false}
           className={`max-h-full max-w-full object-contain [image-rendering:pixelated] ${shadow}`}

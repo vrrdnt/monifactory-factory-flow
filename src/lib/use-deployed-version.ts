@@ -1,5 +1,7 @@
 "use client";
 
+import { appFetch } from "@/lib/app-path";
+
 import { useEffect, useState } from "react";
 import { compareVersions } from "@/lib/whats-new";
 import { APP_VERSION } from "@/lib/version";
@@ -33,7 +35,7 @@ export function useDeployedVersion(): string | undefined {
         return;
       }
       try {
-        const response = await fetch("/api/version", { cache: "no-store" });
+        const response = await appFetch("/api/version", { cache: "no-store" });
         if (!response.ok) {
           return;
         }

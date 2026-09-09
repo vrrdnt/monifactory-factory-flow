@@ -1,3 +1,4 @@
+import { appPath } from "@/lib/app-path";
 import type { Metadata } from "next";
 import { FactoryPlannerApp } from "@/components/FactoryPlannerApp";
 import { describePlanRow, getPublicPlanRow } from "@/lib/server/plan-preview";
@@ -24,9 +25,9 @@ export async function generateMetadata({
   }
 
   const description = describePlanRow(row);
-  const planUrl = `/?plan=${encodeURIComponent(row.id)}`;
+  const planUrl = appPath(`/?plan=${encodeURIComponent(row.id)}`);
   const image = {
-    url: `/api/community/plans/${encodeURIComponent(row.id)}/card`,
+    url: appPath(`/api/community/plans/${encodeURIComponent(row.id)}/card`),
     width: 1200,
     height: 630,
     alt: `${row.name} on Monifactory Planner`,

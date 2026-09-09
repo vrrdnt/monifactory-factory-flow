@@ -1,0 +1,10 @@
+{
+  "name": "moni-planner-route",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-09-09",
+  "workers_dev": false,
+  "routes": [{ "pattern": "vrrdnt.dev/moni-planner*", "zone_name": "vrrdnt.dev" }],
+  "vars": {
+    "PLANNER_ORIGIN": "https://planner-origin.vrrdnt.dev",
+  },
+}

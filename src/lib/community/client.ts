@@ -1,5 +1,7 @@
 "use client";
 
+import { appFetch } from "@/lib/app-path";
+
 import { randomUUID } from "@/lib/random-id";
 import type {
   CommunityComment,
@@ -61,7 +63,7 @@ export async function listCommunityPlans(
   if (params.pageSize) search.set("pageSize", String(params.pageSize));
   search.set("deviceId", getDeviceId());
 
-  const response = await fetch(`/api/community/plans?${search.toString()}`);
+  const response = await appFetch(`/api/community/plans?${search.toString()}`);
   return parseJsonOrThrow<CommunityPlanListResponse>(response);
 }
 
@@ -74,7 +76,7 @@ export async function getCommunityPlan(
   if (options.countView === false) {
     search.set("countView", "0");
   }
-  const response = await fetch(
+  const response = await appFetch(
     `/api/community/plans/${encodeURIComponent(planId)}?${search.toString()}`,
   );
   const body = await parseJsonOrThrow<{ plan: CommunityPlanSummary }>(response);
@@ -84,7 +86,7 @@ export async function getCommunityPlan(
 export async function downloadCommunityPlan(
   planId: string,
 ): Promise<{ name: string; plan: unknown }> {
-  const response = await fetch(`/api/community/plans/${encodeURIComponent(planId)}/download`, {
+  const response = await appFetch(`/api/community/plans/${encodeURIComponent(planId)}/download`, {
     method: "POST",
   });
   return parseJsonOrThrow<{ name: string; plan: unknown }>(response);
@@ -94,7 +96,7 @@ export async function voteCommunityPlan(
   planId: string,
   value: 1 | -1,
 ): Promise<CommunityVoteResponse> {
-  const response = await fetch(`/api/community/plans/${encodeURIComponent(planId)}/vote`, {
+  const response = await appFetch(`/api/community/plans/${encodeURIComponent(planId)}/vote`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ deviceId: getDeviceId(), value }),
@@ -105,7 +107,7 @@ export async function voteCommunityPlan(
 export async function uploadCommunityPlan(
   upload: Omit<CommunityUploadRequest, "deviceId">,
 ): Promise<CommunityUploadResponse> {
-  const response = await fetch("/api/community/plans", {
+  const response = await appFetch("/api/community/plans", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ ...upload, deviceId: getDeviceId() }),
@@ -117,7 +119,7 @@ export async function updateCommunityPlan(
   planId: string,
   upload: Omit<CommunityUploadRequest, "deviceId">,
 ): Promise<{ id: string }> {
-  const response = await fetch(`/api/community/plans/${encodeURIComponent(planId)}`, {
+  const response = await appFetch(`/api/community/plans/${encodeURIComponent(planId)}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(upload),
@@ -141,7 +143,7 @@ export async function patchCommunityPlan(
     plan?: unknown;
   },
 ): Promise<{ id: string }> {
-  const response = await fetch(`/api/community/plans/${encodeURIComponent(planId)}`, {
+  const response = await appFetch(`/api/community/plans/${encodeURIComponent(planId)}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(fields),
@@ -157,7 +159,7 @@ export async function patchCommunityPlan(
 export async function uploadPlanPreview(planId: string, image: Blob): Promise<void> {
   const form = new FormData();
   form.set("image", image);
-  const response = await fetch(
+  const response = await appFetch(
     `/api/community/plans/${encodeURIComponent(planId)}/preview`,
     { method: "POST", body: form },
   );
@@ -165,7 +167,7 @@ export async function uploadPlanPreview(planId: string, image: Blob): Promise<vo
 }
 
 export async function deleteCommunityPlan(planId: string): Promise<void> {
-  const response = await fetch(`/api/community/plans/${encodeURIComponent(planId)}`, {
+  const response = await appFetch(`/api/community/plans/${encodeURIComponent(planId)}`, {
     method: "DELETE",
   });
   await parseJsonOrThrow<{ ok: boolean }>(response);
@@ -176,7 +178,7 @@ export async function deleteCommunityPlan(planId: string): Promise<void> {
 // ---------------------------------------------------------------------------
 
 export async function fetchCurrentUser(): Promise<CommunityUser | undefined> {
-  const response = await fetch("/api/community/auth/me");
+  const response = await appFetch("/api/community/auth/me");
   const body = (await response.json().catch(() => undefined)) as
     | { user: CommunityUser | null }
     | undefined;
@@ -187,7 +189,7 @@ export async function registerCommunityUser(
   username: string,
   password: string,
 ): Promise<CommunityUser> {
-  const response = await fetch("/api/community/auth/register", {
+  const response = await appFetch("/api/community/auth/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
@@ -199,7 +201,7 @@ export async function loginCommunityUser(
   username: string,
   password: string,
 ): Promise<CommunityUser> {
-  const response = await fetch("/api/community/auth/login", {
+  const response = await appFetch("/api/community/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password }),
@@ -208,7 +210,7 @@ export async function loginCommunityUser(
 }
 
 export async function logoutCommunityUser(): Promise<void> {
-  await fetch("/api/community/auth/logout", { method: "POST" });
+  await appFetch("/api/community/auth/logout", { method: "POST" });
 }
 
 /**
@@ -248,7 +250,7 @@ export function untagCommunityPlan(plan: unknown): unknown {
 }
 
 export async function listPlanComments(planId: string): Promise<CommunityComment[]> {
-  const response = await fetch(`/api/community/plans/${encodeURIComponent(planId)}/comments`, {
+  const response = await appFetch(`/api/community/plans/${encodeURIComponent(planId)}/comments`, {
     cache: "no-store",
   });
   const body = await parseJsonOrThrow<{ comments: CommunityComment[] }>(response);
@@ -256,7 +258,7 @@ export async function listPlanComments(planId: string): Promise<CommunityComment
 }
 
 export async function postPlanComment(planId: string, text: string): Promise<CommunityComment> {
-  const response = await fetch(`/api/community/plans/${encodeURIComponent(planId)}/comments`, {
+  const response = await appFetch(`/api/community/plans/${encodeURIComponent(planId)}/comments`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ body: text }),
@@ -266,7 +268,7 @@ export async function postPlanComment(planId: string, text: string): Promise<Com
 }
 
 export async function deletePlanComment(planId: string, commentId: string): Promise<void> {
-  const response = await fetch(
+  const response = await appFetch(
     `/api/community/plans/${encodeURIComponent(planId)}/comments/${encodeURIComponent(commentId)}`,
     { method: "DELETE" },
   );
