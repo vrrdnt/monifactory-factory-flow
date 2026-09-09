@@ -3,8 +3,11 @@ import { loadRenewables } from "@/lib/renewables/server";
 
 export async function GET(request: NextRequest) {
   try {
-    const guide = await loadRenewables();
     const params = request.nextUrl.searchParams;
+    const microverse = params.get("microverse") ?? "true";
+    if (!["true", "false"].includes(microverse))
+      return NextResponse.json({ error: "Invalid Microverse filter." }, { status: 400 });
+    const guide = await loadRenewables(microverse === "true");
     const resource = params.get("resource");
     if (resource) {
       const detail = guide.detail(resource);

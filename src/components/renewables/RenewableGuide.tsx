@@ -99,30 +99,38 @@ function conditionText(c: Record<string, unknown>) {
     .join(" · ");
 }
 
-export function RenewableGuide({ initialResource }: { initialResource: string }) {
+export function RenewableGuide({
+  initialResource,
+  initialIncludeMicroverse = true,
+}: {
+  initialResource: string;
+  initialIncludeMicroverse?: boolean;
+}) {
   const [q, setQ] = useState("");
   const [status, setStatus] = useState("renewable");
   const [offset, setOffset] = useState(0);
+  const [includeMicroverse, setIncludeMicroverse] = useState(initialIncludeMicroverse);
   const [selected, setSelected] = useState(initialResource);
   const [search, setSearch] = useState<GuideSearch>();
   const [detail, setDetail] = useState<GuideDetail>();
+  const [detailKey, setDetailKey] = useState("");
   const [searchError, setSearchError] = useState("");
   const [detailError, setDetailError] = useState("");
   const [searchKey, setSearchKey] = useState("");
-  const requestKey = `${q}|${status}|${offset}`;
+  const requestKey = `${q}|${status}|${offset}|${includeMicroverse}`;
 
   useEffect(() => {
     const controller = new AbortController();
     const timer = setTimeout(async () => {
       try {
         const response = await appFetch(
-          `/api/renewables?${new URLSearchParams({ q, status, offset: String(offset) })}`,
+          `/api/renewables?${new URLSearchParams({ q, status, offset: String(offset), microverse: String(includeMicroverse) })}`,
           { signal: controller.signal },
         );
         const data = await response.json();
         if (!response.ok) throw new Error(data.error);
         setSearch(data);
-        setSearchKey(`${q}|${status}|${offset}`);
+        setSearchKey(`${q}|${status}|${offset}|${includeMicroverse}`);
         setSearchError("");
       } catch (error) {
         if (!controller.signal.aborted)
@@ -133,19 +141,20 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
       clearTimeout(timer);
       controller.abort();
     };
-  }, [q, status, offset]);
+  }, [q, status, offset, includeMicroverse]);
 
   useEffect(() => {
     const controller = new AbortController();
     async function load() {
       try {
         const response = await appFetch(
-          `/api/renewables?${new URLSearchParams({ resource: selected })}`,
+          `/api/renewables?${new URLSearchParams({ resource: selected, microverse: String(includeMicroverse) })}`,
           { signal: controller.signal },
         );
         const data = await response.json();
         if (!response.ok) throw new Error(data.error);
         setDetail(data);
+        setDetailKey(`${selected}|${includeMicroverse}`);
         setDetailError("");
       } catch (error) {
         if (!controller.signal.aborted)
@@ -154,13 +163,22 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
     }
     void load();
     return () => controller.abort();
-  }, [selected]);
+  }, [selected, includeMicroverse]);
+
+  useEffect(() => {
+    window.history.replaceState(
+      null,
+      "",
+      appPath(
+        `/renewables?${new URLSearchParams({ resource: selected, microverse: String(includeMicroverse) })}`,
+      ),
+    );
+  }, [selected, includeMicroverse]);
 
   function select(key: string) {
     setSelected(key);
-    window.history.replaceState(null, "", appPath(`/renewables?${new URLSearchParams({ resource: key })}`));
   }
-  const currentDetail = detail?.resource.key === selected ? detail : undefined;
+  const currentDetail = detailKey === `${selected}|${includeMicroverse}` ? detail : undefined;
   const loading = requestKey !== searchKey;
 
   return (
@@ -183,9 +201,9 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
           </Link>
         </header>
         <p className="mb-5 max-w-4xl text-sm leading-6 text-fg-muted">
-          Find passive supplies of base materials and fluids, from iron and tin to ethanol.
-          Each route separates ongoing supply from
-          the equipment, seeds and catalysts you need to get started.
+          Find passive supplies of base materials and fluids, from iron and tin to ethanol. Each
+          route separates ongoing supply from the equipment, seeds and catalysts you need to get
+          started.
         </p>
         <nav aria-label="Common renewable resources" className="mb-5 flex flex-wrap gap-2">
           {[
@@ -267,6 +285,21 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
               <option value="all">Any route status</option>
               <option value="unproven">No proven route yet</option>
             </select>
+            <label className="mt-3 flex cursor-pointer items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={includeMicroverse}
+                onChange={(e) => {
+                  setIncludeMicroverse(e.target.checked);
+                  setOffset(0);
+                }}
+                className="h-4 w-4 accent-emerald-500"
+              />
+              Include Microverse missions
+            </label>
+            <p className="mt-1 text-xs text-fg-subtle">
+              Applies to normal and hostile missions, including their downstream resources.
+            </p>
             {searchError ? (
               <p role="alert" className="mt-4 text-sm text-red-300">
                 {searchError}

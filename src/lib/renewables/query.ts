@@ -1,7 +1,35 @@
 import type { GuideData, GuideDetail, GuideProof, GuideRoute, GuideSearch } from "./types";
 import { isBaseResource } from "./base-resources";
+import {
+  renewableClosure,
+  validateRenewableProofs,
+} from "../../../tools/monifactory/renewable-graph.mjs";
 
-export function createGuideQuery(data: GuideData) {
+export function createGuideQuery(data: GuideData, includeMicroverse = true) {
+  if (!includeMicroverse) {
+    const missions = new Set(
+      data.recipes.filter((r) => r.machine === "gtceu:microverse").map((r) => r.id),
+    );
+    const recipes = data.recipes.filter(
+      (r) => !missions.has(r.id) && !r.loop?.steps.some((s) => missions.has(s.recipeId)),
+    );
+    const sources = data.sources.filter(
+      (s) => s.id !== "normal_microverse" && s.id !== "hostile_microverse",
+    );
+    const proofs = renewableClosure(recipes, sources);
+    validateRenewableProofs(recipes, sources, proofs);
+    data = {
+      ...data,
+      recipes,
+      sources,
+      proofs: Object.fromEntries(proofs),
+      coverage: {
+        ...data.coverage,
+        renewableResources: data.resources.filter((r) => r.kind !== "utility" && proofs.has(r.key))
+          .length,
+      },
+    };
+  }
   const resources = new Map(data.resources.map((r) => [r.key, r]));
   const recipes = new Map(data.recipes.map((r) => [r.id, r]));
   const sources = new Map(data.sources.map((s) => [s.id, s]));
