@@ -1,239 +1,81 @@
 # Monifactory Factory Flow
 
-Work in progress: a fork of [jackwrichards/gtnh-factory-flow](https://github.com/jackwrichards/gtnh-factory-flow), targeting **Monifactory 0.13.7 Expert** (Minecraft 1.20.1, Forge 47.4.13, GTCEu 7.5.3, MoniLabs 0.21.6).
+A factory planner and calculator for **Monifactory 0.13.7 Expert**, adapted from [jackwrichards/gtnh-factory-flow](https://github.com/jackwrichards/gtnh-factory-flow).
 
-The first milestone is a verified runtime catalog. The included KubeJS exporter reads final GT recipes, machine definitions, item/fluid registries and tags from a prepared instance. The collector validates the export and links recipe types to real registered machines. It preserves native recipe details instead of guessing machine behavior.
+**[Open the planner](https://vrrdnt.dev/moni-planner)** · **[Renewable-resource guide](https://vrrdnt.dev/moni-planner/renewables)**
 
-The ordinary-machine calculator now matches **17,952 live reference cases across 272 machines**. Its separate adapter normalizes **25,010 recipes**, retaining tags, catalysts, circuits and output chances, with an explicit exclusion report.
+Search recipes, connect production chains, and calculate throughput, machine counts and power. The renewable-resource guide traces replenishable inputs and separates ongoing requirements from one-time equipment, seeds and catalysts.
 
-Inventory limits now narrow that subset to **24,877 recipes**, checked against **25,120 live inventory-matching cases**. Converted recipes have an explicit Monifactory calculation path through the board solver, including power, throughput and machine counts. GTNH bonuses and automatic container conversions are disabled for those recipes.
+## What's included
 
-The browser defaults to Monifactory, with searchable recipe/resource indexes, runtime textures and a renewable-resource guide. The exported 0.13.7 Expert dataset is included in the repository and Docker image, ready to use.
+- **24,877 recipes** in the ordinary-machine board dataset, with searchable ingredients, machine selection and runtime textures.
+- A Monifactory calculation path for verified ordinary electric machines, including overclocking and inventory limits.
+- **9,981 renewable resource routes**, with dependency steps, startup requirements and explicit operating assumptions.
+- Browser-local plan saving and JSON import/export.
+- The exported dataset, search indexes, texture atlases and renewable guide, bundled in Git and the Docker image. No Minecraft installation or export is needed to use the planner.
 
-For Docker hosting at **vrrdnt.dev/moni-planner**, see [the self-hosting guide](docs/self-hosting.md). It covers Compose, image updates and Cloudflare Tunnel routing alongside the existing GitHub Pages portfolio.
+## Supported scope
 
-See [the Monifactory setup guide](docs/monifactory.md) for preparation, export, calculation checks, limitations and the port roadmap. Full catalogs and local instance files are not committed; the compact machine-reference fixture is included for regression tests.
+This is a work in progress for **0.13.7 Expert**, not a complete calculator for every Monifactory machine or recipe. The pinned runtime uses Minecraft 1.20.1, Forge 47.4.13, GTCEu 7.5.3 and MoniLabs 0.21.6.
 
-```powershell
-npm ci
-npm run monifactory:prepare -- "C:\path\to\Prism\instances\Monifactory-PLANNER" "Survival"
-# Open the copied world, or use /reload if it is already running.
-npm run monifactory:collect -- "C:\path\to\minecraft\local\monifactory-planner\<requestId>" ".pipeline\monifactory\0.13.7-expert"
-npm run monifactory:test
-```
+Ordinary-machine calculations were checked against **17,952 live modifier reference cases** and **25,120 live inventory-matching cases**. Unsupported conditions, NBT-sensitive ingredients and machine behavior are excluded from the board dataset rather than assigned guessed formulas. GTNH-specific bonuses and automatic container conversions are disabled for Monifactory recipes.
 
-The upstream MIT license and attribution are retained. The original README below documents the inherited GTNH implementation; its hosting instructions do not describe this fork.
+The renewable guide covers more recipe types than the board calculator. A guide route establishes material availability under its listed assumptions; it does not establish machine speed, power sizing or full board support for that machine. Multiblock calculations, generators, additional recipe serializers and stateful behavior still need further work. Chance outputs use long-run expectations, not guaranteed short-term production.
 
----
+See the [Monifactory technical guide](docs/monifactory.md) for reference evidence, coverage limits and the export pipeline.
 
-## Upstream: GTNH Factory Flow
+## Run locally
 
-GTNH Factory Flow is a Next.js planning tool for GregTech New Horizons production chains.
-The long-term goal is to plan an entire base: recipe flowcharts, machine counts,
-utilization, EU/t, fuel demand, surplus, deficits, bottlenecks, and versioned recipe data.
-
-The current MVP is dataset-driven. It does not parse a modpack in the browser and does
-not provide manual recipe entry. Real recipe data comes from a normalized offline export
-generated by the GTNH Calculation Oracle.
-
-## Current MVP
-
-- Import of normalized GTNH recipe datasets generated outside the browser.
-- Read-only recipe browser with NEI-style recipe-map pages and recipe visualization.
-- Real texture icons from the GTNH pipeline: rendered `ItemStack` PNGs from the client
-  first, then static Minecraft PNG assets from the selected GTNH mods. Missing icons
-  remain blank; the app does not invent item art.
-- React Flow factory graph with selectable NEI-style recipe nodes and resource-slot
-  handles for connecting a chosen output to a chosen input.
-- Pure TypeScript throughput solver under `src/lib/solver/`.
-- Local persistence for plans with `localStorage`.
-- Import/export of factory plans as validated JSON.
-- Fuel estimate abstraction with canonical GTNH benzene, biodiesel, and steam profiles.
-- Legacy biodiesel demo JSON remains only for solver/import tests; it is not exposed as
-  the production recipe source in the UI.
-- Unit tests for the solver and JSON import/export.
-
-## Limitations
-
-- No GTNH recipe dataset is bundled in git. Recipe data is generated by the GitHub Action
-  from a real GTNH client/exporter and then published to the server dataset volume.
-- Icons are rendered by the GTNH client and published as standalone PNGs under
-  `textures/icons/`; the browser no longer loads giant atlas pages at runtime.
-- Some stacks may still stay iconless if the GTNH client renderer fails for that stack.
-- Runtime calculations are read from oracle dataset variants when available.
-- Ore dictionary resolution, exact tier metadata, multiblock rules, maintenance,
-  pollution, and advanced chance distribution modeling are not fully solved yet.
-- The browser app consumes normalized dataset data. Raw oracle output should be
-  normalized before it reaches the UI.
-
-## Run
+Use **Node.js 24**:
 
 ```bash
-npm install
+git clone https://github.com/vrrdnt/monifactory-factory-flow.git
+cd monifactory-factory-flow
+npm ci
 npm run dev
 ```
 
-Open `http://localhost:3000`.
+Open [localhost:3000](http://localhost:3000). The included Monifactory dataset loads automatically. Core planning and the renewable guide do not require accounts, analytics or external database credentials.
 
-## Test
+## Run with Docker
+
+The published image includes the application and dataset:
 
 ```bash
-npm run test
-npm run lint
+docker run -d --name moni-planner \
+  --restart unless-stopped \
+  -p 127.0.0.1:8580:3000 \
+  ghcr.io/vrrdnt/monifactory-factory-flow:latest
+```
+
+Open [localhost:8580/moni-planner](http://localhost:8580/moni-planner) on the Docker host. The image is built for `/moni-planner`; a different prefix requires rebuilding. No dataset volume is needed. Plans are stored in your browser, so export important plans to JSON for backup.
+
+- **[Portainer deployment](docs/portainer.md)** — add the planner to an existing stack and Docker network; configure optional Business Edition webhook updates.
+- **[Self-hosting and Cloudflare routing](docs/self-hosting.md)** — Compose, build arguments, tunnel setup, updates and rollback.
+
+The hosted URL uses a Cloudflare Worker to route `/moni-planner*` through a Tunnel to the container, while the rest of `vrrdnt.dev` remains on GitHub Pages. Use Cloudflare **Full (strict)** TLS for the GitHub Pages origin. The planner requires its Next.js server APIs and cannot be hosted on GitHub Pages alone.
+
+**GitHub Pages 404 at the planner URL?** The apex DNS records must be **Proxied (orange cloud)** in Cloudflare, with their GitHub Pages targets retained. The `moni-planner-route` Worker must have the route `vrrdnt.dev/moni-planner*`. If DNS still resolves directly to GitHub Pages, the Worker never receives the request. Verify the tunnel origin first, then the public `/moni-planner/api/version` endpoint. See [routing setup](docs/self-hosting.md#3-route-just-the-planner-path).
+
+## Updates and checks
+
+The `CI` workflow runs typecheck and tests. Successful `main` builds publish `latest` and immutable `sha-<commit>` image tags to GHCR. If the `PORTAINER_WEBHOOK_URL` Actions secret is configured, publishing also triggers the planner container's Portainer webhook. See the Portainer guide for reachability requirements and rollback.
+
+The inherited `Deploy site`, `Deploy Umami` and `GTNH dataset pipeline` workflows belong to upstream infrastructure and should remain disabled in this fork. Monifactory dataset updates are generated separately and committed with the application.
+
+Run the checks with Node.js 24:
+
+```bash
 npm run typecheck
+npm test
+npm run monifactory:test
 npm run build
 ```
 
-## Deployment Branches
+To regenerate recipes or textures, follow the [export instructions](docs/monifactory.md) using a copied, matching Expert instance. Published serving files live in `public/datasets/monifactory/`; raw exports, staging catalogs and local instance files remain outside Git.
 
-The site workflow deploys two isolated app instances from two branches:
+## Credits and license
 
-- `main` deploys the production app to port `8580` with systemd service
-  `gtnh-factory-flow.service`.
-- `develop` deploys the development app to port `8581` with systemd service
-  `gtnh-factory-flow-dev.service`.
+This fork adapts [jackwrichards/gtnh-factory-flow](https://github.com/jackwrichards/gtnh-factory-flow), the project behind [gtnhplanner.com](https://gtnhplanner.com), which began from [Samiracle64/gtnh-factory-flow](https://github.com/Samiracle64/gtnh-factory-flow). Their copyright notices and the [MIT license](LICENSE) are retained.
 
-Both instances use separate release directories under `$HOME/apps/`, but share the same
-persistent dataset volume at `$HOME/data/gtnh-factory-flow/datasets/gtnh`. Each release
-gets `public/datasets/gtnh` as a symlink to that shared volume, so images, manifests, and
-recipe JSON are generated once and consumed by both dev and prod.
-
-## Analytics
-
-Umami is deployed through the manual `Deploy Umami` GitHub Actions workflow. It runs
-Umami and Postgres with Docker Compose on the self-hosted runner, exposed on port `8582`.
-After first login, change the default `admin` / `umami` password.
-
-The site includes the Umami script only when these build-time variables exist in
-`$HOME/apps/<deploy-name>/analytics.env` on the runner:
-
-```bash
-NEXT_PUBLIC_UMAMI_SCRIPT_URL=/umami/gtnh-stats.js
-NEXT_PUBLIC_UMAMI_HOST_URL=/umami
-NEXT_PUBLIC_UMAMI_WEBSITE_ID=<website-id-from-umami>
-```
-
-Use `$HOME/apps/gtnh-factory-flow/analytics.env` for prod and
-`$HOME/apps/gtnh-factory-flow-dev/analytics.env` for dev.
-
-The deployment workflow writes the production env file with a stable website id for
-`gtnhplanner.com`. Re-run the site deploy after first deploying Umami so Next.js includes
-the tracking script in the production build.
-
-## Load Real Recipes
-
-On startup the app automatically fetches `/datasets/gtnh/datasets.manifest.json`. If the
-manifest contains versions, it loads `latestStableVersion`, then `latestDailyVersion`, then
-the first listed version. The `GTNH version` selector can switch between manifest entries.
-
-In production, `/datasets/gtnh` is a symlink inside each release that points to the
-persistent server path:
-
-```bash
-$HOME/data/gtnh-factory-flow/datasets/gtnh
-```
-
-That dataset directory is intentionally ignored by git. Local development can either
-create the same `public/datasets/gtnh` symlink or point the UI at a remote manifest.
-
-To use a remote manifest, set:
-
-```bash
-NEXT_PUBLIC_GTNH_DATASET_MANIFEST_URL=https://example.com/datasets/gtnh/datasets.manifest.json
-```
-
-## Public Repository Notes
-
-The repository is prepared so generated GTNH datasets, local logs, archives, build output,
-and environment files stay out of git. Publishing the source should not require bundling
-the recipe dataset or rendered icons. The hosted app still needs either the server symlink
-described above or a public `NEXT_PUBLIC_GTNH_DATASET_MANIFEST_URL`.
-
-Code is licensed under the MIT License. GTNH, Minecraft, mod assets, generated recipe
-datasets, textures, and icons are not included in this repository and remain under their
-respective owners' licenses.
-
-## Dataset Automation
-
-The repository includes `.github/workflows/gtnh-dataset-pipeline.yml`.
-It runs on a daily schedule and through `workflow_dispatch`.
-
-The workflow detects:
-
-- stable releases from `GTNewHorizons/GT-New-Horizons-Modpack`
-- daily builds from `GTNewHorizons/DreamAssemblerXXL`
-
-By default, the workflow runs `tools/dataset-pipeline/scripts/run-gtnh-oracle-export.sh`.
-That script downloads the selected official GTNH build, injects the in-repo
-`gtnhcalcoracle` Forge mod, launches GTNH headlessly, reads the oracle JSON export,
-renders referenced `ItemStack` icons through Minecraft's client renderer, and writes a normalized
-`RecipeDataset` to:
-
-```bash
-$GTNH_DATASET_OUT_DIR/recipes.json
-```
-
-Rendered stack icons are first copied to `$GTNH_DATASET_OUT_DIR/textures/rendered`, then
-finalized to standalone public PNGs under `$GTNH_DATASET_OUT_DIR/textures/icons`. It then
-scans the same GTNH instance/mod jars for real PNG textures under
-`assets/<modid>/textures/items`, `blocks`, and `fluids` for resources that still have no
-icon. No placeholder or generated icons are published.
-
-The command receives `GTNH_INSTANCE_DIR`, `GTNH_RAW_EXPORT_DIR`,
-`GTNH_DATASET_VERSION_ID`, `GTNH_DATASET_VERSION_LABEL`, `GTNH_DATASET_CHANNEL`,
-`GTNH_SOURCE_KIND`, `GTNH_SOURCE_REF`, and `GTNH_SOURCE_URL`.
-
-`GTNH_CLIENT_EXPORT_COMMAND` remains available as an override secret if a different
-exporter runner is needed later. The default path is versioned in this repo and does not
-use a public recipe dump.
-
-1. Generate a normalized `RecipeDataset` JSON from a real GTNH runtime using the
-   GTNH Calculation Oracle.
-2. Publish it under the server dataset volume at `datasets/gtnh/<version>/recipes.json`.
-3. Rebuild `datasets/gtnh/datasets.manifest.json`.
-4. Search the read-only recipe browser.
-5. Use the plus icon to place recipe nodes on the graph.
-6. Connect nodes in the flowchart by dragging from an output slot to a matching input
-   slot. Generic node-to-node connections still fall back to the first matching resource.
-
-## Plan JSON vs Versioned GTNH Dataset
-
-A plan JSON is a user-authored flowchart. It stores graph nodes, edges, fuel profiles,
-targets, and the exact dataset recipes that were placed in the graph so exported plans
-remain inspectable.
-
-A versioned GTNH dataset is generated offline from the GTNH Calculation Oracle. The normalized dataset is served at `/datasets/gtnh/<version>/` but stored
-outside the repository on the production server, with a `datasets.manifest.json`,
-checksums, source metadata, NEI image paths, and stable/daily channel information. The UI
-should consume only the normalized dataset model, never raw exporter output.
-
-## Architecture
-
-- `src/app/` - Next.js App Router entry points.
-- `src/components/` - Application shell, panels, recipe browser, and NEI card.
-- `src/components/flow/` - React Flow canvas and custom nodes.
-- `src/lib/model/` - Normalized domain types, Zod schemas, resource utilities, fuels.
-- `src/lib/solver/` - Pure throughput calculation.
-- `src/lib/import-export/` - JSON import/export validation.
-- `src/lib/datasets/` - Versioned dataset types and schemas.
-- `src/store/` - Zustand client state.
-- `src/examples/` and `examples/` - Legacy demo project loader and JSON example for tests.
-- `docs/` - Design and pipeline documentation.
-- `tools/dataset-pipeline/` - GTNH client/exporter pipeline tooling.
-
-## Roadmap
-
-- Recipe search over imported GTNH datasets.
-- Dataset import from normalized generated JSON.
-- Stable and daily GTNH datasets with manifests.
-- Diff views between GTNH versions.
-- Advanced solver for GTNH overclocks, machines, multis, chance outputs, and ore dictionary.
-- Base-wide planner for power, fuel, logistics, storage, and deficits.
-
-## Credits
-
-This project started as a fork of
-[Samiracle64/gtnh-factory-flow](https://github.com/Samiracle64/gtnh-factory-flow) and has
-since diverged into an independent codebase, developed and deployed separately at
-[gtnhplanner.com](https://gtnhplanner.com). The original work is MIT licensed and that
-copyright is retained in `LICENSE`.
+[Monifactory](https://github.com/Omicron-Industries/Monifactory), Minecraft and the constituent mods belong to their respective authors. Bundled recipe data, textures and icons retain their original authorship and applicable licenses; the code's MIT license does not relicense those assets.
