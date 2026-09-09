@@ -9,19 +9,24 @@
  * way the router will see it. Every wire gets a PROXY route shaped like the
  * router's own - leave at the rim point nearest the far end, run straight
  * for the clean cells, take the shortest octilinear way with its one
- * diagonal centred, land straight - and proxy routes are scored
- *
- *   crossings x CROSS + wires driven through a card x BLOCKED + length.
+ * diagonal centred, land straight - and proxy routes are scored IN THE
+ * ROUTER'S OWN POINTS (Jack, 2026-09-08: "bring the points into stage
+ * one"): length, bends at the turn45/turn90 dials, crossings at the
+ * crossing dial weighing the heavier wire, every wire counted its
+ * wireWeight (from its width) times over, plus a detour estimate for
+ * every card a proxy path would have to go round.
  *
  * The SEARCH keeps the column discipline the layered pass gave the island:
  * a state is the order of cards in each column, each column's vertical
  * offset, the air above each card, and how far along its machine's side
  * each satellite drawer sits. Positions are DERIVED from that by a placer,
  * so every trial is a tidy layout - columns stay columns, rows stay rows.
- * Simulated annealing over swaps, moves between neighbouring columns and
- * offset nudges hunts the score down; the real router then judges the few
- * best candidates and the fewest actual crossings wins. The proxy knows
- * the shape of a wire; the router knows the wire.
+ * Simulated annealing over swaps, hops to any column flow allows (a drawer
+ * may share a column with its partners and sit in the gap between them),
+ * moves to a partner's side, and offset nudges hunts the score down; the
+ * real router then judges the few best candidates and the fewest actual
+ * POINTS wins. The proxy knows the shape of a wire; the router knows the
+ * wire.
  *
  * Pure and deterministic: the RNG is seeded from the island's ids.
  */
@@ -33,7 +38,8 @@ import {
   type GridObstacle,
   type GridRouteRequest,
 } from "@/components/flow/grid-edge-router";
-import { DEFAULT_ROUTER_TUNING, getRouterTuning } from "@/components/flow/router-tuning";
+import { DEFAULT_ROUTER_TUNING, getRouterTuning, type RouterTuning } from "@/components/flow/router-tuning";
+import { measureWireRoutes, routePoints, wireWeight } from "./route-metrics";
 
 export interface OptimizeCard {
   id: string;
@@ -57,7 +63,10 @@ export interface OptimizeCard {
 export interface OptimizeWire {
   source: string;
   target: string;
+  /** Fallback weight when no width is known. */
   weight?: number;
+  /** The stroke the wire routes at, in px: sets its weight (wireWeight). */
+  width?: number;
   /**
    * Port rows, from the card's top: where the wire leaves the source's
    * right side and enters the target's left side when the far card is on
@@ -80,13 +89,23 @@ export interface OptimizeOptions {
   /** Annealing trials; scales with the island by default. */
   trials?: number;
   /**
-   * The judge of the finalists: given every card's top-left, the number of
-   * crossings the board's real wires would have there. The host supplies
-   * one built on the board's own route requests (docks, widths, ids), so
-   * the verdict is the one the player will see. `false` skips judging;
-   * absent, a stand-in routes plain rim docks with the real router.
+   * The judge of the finalists: given every card's top-left, the POINTS
+   * the board's real wires would score there. The host supplies one built
+   * on the board's own route requests (docks, widths, ids), so the verdict
+   * is the one the player will see. `false` skips judging; absent, a
+   * stand-in routes plain rim docks with the real router.
    */
   judge?: false | ((positions: ReadonlyMap<string, { x: number; y: number }>) => number);
+  /** The router's prices; read from the tuning store when absent. */
+  prices?: RouterTuning;
+  /**
+   * The air owed between strangers at these positions (board-arrange-air.ts):
+   * the one readability term on top of the router's points, added to the
+   * proxy score and to the finalists' judged points alike.
+   */
+  air?: (positions: ReadonlyMap<string, { x: number; y: number }>) => number;
+  /** Where the search is, every few hundred trials, for a loader. */
+  onProgress?: (done: number, total: number) => void;
 }
 
 export interface OptimizeResult {
@@ -95,27 +114,22 @@ export interface OptimizeResult {
   /** Proxy score before and after. */
   before: number;
   after: number;
-  /** Real crossings of the winner when the router judged, else undefined. */
-  crossings?: number;
-  /** What the judge saw: each finalist's proxy score, proxy crossings and real crossings. */
-  finalists?: Array<{ score: number; proxyCrossings: number; crossings: number }>;
+  /** Real points of the winner when the router judged, else undefined. */
+  points?: number;
+  /** What the judge saw: each finalist's proxy score, proxy crossings and real points. */
+  finalists?: Array<{ score: number; proxyCrossings: number; points: number }>;
 }
 
-/* Costs, in pixels of wire. Crossings first, then wires the router would
- * have to detour round a card for, then length. */
-const CROSS = 1200;
-const BLOCKED = 500;
-/** A 45° bend in a proxy path: the router's own price for one. */
-const BEND = 35;
+/** The router's prices, so the proxy and the judge speak one currency. */
+export function routerPrices(): RouterTuning {
+  try {
+    return getRouterTuning();
+  } catch {
+    return DEFAULT_ROUTER_TUNING;
+  }
+}
 /** Per pixel of the layout's bounding box perimeter: tidy is compact. */
 const SPRAWL = 0.4;
-/**
- * Cards with no wire path between them keep this much air apart: a chain
- * that trades with nothing else stands as its own group, the way a player
- * would draw it, instead of interleaving with a stranger's cards.
- */
-const STRANGER_GAP = 8 * BOARD_GRID;
-const STRANGER = 3;
 const CLEAN = 2 * BOARD_GRID;
 /**
  * A card may hop to a neighbouring column only while flow still reads left
@@ -126,19 +140,19 @@ const CLEAN = 2 * BOARD_GRID;
  */
 const ALLOW_COLUMN_MOVES = true;
 
-interface Rect {
+export interface Rect {
   left: number;
   top: number;
   right: number;
   bottom: number;
 }
 
-interface Point {
+export interface Point {
   x: number;
   y: number;
 }
 
-type Path = Point[];
+export type Path = Point[];
 
 /** A tiny deterministic RNG (mulberry32). */
 function rng(seed: number): () => number {
@@ -163,14 +177,25 @@ function hashIds(ids: string[]): number {
   return hash >>> 0;
 }
 
-/** The rim point of `rect` nearest `to`, and the outward normal there. */
-function exitPoint(rect: Rect, to: Point): { point: Point; nx: number; ny: number } {
+/**
+ * The rim point of `rect` facing `other`, and the outward normal there. The
+ * SIDE is the one the other card lies beyond - by the gap between the two
+ * rectangles, not by where the other card's centre is: a drawer beside a
+ * tall tower faces it across the gap even though the tower's centre lies
+ * far below the drawer. Cards side by side on both axes (overlapping, or
+ * diagonal) fall back to the centre.
+ */
+function exitPoint(rect: Rect, other: Rect): { point: Point; nx: number; ny: number } {
+  const to = centre(other);
   const clampX = Math.min(Math.max(to.x, rect.left + BOARD_GRID), rect.right - BOARD_GRID);
   const clampY = Math.min(Math.max(to.y, rect.top + BOARD_GRID), rect.bottom - BOARD_GRID);
-  if (to.y < rect.top) {
-    return { point: { x: clampX, y: rect.top }, nx: 0, ny: -1 };
-  }
-  if (to.y > rect.bottom) {
+  const gapX = Math.max(other.left - rect.right, rect.left - other.right, 0);
+  const gapY = Math.max(other.top - rect.bottom, rect.top - other.bottom, 0);
+  const vertical = gapY > gapX;
+  if (vertical || (gapX === 0 && gapY === 0 && (to.y < rect.top || to.y > rect.bottom))) {
+    if (to.y < rect.top) {
+      return { point: { x: clampX, y: rect.top }, nx: 0, ny: -1 };
+    }
     return { point: { x: clampX, y: rect.bottom }, nx: 0, ny: 1 };
   }
   if (to.x < rect.left) {
@@ -184,30 +209,47 @@ function centre(rect: Rect): Point {
 }
 
 /** The proxy route: clean exit, shortest octilinear way, clean landing. */
-function proxyPath(
-  source: Rect,
-  target: Rect,
-  sourcePortY: number | undefined,
-  targetPortY: number | undefined,
-): Path {
-  let exit = exitPoint(source, centre(target));
-  let entry = exitPoint(target, centre(source));
-  // Flow reads left to right: a wire to a card standing to the right leaves
-  // by the output port on the right side and lands on the input port on
-  // the left side, whatever the vertical offset - which is what makes the
-  // score smooth in that offset (a Z that straightens as the rows align)
-  // instead of flipping sides at some height. Only cards that overlap
-  // horizontally use the nearest rim point.
-  if (target.left >= source.right) {
-    if (sourcePortY !== undefined) {
-      exit = { point: { x: source.right, y: source.top + sourcePortY }, nx: 1, ny: 0 };
+export function proxyPath(source: Rect, target: Rect): Path {
+  // Docking is free everywhere (2026-09-08), so a wire leaves at the rim
+  // point nearest its far end - never at the fixed port row. Pinning to
+  // the port rows made the proxy draw a thirty-cell zigzag from a tall
+  // tower to the drawer beside it where the router draws five cells
+  // straight, and it scored Jack's hand layout worse than the arranger's.
+  const exit = exitPoint(source, target);
+  const entry = exitPoint(target, source);
+  // Facing sides whose dock ranges overlap line up on one row (or column):
+  // the router's straight shot. Aiming each end at the other's CENTRE put
+  // a small drawer's entry a cell off the tower's exit and drew a jog the
+  // router never draws.
+  if (exit.nx !== 0 && exit.nx === -entry.nx) {
+    const lo = Math.max(source.top, target.top) + BOARD_GRID;
+    const hi = Math.min(source.bottom, target.bottom) - BOARD_GRID;
+    if (lo <= hi) {
+      const y = Math.min(Math.max(entry.point.y, lo), hi);
+      exit.point.y = y;
+      entry.point.y = y;
     }
-    if (targetPortY !== undefined) {
-      entry = { point: { x: target.left, y: target.top + targetPortY }, nx: -1, ny: 0 };
+  } else if (exit.ny !== 0 && exit.ny === -entry.ny) {
+    const lo = Math.max(source.left, target.left) + BOARD_GRID;
+    const hi = Math.min(source.right, target.right) - BOARD_GRID;
+    if (lo <= hi) {
+      const x = Math.min(Math.max(entry.point.x, lo), hi);
+      exit.point.x = x;
+      entry.point.x = x;
     }
   }
-  const a = { x: exit.point.x + exit.nx * CLEAN, y: exit.point.y + exit.ny * CLEAN };
-  const b = { x: entry.point.x + entry.nx * CLEAN, y: entry.point.y + entry.ny * CLEAN };
+  // The clean runs reach out along the normals, but only as far as half the
+  // room ahead: two cards a couple of cells apart meet in the middle of the
+  // gap in a straight line, the way the router draws them, instead of each
+  // stub overshooting the other card and coming back through it.
+  const aheadOfExit =
+    (entry.point.x - exit.point.x) * exit.nx + (entry.point.y - exit.point.y) * exit.ny;
+  const aheadOfEntry =
+    (exit.point.x - entry.point.x) * entry.nx + (exit.point.y - entry.point.y) * entry.ny;
+  const stubA = Math.max(0, Math.min(CLEAN, aheadOfExit / 2));
+  const stubB = Math.max(0, Math.min(CLEAN, aheadOfEntry / 2));
+  const a = { x: exit.point.x + exit.nx * stubA, y: exit.point.y + exit.ny * stubA };
+  const b = { x: entry.point.x + entry.nx * stubB, y: entry.point.y + entry.ny * stubB };
   const dx = b.x - a.x;
   const dy = b.y - a.y;
   const adx = Math.abs(dx);
@@ -230,7 +272,7 @@ function proxyPath(
   return path;
 }
 
-function pathLength(path: Path): number {
+export function pathLength(path: Path): number {
   let length = 0;
   for (let i = 1; i < path.length; i += 1) {
     length += Math.hypot(path[i].x - path[i - 1].x, path[i].y - path[i - 1].y);
@@ -238,8 +280,8 @@ function pathLength(path: Path): number {
   return length;
 }
 
-/** Bends along a path, as the router would price them (45° = 1, 90° = 2). */
-function pathBends(path: Path): number {
+/** Bends along a path at the router's prices: 45°, 90°, sharper as three 90°. */
+export function pathBends(path: Path, prices: RouterTuning): number {
   let bends = 0;
   for (let i = 2; i < path.length; i += 1) {
     const ax = path[i - 1].x - path[i - 2].x;
@@ -251,7 +293,7 @@ function pathBends(path: Path): number {
     if (la < 1e-6 || lb < 1e-6) continue;
     const cos = (ax * bx + ay * by) / (la * lb);
     if (cos > 0.99) continue;
-    bends += cos > 0.5 ? 1 : cos > -0.5 ? 2 : 3;
+    bends += cos > 0.5 ? prices.turn45 : cos > -0.5 ? prices.turn90 : 3 * prices.turn90;
   }
   return bends;
 }
@@ -261,7 +303,7 @@ function cross(o: Point, a: Point, b: Point): number {
 }
 
 /** Proper crossings between two paths (touching ends do not count). */
-function pathCrossings(p: Path, q: Path): number {
+export function pathCrossings(p: Path, q: Path): number {
   let count = 0;
   for (let i = 1; i < p.length; i += 1) {
     const a = p[i - 1];
@@ -316,9 +358,14 @@ function segmentEnters(a: Point, b: Point, rect: Rect): boolean {
   );
 }
 
-/** How many cards (not its own two) the path runs through. */
-function pathBlocked(path: Path, rects: Rect[], skipA: number, skipB: number): number {
-  let count = 0;
+/**
+ * The detour the router will have to take round every card (not the
+ * path's own two) the proxy path runs through: two corners and half the
+ * card's shorter side plus the margins, per card. An estimate of the
+ * real cost, where a flat fine used to stand.
+ */
+export function pathBlocked(path: Path, rects: Rect[], skipA: number, skipB: number, prices: RouterTuning): number {
+  let cost = 0;
   for (let r = 0; r < rects.length; r += 1) {
     if (r === skipA || r === skipB) continue;
     const rect = rects[r];
@@ -330,12 +377,13 @@ function pathBlocked(path: Path, rects: Rect[], skipA: number, skipB: number): n
     };
     for (let i = 1; i < path.length; i += 1) {
       if (segmentEnters(path[i - 1], path[i], inflated)) {
-        count += 1;
+        const shorter = Math.min(rect.right - rect.left, rect.bottom - rect.top);
+        cost += 2 * prices.turn90 + shorter / 2 + 2 * BOARD_GRID;
         break;
       }
     }
   }
-  return count;
+  return cost;
 }
 
 /** The layout state the search permutes. */
@@ -344,6 +392,8 @@ interface State {
   columns: number[][];
   /** Vertical offset of each column, in cells. */
   columnOffset: number[];
+  /** Extra corridor before each column, in cells: how islands part sideways. */
+  columnPad: number[];
   /** Extra air above each card, in cells. */
   padBefore: number[];
   /** Satellite: offset of its top from its anchor's top, in cells. */
@@ -352,16 +402,19 @@ interface State {
 
 export function optimizeIslandLayout(
   cards: OptimizeCard[],
-  wires: OptimizeWire[],
+  wires: readonly OptimizeWire[],
   options: OptimizeOptions = {},
 ): OptimizeResult {
   const n = cards.length;
+  const prices = options.prices ?? routerPrices();
+  const air = options.air ?? (() => 0);
   const index = new Map<string, number>();
   cards.forEach((card, i) => index.set(card.id, i));
   const links: Array<{
     a: number;
     b: number;
     weight: number;
+    width: number;
     sourcePortY?: number;
     targetPortY?: number;
   }> = [];
@@ -372,31 +425,14 @@ export function optimizeIslandLayout(
     links.push({
       a,
       b,
-      weight: Math.max(wire.weight ?? 1, 0.01),
+      // The router's own weight when the width is known; the caller's
+      // scale (flow, log-compressed) otherwise.
+      weight: wire.width !== undefined ? wireWeight(wire.width) : Math.max(wire.weight ?? 1, 0.01),
+      width: wire.width ?? 6,
       sourcePortY: wire.sourcePortY,
       targetPortY: wire.targetPortY,
     });
   }
-  // Who can reach whom: cards in different webs are strangers and keep apart.
-  const component = new Int32Array(n);
-  for (let i = 0; i < n; i += 1) component[i] = i;
-  const find = (i: number): number => {
-    while (component[i] !== i) {
-      component[i] = component[component[i]];
-      i = component[i];
-    }
-    return i;
-  };
-  for (const link of links) {
-    component[find(link.a)] = find(link.b);
-  }
-  cards.forEach((card, i) => {
-    if (card.satellite) {
-      const anchor = index.get(card.satellite.anchorId);
-      if (anchor !== undefined) component[find(i)] = find(anchor);
-    }
-  });
-  const componentOf = cards.map((_, i) => find(i));
   const rowGap = (options.rowGapCells ?? 2) * BOARD_GRID;
   const sectionGap = (options.sectionGapCells ?? options.rowGapCells ?? 2) * BOARD_GRID;
   const columnGap = (options.columnGapCells ?? 3) * BOARD_GRID;
@@ -420,6 +456,7 @@ export function optimizeIslandLayout(
   const state: State = {
     columns: Array.from({ length: layerCount }, () => []),
     columnOffset: new Array(layerCount).fill(0),
+    columnPad: new Array(layerCount).fill(0),
     padBefore: new Array(n).fill(0),
     satelliteOffset: new Array(n).fill(0),
   };
@@ -460,7 +497,7 @@ export function optimizeIslandLayout(
     let x = 0;
     const columnX: number[] = [];
     for (let layer = 0; layer < layerCount; layer += 1) {
-      x += leftPad[layer];
+      x += leftPad[layer] + state.columnPad[layer] * BOARD_GRID;
       columnX.push(x);
       x += widths[layer] + rightPad[layer] + columnGap;
     }
@@ -539,10 +576,10 @@ export function optimizeIslandLayout(
   const previous: Array<{ x: number; y: number }> = cards.map(() => ({ x: NaN, y: NaN }));
   const scoreLink = (l: number) => {
     const link = links[l];
-    paths[l] = proxyPath(rect[link.a], rect[link.b], link.sourcePortY, link.targetPortY);
-    lengthOf[l] = pathLength(paths[l]) * Math.min(link.weight, 4);
-    bendsOf[l] = pathBends(paths[l]);
-    blockedOf[l] = pathBlocked(paths[l], rect, link.a, link.b);
+    paths[l] = proxyPath(rect[link.a], rect[link.b]);
+    lengthOf[l] = pathLength(paths[l]) * link.weight;
+    bendsOf[l] = pathBends(paths[l], prices) * link.weight;
+    blockedOf[l] = pathBlocked(paths[l], rect, link.a, link.b, prices) * link.weight;
   };
   const crossRow = (l: number) => {
     for (let m = 0; m < links.length; m += 1) {
@@ -565,30 +602,27 @@ export function optimizeIslandLayout(
       maxY = Math.max(maxY, rect[i].bottom);
     }
     sum += (maxX - minX + (maxY - minY)) * SPRAWL;
-    for (let i = 0; i < n; i += 1) {
-      for (let k = i + 1; k < n; k += 1) {
-        if (componentOf[i] === componentOf[k]) continue;
-        const gapX = Math.max(rect[i].left - rect[k].right, rect[k].left - rect[i].right, 0);
-        const gapY = Math.max(rect[i].top - rect[k].bottom, rect[k].top - rect[i].bottom, 0);
-        const gap = Math.max(gapX, gapY);
-        if (gap < STRANGER_GAP) {
-          sum += (STRANGER_GAP - gap) * STRANGER;
-        }
-      }
-    }
+    // The air owed between strangers: what makes islands (board-arrange-air.ts).
+    sum += air(positionMap());
     return sum;
   };
+  const positionMap = (): Map<string, { x: number; y: number }> =>
+    new Map(cards.map((card, i) => [card.id, positions[i]]));
   const total = (): number => {
     let sum = globalTerms();
     let crossings = 0;
     for (let l = 0; l < links.length; l += 1) {
-      sum += lengthOf[l] + bendsOf[l] * BEND + blockedOf[l] * BLOCKED;
+      sum += lengthOf[l] + bendsOf[l] + blockedOf[l];
       for (let m = l + 1; m < links.length; m += 1) {
-        crossings += pairCross[l * links.length + m];
+        const count = pairCross[l * links.length + m];
+        if (count === 0) continue;
+        crossings += count;
+        // A crossing weighs the heavier of its two wires, as in the points.
+        sum += count * prices.crossing * Math.max(links[l].weight, links[m].weight);
       }
     }
     lastProxyCrossings = crossings;
-    return sum + crossings * CROSS;
+    return sum;
   };
   /** Scores the current state; only what moved since the last call is redone. */
   const score = (): number => {
@@ -618,7 +652,7 @@ export function optimizeIslandLayout(
     if (moved.length < n) {
       for (let l = 0; l < links.length; l += 1) {
         if (!touched.has(l)) {
-          blockedOf[l] = pathBlocked(paths[l], rect, links[l].a, links[l].b);
+          blockedOf[l] = pathBlocked(paths[l], rect, links[l].a, links[l].b, prices) * links[l].weight;
         }
       }
     }
@@ -628,12 +662,14 @@ export function optimizeIslandLayout(
   const snapshot = (): State => ({
     columns: state.columns.map((column) => [...column]),
     columnOffset: [...state.columnOffset],
+    columnPad: [...state.columnPad],
     padBefore: [...state.padBefore],
     satelliteOffset: [...state.satelliteOffset],
   });
   const restore = (saved: State) => {
     state.columns = saved.columns.map((column) => [...column]);
     state.columnOffset = [...saved.columnOffset];
+    state.columnPad = [...saved.columnPad];
     state.padBefore = [...saved.padBefore];
     state.satelliteOffset = [...saved.satelliteOffset];
   };
@@ -655,17 +691,33 @@ export function optimizeIslandLayout(
   }
   let best = current;
   let bestState = snapshot();
-  const candidates: Array<{ score: number; state: State }> = [{ score: current, state: snapshot() }];
+  // Finalists are STRUCTURALLY distinct: one per column arrangement (which
+  // card stands in which column, in what order), the best-scoring state
+  // of each. Six near-copies of one layout differing by a nudge told the
+  // router nothing; six different layouts give it a real choice.
+  const structure = (): string => state.columns.map((column) => column.join(",")).join("|");
+  const candidates: Array<{ score: number; state: State; key: string }> = [
+    { score: current, state: snapshot(), key: structure() },
+  ];
   const remember = (value: number) => {
-    if (candidates.some((c) => Math.abs(c.score - value) < 1e-6)) return;
-    candidates.push({ score: value, state: snapshot() });
+    const key = structure();
+    const known = candidates.find((c) => c.key === key);
+    if (known) {
+      if (value < known.score - 1e-9) {
+        known.score = value;
+        known.state = snapshot();
+        candidates.sort((a, b) => a.score - b.score);
+      }
+      return;
+    }
+    candidates.push({ score: value, state: snapshot(), key });
     candidates.sort((a, b) => a.score - b.score);
-    if (candidates.length > 4) candidates.pop();
+    if (candidates.length > Math.max(1, prices.finalists)) candidates.pop();
   };
 
   const random = rng(hashIds(cards.map((card) => card.id)));
-  const trials = options.trials ?? Math.min(20_000, 600 * n + 3000);
-  const startTemperature = CROSS / 2;
+  const trials = options.trials ?? Math.min(prices.searchTrials, 600 * n + 3000);
+  const startTemperature = prices.crossing / 2;
   const endTemperature = 4;
   const columnCards = state.columns.flat();
   if (columnCards.length === 0) {
@@ -680,13 +732,65 @@ export function optimizeIslandLayout(
     return undefined;
   };
 
+  /**
+   * May `card`, standing in `from`, stand in column `to`? A machine keeps
+   * flow reading left to right: every feeder in an earlier column, every
+   * taker in a later one (a wire already running backwards - a recycle -
+   * does not constrain). A DRAWER is freer: anywhere between its first and
+   * last partner's column, the partners' own columns included, so it can
+   * sit in the gap between two machines stacked in one column - the way
+   * Jack parks a drawer two machines share.
+   */
+  const mayStandIn = (card: number, from: number, to: number): boolean => {
+    if (cards[card].role === "storage") {
+      let lo = Infinity;
+      let hi = -Infinity;
+      for (const l of linksOf[card]) {
+        const link = links[l];
+        const other = link.a === card ? link.b : link.a;
+        const otherLayer = layerOfCard(other);
+        if (otherLayer === undefined) continue;
+        lo = Math.min(lo, otherLayer);
+        hi = Math.max(hi, otherLayer);
+      }
+      return lo === Infinity || (to >= lo && to <= hi);
+    }
+    for (const l of linksOf[card]) {
+      const link = links[l];
+      const other = link.a === card ? link.b : link.a;
+      const otherLayer = layerOfCard(other);
+      if (otherLayer === undefined) continue;
+      // A machine may share a column with a DRAWER it trades with (the
+      // drawer then sits above or below it, its wire running up the
+      // column) but never pass beyond it; another machine it may not even
+      // draw level with, so machine-to-machine flow keeps reading left to
+      // right.
+      const reach = cards[other].role === "storage" ? 0 : 1;
+      if (link.a === card) {
+        if (otherLayer > from && otherLayer < to + reach) return false;
+      } else if (otherLayer < from && otherLayer > to - reach) {
+        return false;
+      }
+    }
+    return true;
+  };
+  const columnOfCard = (card: number): number => {
+    for (let layer = 0; layer < layerCount; layer += 1) {
+      if (state.columns[layer].includes(card)) return layer;
+    }
+    return -1;
+  };
+
   for (let trial = 0; trial < trials; trial += 1) {
+    if (options.onProgress && trial % 250 === 0) {
+      options.onProgress(trial, trials);
+    }
     const temperature =
       startTemperature * Math.pow(endTemperature / startTemperature, trial / trials);
     const saved = snapshot();
     const kind = random();
     let legal = true;
-    if (kind < 0.3) {
+    if (kind < 0.25) {
       // Swap two cards in one column.
       const layer = Math.floor(random() * layerCount);
       const column = state.columns[layer];
@@ -697,42 +801,64 @@ export function optimizeIslandLayout(
       const tmp = column[i];
       column[i] = column[k];
       column[k] = tmp;
-    } else if (kind < 0.45 && ALLOW_COLUMN_MOVES) {
-      // Move a card into a neighbouring column.
+    } else if (kind < 0.4 && ALLOW_COLUMN_MOVES) {
+      // Move a card into any column flow allows.
       const layer = Math.floor(random() * layerCount);
       const column = state.columns[layer];
-      if (column.length < 2 && layerCount > 1 && column.length === 1 && random() < 0.5) continue;
       if (column.length === 0) continue;
       const i = Math.floor(random() * column.length);
-      const to = layer + (random() < 0.5 ? -1 : 1);
-      if (to < 0 || to >= layerCount) continue;
+      const to = Math.floor(random() * layerCount);
+      if (to === layer) continue;
       const card = column[i];
-      // Flow must still read left to right after the hop.
-      let allowed = true;
-      for (const l of linksOf[card]) {
-        const link = links[l];
-        const other = link.a === card ? link.b : link.a;
-        const otherLayer = layerOfCard(other);
-        if (otherLayer === undefined) continue;
-        const ownLayer = layer;
-        // A wire already running backwards (a recycle) does not constrain.
-        if (link.a === card) {
-          if (otherLayer > ownLayer && otherLayer <= to) allowed = false;
-        } else if (otherLayer < ownLayer && otherLayer >= to) {
-          allowed = false;
-        }
-      }
-      if (!allowed) continue;
+      if (!mayStandIn(card, layer, to)) continue;
       column.splice(i, 1);
       const target = state.columns[to];
       const at = Math.floor(random() * (target.length + 1));
       target.splice(at, 0, card);
-    } else if (kind < 0.65) {
+    } else if (kind < 0.5) {
+      // Set a card down beside one of its partners: the partner's column,
+      // right above or below it.
+      const card = columnCards[Math.floor(random() * columnCards.length)];
+      const own = linksOf[card];
+      if (own.length === 0) continue;
+      const link = links[own[Math.floor(random() * own.length)]];
+      const partner = link.a === card ? link.b : link.a;
+      const who = anchorOf[partner] >= 0 ? anchorOf[partner] : partner;
+      if (who === card) continue;
+      const from = columnOfCard(card);
+      const to = columnOfCard(who);
+      if (from < 0 || to < 0) continue;
+      if (to !== from && !mayStandIn(card, from, to)) continue;
+      state.columns[from].splice(state.columns[from].indexOf(card), 1);
+      const target = state.columns[to];
+      const at = target.indexOf(who) + (random() < 0.5 ? 0 : 1);
+      target.splice(at, 0, card);
+    } else if (kind < 0.62) {
       // Nudge a column up or down.
       const layer = Math.floor(random() * layerCount);
       const reach = 1 + Math.floor(random() * 6);
       state.columnOffset[layer] += random() < 0.5 ? -reach : reach;
-    } else if (kind < 0.85) {
+    } else if (kind < 0.7) {
+      // Widen or narrow the corridor before a column: islands part sideways.
+      const layer = Math.floor(random() * layerCount);
+      const reach = 1 + Math.floor(random() * 4);
+      state.columnPad[layer] = Math.max(0, state.columnPad[layer] + (random() < 0.5 ? -reach : reach));
+    } else if (kind < 0.76) {
+      // Shift a card AND its direct partners down (or up) together: a
+      // cluster moves as one instead of one card at a time.
+      const card = columnCards[Math.floor(random() * columnCards.length)];
+      const group = new Set<number>([card]);
+      for (const l of linksOf[card]) {
+        const link = links[l];
+        const other = link.a === card ? link.b : link.a;
+        group.add(anchorOf[other] >= 0 ? anchorOf[other] : other);
+      }
+      const step = (1 + Math.floor(random() * 4)) * (random() < 0.5 ? -1 : 1);
+      for (const member of group) {
+        if (anchorOf[member] >= 0) continue;
+        state.padBefore[member] = Math.max(0, state.padBefore[member] + step);
+      }
+    } else if (kind < 0.88) {
       // More or less air above a card.
       const i = columnCards[Math.floor(random() * columnCards.length)];
       const reach = 1 + Math.floor(random() * 4);
@@ -797,6 +923,12 @@ export function optimizeIslandLayout(
             state.columnOffset[layer] += step;
             return true;
           });
+          attempt(() => {
+            const next = state.columnPad[layer] + step;
+            if (next < 0) return false;
+            state.columnPad[layer] = next;
+            return true;
+          });
         }
         const column = state.columns[layer];
         for (let i = 0; i + 1 < column.length; i += 1) {
@@ -837,11 +969,11 @@ export function optimizeIslandLayout(
     remember(current);
   }
 
-  // The router judges the finalists.
+  // The router judges the finalists: fewest real points wins.
   let winner = bestState;
-  let crossings: number | undefined;
+  let points: number | undefined;
   const finalists: OptimizeResult["finalists"] = [];
-  if (options.judge !== false && links.length <= 80) {
+  if (options.judge !== false && links.length <= 120) {
     let bestReal = Infinity;
     let bestScore = Infinity;
     for (const candidate of candidates) {
@@ -850,25 +982,64 @@ export function optimizeIslandLayout(
       const real =
         typeof options.judge === "function"
           ? options.judge(new Map(cards.map((card, i) => [card.id, { ...positions[i] }])))
-          : judgeWithRouter(cards, links, positions);
-      finalists.push({ score: candidate.score, proxyCrossings: lastProxyCrossings, crossings: real });
+          : judgeWithRouter(cards, links, positions, prices) + air(positionMap());
+      finalists.push({ score: candidate.score, proxyCrossings: lastProxyCrossings, points: real });
       if (real < bestReal || (real === bestReal && candidate.score < bestScore)) {
         bestReal = real;
         bestScore = candidate.score;
         winner = candidate.state;
       }
     }
-    crossings = bestReal;
+    points = bestReal;
   }
   restore(winner);
   place();
-  return { positions: normalise(positions), before, after: best, crossings, finalists };
+  return { positions: normalise(positions), before, after: best, points, finalists };
+}
+
+/**
+ * The proxy score of a finished layout - the same wire terms the search
+ * uses, plus the air - for choosing between layouts when no router judge
+ * is at hand.
+ */
+export function scoreLayoutProxy(
+  cards: ReadonlyArray<{ id: string; width: number; height: number }>,
+  wires: readonly OptimizeWire[],
+  positions: ReadonlyMap<string, { x: number; y: number }>,
+  prices: RouterTuning,
+  air?: (positions: ReadonlyMap<string, { x: number; y: number }>) => number,
+): number {
+  const index = new Map<string, number>();
+  cards.forEach((card, i) => index.set(card.id, i));
+  const rects: Rect[] = cards.map((card) => {
+    const p = positions.get(card.id) ?? { x: 0, y: 0 };
+    return { left: p.x, top: p.y, right: p.x + card.width, bottom: p.y + card.height };
+  });
+  const paths: Path[] = [];
+  const weights: number[] = [];
+  let sum = 0;
+  for (const wire of wires) {
+    const a = index.get(wire.source);
+    const b = index.get(wire.target);
+    if (a === undefined || b === undefined || a === b) continue;
+    const path = proxyPath(rects[a], rects[b]);
+    const weight = wire.width !== undefined ? wireWeight(wire.width) : Math.max(wire.weight ?? 1, 0.01);
+    paths.push(path);
+    weights.push(weight);
+    sum += (pathLength(path) + pathBends(path, prices) + pathBlocked(path, rects, a, b, prices)) * weight;
+  }
+  for (let i = 0; i < paths.length; i += 1) {
+    for (let j = i + 1; j < paths.length; j += 1) {
+      sum += pathCrossings(paths[i], paths[j]) * prices.crossing * Math.max(weights[i], weights[j]);
+    }
+  }
+  return sum + (air?.(positions) ?? 0);
 }
 
 /** Rim docks the way the board offers them in free-dock mode. */
 function rim(rect: Rect): GridEndpoint[] {
   const out: GridEndpoint[] = [];
-  const keepOut = (span: number) => (span < 6 * BOARD_GRID ? BOARD_GRID : 2 * BOARD_GRID);
+  const keepOut = (span: number) => (span >= 2 * BOARD_GRID ? BOARD_GRID : 0);
   const kx = keepOut(rect.right - rect.left);
   const ky = keepOut(rect.bottom - rect.top);
   for (let x = rect.left + kx; x <= rect.right - kx; x += BOARD_GRID) {
@@ -880,11 +1051,12 @@ function rim(rect: Rect): GridEndpoint[] {
   return out;
 }
 
-/** Runs the real router over a candidate and counts its geometric crossings. */
+/** Runs the real router over a candidate and scores its points. */
 function judgeWithRouter(
   cards: OptimizeCard[],
-  links: Array<{ a: number; b: number }>,
+  links: Array<{ a: number; b: number; width: number }>,
   positions: Array<{ x: number; y: number }>,
+  prices: RouterTuning,
 ): number {
   const obstacles: GridObstacle[] = cards.map((card, i) => ({
     id: card.id,
@@ -900,21 +1072,8 @@ function judgeWithRouter(
     targets: rim(obstacles[link.b]),
     sourceCardId: cards[link.a].id,
     targetCardId: cards[link.b].id,
-    strokeWidth: 6,
+    strokeWidth: link.width,
   }));
-  let tuning = DEFAULT_ROUTER_TUNING;
-  try {
-    tuning = getRouterTuning();
-  } catch {
-    // Outside a browser the defaults stand.
-  }
-  const solved = solveGridRoutes(obstacles, requests, undefined, tuning);
-  const paths = [...solved.values()].map((route) => route.points);
-  let crossings = 0;
-  for (let i = 0; i < paths.length; i += 1) {
-    for (let j = i + 1; j < paths.length; j += 1) {
-      crossings += pathCrossings(paths[i], paths[j]);
-    }
-  }
-  return crossings;
+  const solved = solveGridRoutes(obstacles, requests, undefined, prices);
+  return routePoints(measureWireRoutes(solved.values()), prices);
 }

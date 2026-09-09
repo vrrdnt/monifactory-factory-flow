@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { recipeSchema } from "../../model/schemas";
+import { factoryProjectSchema, recipeSchema } from "../../model/schemas";
 import type { FactoryProject, Recipe } from "../../model/types";
 import { getOverclockedRecipeStats } from "../../solver/overclock";
 import { getNodePowerReport } from "../../solver/power-report";
@@ -10,6 +10,7 @@ import { listPoolCellPairs } from "../../solver/pool-mode";
 import { applyRecipeInputOverrides } from "../../model/recipe-input-overrides";
 import { ORDINARY_ENGINE } from "./ordinary";
 import { gtnhFuelProfiles } from "../../model/fuels";
+import { useFactoryStore } from "../../../store/factory-store";
 
 function recipe(): Recipe {
   return recipeSchema.parse({
@@ -100,6 +101,41 @@ describe("Monifactory board calculation boundary", () => {
         }),
       ).fuelEstimate,
     ).toBeUndefined();
+  });
+  it("preserves Monifactory calculations through drawer insertion, removal and saved checklist progress", () => {
+    const initial = closeBoundaries(project());
+    const store = useFactoryStore.getState();
+    store.setProject(initial);
+    const output = initial.edges.find((edge) => edge.source === node.id)!;
+    store.insertStorageOnEdge([output.id], { x: 500, y: 200 }, { kind: "item", id: "bronze" });
+    const inserted = useFactoryStore.getState();
+    expect(inserted.lastResult.nodes.mixer.euT).toBe(28);
+    expect(inserted.lastResult.nodes.mixer.outputs["item:bronze"].amountPerSecond).toBeCloseTo(0.4);
+    const drawer = inserted.project.storages!.find(
+      (entry) => !initial.storages?.some((original) => original.id === entry.id),
+    )!;
+    store.deleteStorage(drawer.id);
+    const healed = useFactoryStore
+      .getState()
+      .project.edges.find(
+        (edge) => edge.source === output.source && edge.target === output.target,
+      )!;
+    expect(healed).toBeDefined();
+    store.toggleChecklist("cards", [node.id]);
+    store.toggleChecklist("edges", [healed.id]);
+    const saved = factoryProjectSchema.parse(
+      JSON.parse(JSON.stringify(useFactoryStore.getState().project)),
+    );
+    store.setProject(saved);
+    const restored = useFactoryStore.getState();
+    expect(restored.project.checklist).toEqual({ cards: [node.id], edges: [healed.id] });
+    expect(restored.project.recipes[0].source).toMatchObject({
+      packId: "monifactory",
+      calculationEngine: ORDINARY_ENGINE,
+    });
+    expect(restored.lastResult.nodes.mixer.euT).toBe(28);
+    expect(restored.lastResult.nodes.mixer.outputs["item:bronze"].amountPerSecond).toBeCloseTo(0.4);
+    expect(restored.lastResult.nodes.mixer.inputs["item:catalyst"]).toBeUndefined();
   });
   it("rejects unsupported engines and machines instead of falling back to GTNH", () => {
     expect(() =>

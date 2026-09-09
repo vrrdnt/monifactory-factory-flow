@@ -1708,6 +1708,7 @@ function RecipeNodeComponent({ data, selected }: NodeProps<RecipeFlowNode>) {
                 // The wheel walks the machines in the menu's own order, the
                 // way the tier chip walks tiers; the hover stays put for it.
                 onWheel={hasMachinePicker && !calmMode ? (event) => {
+                  if (checklistLocked()) return;
                   event.stopPropagation();
                   cycleMachineHandler(event.deltaY < 0 ? -1 : 1);
                 } : undefined}
@@ -1915,6 +1916,7 @@ function RecipeNodeComponent({ data, selected }: NodeProps<RecipeFlowNode>) {
                         stepPowerBudget(-1);
                       }}
                       onWheel={(event) => {
+                        if (checklistLocked()) return;
                         event.stopPropagation();
                         stepPowerBudget(event.deltaY < 0 ? 1 : -1);
                       }}
@@ -1960,6 +1962,7 @@ function RecipeNodeComponent({ data, selected }: NodeProps<RecipeFlowNode>) {
                 }}
                 data-hatch-menu-anchor
                 onWheel={(event) => {
+                  if (checklistLocked()) return;
                   event.stopPropagation();
                   updateTier(event.deltaY < 0 ? 1 : -1);
                 }}
@@ -3023,7 +3026,17 @@ function GridBlock({
 }
 
 /** Input chip width, shared by the input rail and the output rail's chip. */
-export const PORT_CHIP_WIDTH_CLASS = "w-[140px]";
+export /**
+ * CHECKLIST MODE is a tally, not an editor (Jack, 2026-09-08: "I seem to be
+ * able to scroll edit things ... let's turn all that off"). While it is on,
+ * every wheel knob on a card is dead and the port rows stop lighting their
+ * flow - the only thing the board says under the pointer is what a click
+ * would mark (checklist.css). Read at event time, so no card subscribes to
+ * the mode and nothing re-renders when it flips.
+ */
+const checklistLocked = () => useFactoryStore.getState().checklistMode;
+
+const PORT_CHIP_WIDTH_CLASS = "w-[140px]";
 
 /**
  * One side of the port rails. Every port always renders - a hidden port is a
@@ -3447,6 +3460,7 @@ function PowerTierChip({
         step(-1);
       }}
       onWheel={(event) => {
+        if (checklistLocked()) return;
         event.stopPropagation();
         step(event.deltaY < 0 ? 1 : -1);
       }}
@@ -3549,7 +3563,9 @@ export function OutputSocketRow({
       data-resource-handle-id={port.handleId}
       // Wiring is a mode: a held wire must not also be lighting up slots.
       onPointerEnter={() =>
-        isWiringConnection() ? undefined : setHoveredFlowScope(buildPortFlowScope(nodeId, port))
+        isWiringConnection() || checklistLocked()
+          ? undefined
+          : setHoveredFlowScope(buildPortFlowScope(nodeId, port))
       }
       onPointerLeave={() => setHoveredFlowScope(undefined)}
     >
@@ -3964,7 +3980,7 @@ export function PortChip({
       // twice, because the flow-scope highlight shares these two events.
       onPointerEnter={(event) => {
         rowBrowse.handlers.onPointerEnter();
-        if (!plugRow && !isWiringConnection()) {
+        if (!plugRow && !isWiringConnection() && !checklistLocked()) {
           setHoveredFlowScope(buildPortFlowScope(nodeId, port));
         }
         void event;
@@ -4841,6 +4857,7 @@ function CropStepperRow({
     <div
       className={CROP_TILE_CLASS}
       onWheel={(event) => {
+        if (checklistLocked()) return;
         event.stopPropagation();
         step(event.deltaY < 0 ? 1 : -1);
       }}
@@ -4918,6 +4935,7 @@ function CropCycleRow({
       className={CROP_TILE_CLASS}
       title={`${label}: ${current.label}`}
       onWheel={(event) => {
+        if (checklistLocked()) return;
         event.stopPropagation();
         step(event.deltaY < 0 ? 1 : -1);
       }}
@@ -4998,6 +5016,7 @@ function CropTierChip({
         step(-1);
       }}
       onWheel={(event) => {
+        if (checklistLocked()) return;
         event.stopPropagation();
         step(event.deltaY < 0 ? 1 : -1);
       }}
@@ -6179,6 +6198,7 @@ function MachineCountStat({
       // The wheel walks the count too, with the same shift/ctrl multipliers
       // the buttons take. "nowheel" keeps React Flow from zooming under it.
       onWheel={(event) => {
+        if (checklistLocked()) return;
         event.stopPropagation();
         stepBy(event.deltaY < 0 ? 1 : -1, event);
       }}
