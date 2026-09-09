@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "versions": [
+    {
+      "id": "monifactory-0.13.7-expert",
+      "pack": {
+        "id": "monifactory",
+        "name": "Monifactory",
+        "version": "0.13.7",
+        "mode": "Expert"
+      },
+      "channel": "experimental",
+      "publishedAt": "2026-09-08T13:34:02.883Z",
+      "manifestPath": "/datasets/monifactory/datasets.manifest.json",
+      "recipeDatasetPath": "/datasets/monifactory/monifactory-0.13.7-expert/recipes.json.gz",
+      "resourceIndexPath": "/datasets/monifactory/monifactory-0.13.7-expert/resource-index.json.gz",
+      "recipeIndexPath": "/datasets/monifactory/monifactory-0.13.7-expert/recipe-index.json.gz",
+      "recipeLookupIndexPath": "/datasets/monifactory/monifactory-0.13.7-expert/recipe-lookup-index.json.gz",
+      "checksumSha256": "ef6753c4e77a2426a12913afafac20ffb5ed32e73542aa89e1d295c899d43a22",
+      "sourceInfo": {
+        "sourceId": "monifactory-kubejs",
+        "sourceVersion": "1",
+        "generatedAt": "2026-09-08T13:34:02.883Z",
+        "notes": "Ordinary LV–UV machines only. Modifier and inventory reference checks passed; full production cycles, multiblocks, generators and non-GT recipes are not covered. Default-stack icons captured from the installed EMI renderer."
+      }
+    }
+  ]
+}

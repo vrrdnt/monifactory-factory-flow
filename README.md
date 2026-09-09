@@ -8,9 +8,9 @@ The ordinary-machine calculator now matches **17,952 live reference cases across
 
 Inventory limits now narrow that subset to **24,877 recipes**, checked against **25,120 live inventory-matching cases**. Converted recipes have an explicit Monifactory calculation path through the board solver, including power, throughput and machine counts. GTNH bonuses and automatic container conversions are disabled for those recipes.
 
-The browser defaults to Monifactory, with searchable recipe/resource indexes, runtime textures and a renewable-resource guide. Generated datasets are supplied separately from the source repository.
+The browser defaults to Monifactory, with searchable recipe/resource indexes, runtime textures and a renewable-resource guide. The exported 0.13.7 Expert dataset is included in the repository and Docker image, ready to use.
 
-For Docker hosting at **vrrdnt.dev/moni-planner**, see [the self-hosting guide](docs/self-hosting.md). It covers Compose, dataset mounts, image updates and Cloudflare Tunnel routing alongside the existing GitHub Pages portfolio.
+For Docker hosting at **vrrdnt.dev/moni-planner**, see [the self-hosting guide](docs/self-hosting.md). It covers Compose, image updates and Cloudflare Tunnel routing alongside the existing GitHub Pages portfolio.
 
 See [the Monifactory setup guide](docs/monifactory.md) for preparation, export, calculation checks, limitations and the port roadmap. Full catalogs and local instance files are not committed; the compact machine-reference fixture is included for regression tests.
 

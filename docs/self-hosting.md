@@ -2,7 +2,8 @@
 
 The planner needs its Next.js server for recipe search and the renewable guide.
 The root Dockerfile packages a Node 24 standalone server, running as an unprivileged
-user. It does not contain Minecraft, export tooling runtimes, or generated datasets.
+user. It includes the exported Monifactory 0.13.7 Expert dataset, indexes, texture
+atlases and renewable guide. Minecraft and the exporter runtimes are not required.
 
 Routing:
 
@@ -24,29 +25,15 @@ git clone https://github.com/vrrdnt/monifactory-factory-flow.git
 cd monifactory-factory-flow
 ```
 
-Copy the **complete generated** `public/datasets/monifactory` directory from the
-export machine to `data/monifactory` here. See [Monifactory export setup](monifactory.md)
-for generating it. A fresh clone has no production recipe data; test fixtures are
-not a substitute. The mount should look like:
+The image contains the complete published snapshot: **24,877 ordinary-machine
+recipes**, texture atlases, and **9,981 renewable resource routes**. No dataset
+download, export step, or volume mount is needed.
 
-```text
-data/monifactory/
-  datasets.manifest.json
-  renewables.json.gz
-  monifactory-0.13.7-expert/
-    recipes.json.gz
-    ...all generated indexes, shards and textures...
-```
-
-Alternatively set `MONIFACTORY_DATA_DIR=/absolute/path/to/monifactory` in a local
-`.env` file. Keep the directory and files readable by container UID 1000. The mount
-is read-only and Compose refuses to silently create a missing directory.
-
-Build locally (works before any registry image has been published):
+Pull the image and start it:
 
 ```sh
-docker compose build
-docker compose up -d --no-build --pull never
+docker compose pull
+docker compose up -d --no-build
 docker compose ps
 curl --fail http://127.0.0.1:8580/moni-planner/api/version
 curl --fail http://127.0.0.1:8580/moni-planner/api/datasets/monifactory-0.13.7-expert/catalog
@@ -54,8 +41,11 @@ curl --fail 'http://127.0.0.1:8580/moni-planner/api/renewables?q=water'
 ```
 
 The Docker health check verifies the server; the catalog and guide checks verify
-the mounted data too. Open `http://localhost:8580/moni-planner` on the Docker host.
+the bundled data too. Open `http://localhost:8580/moni-planner` on the Docker host.
 The port binds to loopback, so it works with a Tunnel connector running on that host.
+
+To build from the checked-out source and dataset instead, run
+`docker compose build` followed by `docker compose up -d --no-build --pull never`.
 
 If **cloudflared runs in Docker**, attach it and `planner` to the same Docker network
 and use `http://planner:3000` as its service URL. `localhost` inside cloudflared means
@@ -134,9 +124,27 @@ docker compose up -d --no-build
 ```
 
 For a fixed release or rollback, set `PLANNER_TAG=sha-<full-commit-sha>` in `.env`
-before those commands. Back up datasets separately; after replacing them, restart
-the planner to clear its in-memory indexes. Keep old image tags and datasets until
-you have checked the new deployment.
+before those commands. Each image includes its matching dataset, so rolling back
+the image also rolls back the recipe data.
+
+## Updating the bundled dataset
+
+The serving snapshot is tracked in `public/datasets/monifactory/`: 224 files,
+about 67 MiB total. Its largest file is under 4 MiB, so ordinary Git is sufficient.
+It contains the manifest, gzipped recipes/indexes/shards/guide and PNG atlases.
+Raw exports, reference probes and local Minecraft instance files remain outside Git.
+Recipe definitions and texture art originate from the pack and its constituent
+mods; bundling them does not change their original authorship or licenses.
+
+Generate a replacement using [the export instructions](monifactory.md), replace
+the complete serving directory (including the guide and textures), and commit it.
+CI will bundle that snapshot into the next image. Binary history grows with updates;
+avoid committing temporary captures or partially generated outputs.
+
+An optional read-only bind mount onto `/app/public/datasets/monifactory` can still
+override the snapshot through a local Compose override. It must contain the whole
+directory, and changes require restarting the container to clear cached indexes.
+Remove any dataset volume from an older Compose setup to use the bundled data.
 
 `NEXT_PUBLIC_BASE_PATH` and `NEXT_PUBLIC_SITE_URL` are **build arguments**, baked
 into browser code. `SITE_URL` is the origin only (`https://vrrdnt.dev`), without

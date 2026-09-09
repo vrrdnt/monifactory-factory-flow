@@ -10,6 +10,7 @@ coverage
 *.log
 .env*
 dev-server*.log
-public/datasets
+public/datasets/*
+!public/datasets/monifactory
 data
 .wrangler

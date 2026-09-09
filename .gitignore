@@ -17,7 +17,6 @@
 /.gh-artifacts-*/
 *.tar
 /public/datasets/gtnh/
-/public/datasets/monifactory/
 
 # next.js
 /.next/
