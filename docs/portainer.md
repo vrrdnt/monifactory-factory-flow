@@ -39,37 +39,21 @@ with that address, without adding or stripping a path. Check
 is set up. See [the domain routing guide](self-hosting.md) for the Worker that
 routes `vrrdnt.dev/moni-planner` while preserving the GitHub Pages portfolio.
 
-## Automatic updates after a successful build
+## Updates after a successful build
 
-The CI workflow runs typecheck and tests, publishes the image, then optionally
-calls a Portainer **container webhook**. Using the planner container's webhook
-updates only this service. Do not use the entire `apps` stack's webhook for this.
+The CI workflow runs typecheck and tests, then publishes the image to GHCR.
+Portainer is reachable only through a private reverse proxy, so GitHub Actions
+does not contact it. Publishing an image does not update a running container.
 
-1. In Portainer, open **Containers > moni-planner** and enable its container
-   webhook. Copy the generated URL. The exact toggle location varies by version;
-   it is also available in the container creation/edit configuration.
-2. In this GitHub repository, open **Settings > Secrets and variables > Actions >
-   New repository secret**. Name it **`PORTAINER_WEBHOOK_URL`** and use that URL
-   as its value. Treat the URL as a credential and keep it out of Git and chat.
-3. Ensure the URL is reachable from GitHub-hosted runners with valid HTTPS.
-   A LAN address or an interactive Cloudflare Access login will not work from
-   the hosted runner. If Portainer is private-only, use a runner with access to
-   that network instead of exposing the Docker API.
-4. Run **Actions > CI > Run workflow** to test the whole path. Future pushes to
-   `main` publish and trigger it automatically after successful checks.
-5. Confirm **Redeploy planner in Portainer** succeeds, then check the container
-   becomes healthy and the planner URL loads. A successful HTTP response from
-   the webhook confirms acceptance; it is not an application health check.
+1. Confirm the GitHub **CI** workflow's **Publish Monifactory image** job succeeded.
+2. In Portainer, open **Containers > moni-planner > Recreate** and enable
+   **Re-pull image**.
+3. Recreate the container, wait for it to become healthy, and check the planner URL.
 
-Until the secret is configured, that step is skipped. Publishing the image alone
-does not update a running container. The Watchtower label prevents a second update
-mechanism from racing this webhook if Watchtower is present on your server.
+The Watchtower label keeps updates manual if Watchtower is present on the server.
 
-For a manual update, use **Containers > moni-planner > Recreate** with **Re-pull
-image** enabled. For a rollback, first remove or disable the webhook secret, then
-change this service's image to a previously published `sha-<full-commit-sha>` tag
-and update the stack. Each image contains its matching dataset.
+For a rollback, change this service's image to a previously published
+`sha-<full-commit-sha>` tag and update the stack. Each image contains its matching
+dataset.
 
-References: [container webhooks](https://docs.portainer.io/user/docker/containers/add),
-[container details](https://docs.portainer.io/user/docker/containers/view),
-[how GitOps updates work](https://docs.portainer.io/faqs/troubleshooting/stacks-deployments-and-updates/how-do-automatic-updates-for-stacks-applications-work).
+Reference: [Portainer container details](https://docs.portainer.io/user/docker/containers/view).

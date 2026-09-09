@@ -50,7 +50,7 @@ docker run -d --name moni-planner \
 
 Open [localhost:8580/moni-planner](http://localhost:8580/moni-planner) on the Docker host. The image is built for `/moni-planner`; a different prefix requires rebuilding. No dataset volume is needed. Plans are stored in your browser, so export important plans to JSON for backup.
 
-- **[Portainer deployment](docs/portainer.md)** — add the planner to an existing stack and Docker network; configure optional Business Edition webhook updates.
+- **[Portainer deployment](docs/portainer.md)** — add the planner to an existing stack and Docker network; pull updates and roll back individual containers.
 - **[Self-hosting and Cloudflare routing](docs/self-hosting.md)** — Compose, build arguments, tunnel setup, updates and rollback.
 
 The hosted URL uses a Cloudflare Worker to route `/moni-planner*` through a Tunnel to the container, while the rest of `vrrdnt.dev` remains on GitHub Pages. Use Cloudflare **Full (strict)** TLS for the GitHub Pages origin. The planner requires its Next.js server APIs and cannot be hosted on GitHub Pages alone.
@@ -59,7 +59,7 @@ The hosted URL uses a Cloudflare Worker to route `/moni-planner*` through a Tunn
 
 ## Updates and checks
 
-The `CI` workflow runs typecheck and tests. Successful `main` builds publish `latest` and immutable `sha-<commit>` image tags to GHCR. If the `PORTAINER_WEBHOOK_URL` Actions secret is configured, publishing also triggers the planner container's Portainer webhook. See the Portainer guide for reachability requirements and rollback.
+The `CI` workflow runs typecheck and tests. Successful `main` builds publish `latest` and immutable `sha-<commit>` image tags to GHCR. Publishing does not restart the running container. Pull updates manually through Portainer; see the Portainer guide for update and rollback steps.
 
 The inherited `Deploy site`, `Deploy Umami` and `GTNH dataset pipeline` workflows belong to upstream infrastructure and should remain disabled in this fork. Monifactory dataset updates are generated separately and committed with the application.
 
