@@ -183,7 +183,8 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
           </Link>
         </header>
         <p className="mb-5 max-w-4xl text-sm leading-6 text-fg-muted">
-          Build lines that keep replenishing their inputs. Each route separates ongoing supply from
+          Find passive supplies of base materials and fluids, from iron and tin to ethanol.
+          Each route separates ongoing supply from
           the equipment, seeds and catalysts you need to get started.
         </p>
         <nav aria-label="Common renewable resources" className="mb-5 flex flex-wrap gap-2">
@@ -191,6 +192,7 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
             ["fluid:minecraft:water", "Water"],
             ["item:minecraft:cobblestone", "Cobbleworks"],
             ["item:gtceu:iron_dust", "Iron"],
+            ["item:gtceu:tin_dust", "Tin"],
             ["fluid:gtceu:oxygen", "Oxygen"],
             ["item:gtceu:rubber_ingot", "Rubber"],
             ["fluid:gtceu:ethanol", "Ethanol"],
@@ -205,10 +207,7 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
           ))}
         </nav>
         <div className="mb-6 grid gap-3 sm:grid-cols-3">
-          <Summary
-            label="Renewable routes found"
-            value={search ? number(search.coverage.renewableResources) : "…"}
-          />
+          <Summary label="Passive production targets" value="Materials and fluids" />
           <Summary label="Equipment, seeds and reusable catalysts" value="One-time setup" />
           <Summary label="Ongoing supplies shown separately" value="External inputs" />
         </div>
@@ -248,7 +247,7 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
                   setQ(e.target.value);
                   setOffset(0);
                 }}
-                placeholder="Iron, oxygen, rubber…"
+                placeholder="Iron, tin, ethanol…"
                 className="h-10 w-full rounded-lg border border-line-strong bg-canvas pl-9 pr-3 text-sm"
               />
             </div>
@@ -265,7 +264,7 @@ export function RenewableGuide({ initialResource }: { initialResource: string })
               className="mt-3 h-9 w-full rounded-lg border border-line-strong bg-canvas px-2 text-sm"
             >
               <option value="renewable">Renewable routes</option>
-              <option value="all">All registered resources</option>
+              <option value="all">Any route status</option>
               <option value="unproven">No proven route yet</option>
             </select>
             {searchError ? (

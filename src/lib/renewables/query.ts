@@ -1,4 +1,5 @@
 import type { GuideData, GuideDetail, GuideProof, GuideRoute, GuideSearch } from "./types";
+import { isBaseResource } from "./base-resources";
 
 export function createGuideQuery(data: GuideData) {
   const resources = new Map(data.resources.map((r) => [r.key, r]));
@@ -96,6 +97,7 @@ export function createGuideQuery(data: GuideData) {
       const matching = data.resources.filter(
         (r) =>
           r.kind !== "utility" &&
+          isBaseResource(r) &&
           words.every((w) => `${r.displayName} ${r.key}`.toLowerCase().includes(w)) &&
           (status === "all" || (status === "renewable") === !!data.proofs[r.key]),
       );

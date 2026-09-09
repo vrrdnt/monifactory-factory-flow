@@ -134,7 +134,7 @@ describe("renewable guide runtime examples", () => {
     expect(detail.route.sources.map((s) => s.id).sort()).toEqual(["solar", "water"]);
     expect(detail.route.steps[0].startup[0].choices).toEqual(["item:minecraft:oak_sapling"]);
     expect(detail.route.steps[1].selectedInputs).toContain("item:minecraft:oak_log");
-    expect(query.search("oak planks").resources[0].key).toBe("item:minecraft:oak_planks");
+    expect(query.search("oak planks").resources).toEqual([]);
     expect(query.detail("item:missing:nope")).toBeUndefined();
   });
   it("rejects mixing a normal-mode export into Expert results", () => {

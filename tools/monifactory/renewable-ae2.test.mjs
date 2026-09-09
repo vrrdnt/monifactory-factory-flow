@@ -107,9 +107,9 @@ describe("AE2 renewable production", () => {
     expect(q.search("Brain Coral").resources[0].voltage).toBeUndefined();
     expect(q.detail("item:minecraft:brain_coral").route.euVoltage).toBeUndefined();
     expect(q.detail("item:ae2:matter_ball").route.euVoltage).toBeUndefined();
-    expect(q.search("Oak Planks").resources[0].voltage).toBeGreaterThanOrEqual(0);
+    expect(q.search("Oak Log").resources[0].voltage).toBeGreaterThanOrEqual(0);
     expect(q.detail("item:minecraft:oak_planks").route.euVoltage).toBe(
-      q.search("Oak Planks").resources[0].voltage,
+      q.search("Oak Log").resources[0].voltage,
     );
   });
 });

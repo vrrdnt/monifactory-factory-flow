@@ -10,7 +10,7 @@ Search recipes, connect production chains, and calculate throughput, machine cou
 
 - **24,877 recipes** in the ordinary-machine board dataset, with searchable ingredients, machine selection and runtime textures.
 - A Monifactory calculation path for verified ordinary electric machines, including overclocking and inventory limits.
-- **9,981 renewable resource routes**, with dependency steps, startup requirements and explicit operating assumptions.
+- A renewable-resource guide focused on **base materials and fluids**, with dependency steps, startup requirements and explicit operating assumptions. Crafted products such as cables and components are omitted from browsing; their dependencies remain available within production routes.
 - Browser-local plan saving and JSON import/export.
 - The exported dataset, search indexes, texture atlases and renewable guide, bundled in Git and the Docker image. No Minecraft installation or export is needed to use the planner.
 
