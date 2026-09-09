@@ -1,5 +1,7 @@
 # Docker hosting at vrrdnt.dev/moni-planner
 
+Using Portainer? Follow [the Portainer stack instructions](portainer.md).
+
 The planner needs its Next.js server for recipe search and the renewable guide.
 The root Dockerfile packages a Node 24 standalone server, running as an unprivileged
 user. It includes the exported Monifactory 0.13.7 Expert dataset, indexes, texture

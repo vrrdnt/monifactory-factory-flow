@@ -45,6 +45,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    env:
+      PORTAINER_WEBHOOK_URL: ${{ secrets.PORTAINER_WEBHOOK_URL }}
     steps:
       - uses: actions/checkout@v6
       - uses: docker/setup-buildx-action@v3
@@ -62,3 +64,14 @@ jobs:
             ghcr.io/vrrdnt/monifactory-factory-flow:sha-${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Redeploy planner in Portainer
+        if: env.PORTAINER_WEBHOOK_URL != ''
+        run: |
+          status="$(curl --silent --show-error --fail \
+            --connect-timeout 10 --max-time 180 \
+            --request POST --output /dev/null --write-out '%{http_code}' \
+            "$PORTAINER_WEBHOOK_URL")"
+          case "$status" in
+            2??) echo "Portainer accepted the planner update." ;;
+            *) echo "Portainer returned HTTP $status; expected a successful webhook response."; exit 1 ;;
+          esac
