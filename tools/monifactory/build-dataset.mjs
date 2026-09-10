@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { buildPlannerRecipes } from "./planner-recipes.mjs";
 import { publishTextures, reusePublishedIcons } from "./textures.mjs";
 import { buildEbfPlannerRecipes } from "./ebf-planner.mjs";
+import { buildMultiblockPlannerRecipes } from "./multiblock-planner.mjs";
 
 export function buildDataset(
   catalog,
@@ -14,6 +15,7 @@ export function buildDataset(
   generatedAt = new Date().toISOString(),
   icons = {},
   ebf,
+  multiblock,
 ) {
   const recipes = buildPlannerRecipes(catalog, reference);
   if (ebf) {
@@ -25,6 +27,16 @@ export function buildDataset(
     recipes.push(...buildEbfPlannerRecipes(ebf.catalog, ebf.reference, catalog.resources));
   }
   const profile = catalog.profile;
+  if (multiblock) {
+    if (
+      multiblock.catalog.instanceFingerprint !== catalog.instanceFingerprint ||
+      multiblock.catalog.profile.id !== catalog.profile.id
+    )
+      throw new Error("Multiblock and ordinary dataset profiles must match.");
+    recipes.push(
+      ...buildMultiblockPlannerRecipes(multiblock.catalog, multiblock.reference, catalog.resources),
+    );
+  }
   if (
     profile.packId !== "monifactory" ||
     profile.packVersion !== "0.13.7" ||
@@ -98,6 +110,9 @@ export function buildDataset(
       sourceVersion: "1",
       generatedAt,
       notes:
+        (multiblock
+          ? "Verified Greenhouses, vacuum freezers, large chemical reactors and implosion compressors are included. "
+          : "") +
         (ebf
           ? "Ordinary LV–UV machines and the Electric Blast Furnace. Modifier and inventory reference checks passed; full production cycles, other multiblocks, generators and non-GT recipes are not covered. "
           : "Ordinary LV–UV machines only. Modifier and inventory reference checks passed; full production cycles, multiblocks, generators and non-GT recipes are not covered. ") +
@@ -122,6 +137,17 @@ export function buildDataset(
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
+  const multiblockIndex = args.indexOf("--multiblock");
+  let multiblock;
+  if (multiblockIndex !== -1) {
+    if (args.length !== multiblockIndex + 3)
+      throw new Error("--multiblock requires a catalog and inventory reference at the end.");
+    const [, catalogPath, referencePath] = args.splice(multiblockIndex);
+    multiblock = {
+      catalog: JSON.parse(await readFile(catalogPath, "utf8")),
+      reference: JSON.parse(await readFile(referencePath, "utf8")),
+    };
+  }
   const ebfIndex = args.indexOf("--ebf");
   let ebf;
   if (ebfIndex !== -1) {
@@ -171,6 +197,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     new Date().toISOString(),
     icons,
     ebf,
+    multiblock,
   );
   if (reused) {
     dataset.textureProvenance = reused.provenance;

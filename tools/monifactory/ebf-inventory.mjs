@@ -16,8 +16,7 @@ export const EBF_PARTS = {
   outputHatch: "gtceu:ev_output_hatch_4x",
 };
 
-export function normalizeEbf(catalog, modifiers, parts, inventory) {
-  validateEbfProbe(modifiers, catalog);
+export function multiblockInventoryLayout(catalog, parts, inventory, partIds, machineId) {
   for (const [report, kind] of [
     [parts, "parts"],
     [inventory, "limits"],
@@ -35,14 +34,14 @@ export function normalizeEbf(catalog, modifiers, parts, inventory) {
   }
   const partMap = new Map(parts.parts.map((p) => [p.id, p]));
   const selected = Object.fromEntries(
-    Object.entries(EBF_PARTS).map(([key, id]) => {
+    Object.entries(partIds).map(([key, id]) => {
       const part = partMap.get(id);
       if (!part) throw new Error(`Missing native inventory part ${id}`);
       return [key, part];
     }),
   );
   const limits = {
-    id: "gtceu:electric_blast_furnace",
+    id: machineId,
     tier: 3,
     inputSlots: selected.inputBus.slots,
     outputSlots: selected.outputBus.slots,
@@ -53,6 +52,33 @@ export function normalizeEbf(catalog, modifiers, parts, inventory) {
     circuitSlots: selected.inputBus.circuitSlots,
   };
   const sizes = new Map(inventory.items.map((i) => [i.id, i.maxStackSize]));
+  return { limits, sizes };
+}
+
+export function stockMultiblockRecipe(recipe, limits, sizes) {
+  const layout = checkOrdinaryInventory(recipe, limits, sizes);
+  if (!layout.supported) throw new Error(layout.reason);
+  // Reserve output space even if every probabilistic output wins.
+  let low = 1,
+    high = 16384;
+  while (low < high) {
+    const middle = Math.ceil((low + high) / 2);
+    if (checkOrdinaryInventory(scaleRecipe(recipe, middle), limits, sizes).supported) low = middle;
+    else high = middle - 1;
+  }
+  recipe.stockParallels = low;
+  recipe.stock = checkOrdinaryInventory(scaleRecipe(recipe, low), limits, sizes);
+}
+
+export function normalizeEbf(catalog, modifiers, parts, inventory) {
+  validateEbfProbe(modifiers, catalog);
+  const { limits, sizes } = multiblockInventoryLayout(
+    catalog,
+    parts,
+    inventory,
+    EBF_PARTS,
+    "gtceu:electric_blast_furnace",
+  );
   const resources = new Set(catalog.resources.map((r) => `${r.kind}:${r.id}`));
   const tags = new Map(catalog.tags.map((t) => [`${t.kind}:${t.id}`, t.members]));
   const schema = nativeSchema.extend({
@@ -94,20 +120,7 @@ export function normalizeEbf(catalog, modifiers, parts, inventory) {
       recipe.inputs = normalizeSlots(native.inputs, "input", resources, tags, recipe);
       recipe.outputs = normalizeSlots(native.outputs, "output", resources, tags, recipe);
       if (!recipe.outputs.length) throw new Error("no-supported-output");
-      const layout = checkOrdinaryInventory(recipe, limits, sizes);
-      if (!layout.supported) throw new Error(layout.reason);
-      // A concrete stocked input layout; use its bound for subtick matching.
-      // Output capacity is also reserved for the worst-case (all chances win).
-      let low = 1,
-        high = 16384;
-      while (low < high) {
-        const middle = Math.ceil((low + high) / 2);
-        if (checkOrdinaryInventory(scaleRecipe(recipe, middle), limits, sizes).supported)
-          low = middle;
-        else high = middle - 1;
-      }
-      recipe.stockParallels = low;
-      recipe.stock = checkOrdinaryInventory(scaleRecipe(recipe, low), limits, sizes);
+      stockMultiblockRecipe(recipe, limits, sizes);
       recipe.configurationIds = configurations
         .filter((c) => ebfCalculation(recipe, c).accepted)
         .map((c) => c.id);

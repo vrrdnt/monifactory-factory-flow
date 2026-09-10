@@ -1,6 +1,12 @@
 import type { FactoryNode, Recipe } from "../../model/types";
 import { EBF_ENGINE, ebfBoardControls, ebfBoardStats } from "./ebf-board";
 import {
+  MULTIBLOCK_ENGINE,
+  multiblockBoardConfiguration,
+  multiblockBoardControls,
+  multiblockBoardStats,
+} from "./multiblock-board";
+import {
   calculateOrdinaryMachine,
   ORDINARY_ENGINE,
   ORDINARY_TIERS,
@@ -15,19 +21,28 @@ export function applyMonifactoryHandler(
   recipe: Recipe,
   node: Pick<FactoryNode, "machineHandlerId"> & Partial<Pick<FactoryNode, "machineConfigTiers">>,
 ): Recipe {
-  if (recipe.source?.calculationEngine === EBF_ENGINE) {
+  if (
+    recipe.source?.calculationEngine === EBF_ENGINE ||
+    recipe.source?.calculationEngine === MULTIBLOCK_ENGINE
+  ) {
+    const ebf = recipe.source.calculationEngine === EBF_ENGINE;
     const handler = recipe.machineHandlers?.find(
       (h) => h.id === (node.machineHandlerId ?? recipe.machineHandlers?.[0]?.id),
     );
-    if (!handler || handler.id !== "gtceu:electric_blast_furnace" || handler.kind !== "multiblock")
-      throw new Error("Monifactory requires a verified EBF handler.");
-    const stats = ebfBoardStats(recipe, node);
+    const machineId = ebf
+      ? "gtceu:electric_blast_furnace"
+      : multiblockBoardConfiguration(recipe, node).machineId;
+    if (!handler || handler.id !== machineId || handler.kind !== "multiblock")
+      throw new Error("Monifactory requires a verified multiblock handler.");
+    const stats = ebf ? ebfBoardStats(recipe, node) : multiblockBoardStats(recipe, node);
     return {
       ...recipe,
       minimumTier: ORDINARY_TIERS[stats.machineTier],
       maximumTier: ORDINARY_TIERS[stats.machineTier],
       machineProfile: { ...handler },
-      machineConfigControls: ebfBoardControls(recipe, node),
+      machineConfigControls: ebf
+        ? ebfBoardControls(recipe, node)
+        : multiblockBoardControls(recipe, node),
       runtimeCalculation: undefined,
     };
   }
@@ -60,8 +75,14 @@ export function getMonifactoryStats(
   node: Pick<FactoryNode, "machineHandlerId"> & Partial<Pick<FactoryNode, "machineConfigTiers">>,
 ) {
   const effective = applyMonifactoryHandler(recipe, node);
-  if (recipe.source?.calculationEngine === EBF_ENGINE) {
-    const result = ebfBoardStats(effective, node);
+  if (
+    recipe.source?.calculationEngine === EBF_ENGINE ||
+    recipe.source?.calculationEngine === MULTIBLOCK_ENGINE
+  ) {
+    const result =
+      recipe.source.calculationEngine === EBF_ENGINE
+        ? ebfBoardStats(effective, node)
+        : multiblockBoardStats(effective, node);
     return {
       ...result,
       tier: ORDINARY_TIERS[result.machineTier],

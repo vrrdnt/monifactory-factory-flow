@@ -1,5 +1,11 @@
 import type { FactoryProject } from "../../model/types";
 import {
+  MULTIBLOCK_ENGINE,
+  MULTIBLOCK_POWER_CONTROL,
+  MULTIBLOCK_SHARED_EUT,
+  multiblockBoardConfiguration,
+} from "./multiblock-board";
+import {
   EBF_ENGINE,
   EBF_SHARED_HEAT,
   EBF_SHARED_EUT,
@@ -15,9 +21,31 @@ export function normalizeSharedEbfConfigurations(project: FactoryProject): Facto
   let changed = false;
   const nodes = project.nodes.map((node) => {
     const recipe = recipes.get(node.recipeId);
-    if (recipe?.source?.calculationEngine !== EBF_ENGINE) return node;
+    const engine = recipe?.source?.calculationEngine;
+    if (!recipe || (engine !== EBF_ENGINE && engine !== MULTIBLOCK_ENGINE)) return node;
     const sections = [recipe, ...(node.extraRecipes ?? []).map((s) => recipes.get(s.recipeId))];
     const config = { ...node.machineConfigTiers };
+    if (engine === MULTIBLOCK_ENGINE) {
+      const machineId = multiblockBoardConfiguration(recipe, node).machineId;
+      if (sections.length > 1) {
+        if (
+          sections.some(
+            (r) =>
+              !r ||
+              r.source?.calculationEngine !== engine ||
+              multiblockBoardConfiguration(r, {}).machineId !== machineId,
+          )
+        )
+          throw new Error("Shared multiblock sections require the same verified controller.");
+        config[MULTIBLOCK_SHARED_EUT] = String(Math.max(...sections.map((r) => r!.eut)));
+        config[MULTIBLOCK_POWER_CONTROL] = multiblockBoardConfiguration(recipe, {
+          machineConfigTiers: config,
+        }).selectedPower.key;
+      } else delete config[MULTIBLOCK_SHARED_EUT];
+      if (JSON.stringify(config) === JSON.stringify(node.machineConfigTiers ?? {})) return node;
+      changed = true;
+      return { ...node, machineConfigTiers: config };
+    }
     if (sections.length > 1) {
       if (sections.some((r) => r?.source?.calculationEngine !== EBF_ENGINE))
         throw new Error("An EBF can only share verified EBF recipes.");

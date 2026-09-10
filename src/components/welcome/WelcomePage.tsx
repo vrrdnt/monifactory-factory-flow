@@ -156,7 +156,7 @@ export function WelcomePage() {
             </div>
           </header>
 
-          {isMonifactory ? <p className="text-sm text-fg-subtle">Monifactory 0.13.7 Expert · Ordinary machines and the Electric Blast Furnace, with recipe and item icons. More multiblocks, generators and other-mod recipes are still being added.</p> : <CommunityShelf />}
+          {isMonifactory ? <p className="text-sm text-fg-subtle">Monifactory 0.13.7 Expert · Ordinary machines, EBFs, Greenhouses, vacuum freezers, LCRs and implosion compressors, with recipe and item icons. More multiblocks, generators and other-mod recipes are still being added.</p> : <CommunityShelf />}
 
           {latest && !isMonifactory ? (
             <section className="flex flex-col gap-2">

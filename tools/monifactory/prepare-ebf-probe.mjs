@@ -3,7 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { profile, resolveMinecraftDirectory } from "./prepare.mjs";
 
-export function ebfProbeCases(catalog) {
+export function energyHatchConfigurations(catalog) {
   const hatchConfigurations = [
     ["lv"],
     ["mv"],
@@ -28,6 +28,11 @@ export function ebfProbeCases(catalog) {
   const known = new Set(catalog.machines.map((m) => m.id));
   if (hatchConfigurations.flat().some((id) => !known.has(id)))
     throw new Error("Missing EBF hatch reference inputs.");
+  return hatchConfigurations;
+}
+
+export function ebfProbeCases(catalog) {
+  const hatchConfigurations = energyHatchConfigurations(catalog);
   const recipeIds = catalog.recipes
     .filter((r) => r.recipeType === "gtceu:electric_blast_furnace")
     .map((r) => r.id)

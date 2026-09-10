@@ -7,19 +7,67 @@ machine. Search visibility alone is not completion: selected machines must give
 correct power, timing, inputs, outputs, conditions and throughput in the board's
 Build, Solve and Pool modes.
 
+Greenhouse recipes are part of this board scope, including regular and
+fertilizer-boosted variants, reusable seeds/saplings, water requirements and
+native overclocking. Their presence in the renewable guide alone is insufficient.
+
+Power planning must let a player select a Monifactory generator and a specific
+fuel, enter an EU/t requirement, and solve generator count and fuel consumption.
+Fuel inputs must connect to their production recipes so the same plan sizes the
+entire fuel chain, including Greenhouses where applicable. Show gross generation,
+fuel-production power consumption and net available EU/t separately; support a
+net target that accounts for the additional fuel production needed to power that
+chain. Machine counts must distinguish continuous equivalent capacity from whole
+machines to build. Generator efficiencies, usable fuels, byproducts and operating
+requirements must come from the pinned pack's native behavior. Inherited GTNH
+fuel tables and turbine formulas are not valid Monifactory defaults.
+
 ## Published baseline
 
-The current bundled board has 33,170 native recipes from a 41,275-entry GT
-runtime export, represented by 39,093 machine-tier variants across 35 recipe maps.
+The current bundled board has 34,130 native recipes from a 41,275-entry GT
+runtime export, represented by 40,053 machine-tier variants across 39 recipe maps.
 This includes 8,070 native macerator recipes and 245 EBF recipes, including both
-Kanthal ingot routes. Missing families include vacuum freezers, distillation
-towers, large chemical reactors and assembly lines.
+Kanthal ingot routes, plus all 128 Greenhouse recipes, 127 vacuum freezer recipes,
+495 large chemical reactor recipes and all 210 implosion compressor recipes.
+Missing families still include distillation towers and assembly lines.
 Other multiblocks, generators, non-GT recipes, conditions, NBT-sensitive inputs,
 special chance logic, inventory exclusions and dynamic recipes also remain in
 scope. The renewable guide is a separate material-availability model and cannot
 serve as verification of board calculations.
 
 ## Implementation and verification
+
+- The four new multiblocks passed 13,594 native modifier comparisons across 14
+  hatch configurations each, plus 12,272 stocked-inventory checks. The Greenhouse
+  uses standard non-perfect overclocking with no subtick parallels; LCR uses
+  perfect subtick overclocking, while freezer and implosion use non-perfect
+  subtick overclocking. Batch mode is disabled. `standard-multiblock.ts` models
+  these distinct native modifiers.
+- The portable `multiblock-inventory-reference.json.gz` preserves modifier and
+  stocked-inventory witnesses. Every admitted recipe/configuration requires a
+  matching codec hash, native calculation, successful input/tick matching and
+  satisfied conditions. Native cleanroom checks fail with no provider and pass
+  with an unplaced clean provider of the exact required type; this is not a test
+  of a formed room. Recipes explicitly require the working room.
+- Stock layouts use HV item buses and IV 9x fluid hatches, increasing fluid-hatch
+  tier only when a larger recipe cannot fit. The selected parts appear in recipe
+  notes. These are conservative stocked-capacity assumptions, not minimum build
+  tiers. Shared machine cards use a common hatch configuration. Complete world
+  production cycles and structure formation have not been tested.
+- Eleven recipes in these families remain excluded: seven probabilistic-input
+  LCR recipes, two biome-conditioned LCR recipes and two recipes above the
+  currently verified power range. They remain in the raw catalog for follow-up.
+- Reproduce with `prepare-multiblock-probe.mjs`, then `verify-multiblock-probe.mjs`.
+  Normalize using `multiblock-inventory.mjs` with the raw catalog, modifier report,
+  native parts report and inventory limits. Verify its generated inventory jobs
+  with `run-inventory-checks.mjs`, then append `--multiblock <multiblock-catalog>
+  <inventory-reference>` after any `--ebf` arguments when building the dataset.
+- Verification passed all 148 test files (1,483 tests plus the existing expected
+  failure), typecheck and the production build. Browser checks found both normal
+  and boosted Oak Greenhouse routes. A pinned EV boosted Greenhouse produces
+  16 logs/s, 1 apple/s and 0.5 saplings/s using 0.125 fertilizer/s, 2,000 mB/s
+  water and 1,280 EU/t, matching the native reference. Configuration, rates and
+  the pin survive reload; no browser exceptions were reported.
 
 - Macerator output limits and chance-function handling are implemented in the
   import path. Native recipes are split only when admitted tiers have different

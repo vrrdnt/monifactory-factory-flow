@@ -22,12 +22,22 @@
   var Coils = Java.loadClass("com.gregtechceu.gtceu.common.block.CoilBlock$CoilType");
   var EnergyList = Java.loadClass("com.gregtechceu.gtceu.api.misc.EnergyContainerList");
   var Util = Java.loadClass("com.gregtechceu.gtceu.utils.GTUtil");
+  var DummyCleanroom = Java.loadClass(
+    "com.gregtechceu.gtceu.api.machine.multiblock.DummyCleanroom",
+  );
+  var CleanroomType = Java.loadClass("com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType");
   var root = "local/monifactory-planner/";
   var ticks = 0;
   function machine(id) {
     var definition = GT.MACHINES.get(new RL(id));
     if (
-      id !== "gtceu:electric_blast_furnace" &&
+      [
+        "gtceu:electric_blast_furnace",
+        "gtceu:vacuum_freezer",
+        "gtceu:large_chemical_reactor",
+        "gtceu:implosion_compressor",
+        "gtceu:greenhouse",
+      ].indexOf(id) === -1 &&
       (definition.getTier() < 1 || definition.getTier() > 8)
     )
       throw new Error("Unsupported machine tier");
@@ -84,6 +94,8 @@
       mode: String(global.packmode),
       gtceuVersion: String(Platform.getMod("gtceu").getVersion()),
       environmentalHazards: Boolean(Config.INSTANCE.gameplay.environmentalHazards),
+      enableCleanroom: Boolean(Config.INSTANCE.machines.enableCleanroom),
+      cleanMultiblocks: Boolean(Config.INSTANCE.machines.cleanMultiblocks),
       machines: [],
       items: [],
       parts: [],
@@ -145,16 +157,25 @@
           try {
             var target = machine(String(job.machineId));
             var inputItems, inputFluids, circuitInventory;
-            if (job.ebf) {
-              if (String(job.machineId) !== "gtceu:electric_blast_furnace")
-                throw new Error("Unexpected EBF controller");
-              var bus = machine(String(job.ebf.inputBus));
+            var settings = job.ebf || job.multiblock;
+            if (settings) {
+              if (
+                [
+                  "gtceu:electric_blast_furnace",
+                  "gtceu:vacuum_freezer",
+                  "gtceu:large_chemical_reactor",
+                  "gtceu:implosion_compressor",
+                  "gtceu:greenhouse",
+                ].indexOf(String(job.machineId)) === -1
+              )
+                throw new Error("Unexpected multiblock controller");
+              var bus = machine(String(settings.inputBus));
               inputItems = bus.getInventory();
-              inputFluids = machine(String(job.ebf.inputHatch)).tank;
+              inputFluids = machine(String(settings.inputHatch)).tank;
               circuitInventory = bus.getCircuitInventory();
               var containers = new List();
-              for (var h = 0; h < job.ebf.hatches.length; h++) {
-                var energyHatch = machine(String(job.ebf.hatches[h]));
+              for (var h = 0; h < settings.hatches.length; h++) {
+                var energyHatch = machine(String(settings.hatches[h]));
                 energyHatch.energyContainer.setEnergyStored(
                   energyHatch.energyContainer.getEnergyCapacity(),
                 );
@@ -168,11 +189,12 @@
                 Number(Util.getFloorTierByVoltage(target.getMaxVoltage())),
                 true,
               );
-              setField(target, "coilType", Coils.values()[Number(job.ebf.coilIndex)], false);
+              if (job.ebf)
+                setField(target, "coilType", Coils.values()[Number(settings.coilIndex)], false);
               target.setBatchEnabled(false);
               connect(target, IO.OUT, [
-                machine(String(job.ebf.outputBus)).getInventory(),
-                machine(String(job.ebf.outputHatch)).tank,
+                machine(String(settings.outputBus)).getInventory(),
+                machine(String(settings.outputHatch)).tank,
               ]);
             } else {
               inputItems = target.importItems;
@@ -202,6 +224,17 @@
               .byKey(new RL(String(job.rawRecipeId || job.recipeId)))
               .orElse(null);
             if (base === null) throw new Error("Recipe not found");
+            var withoutCleanroom = null;
+            if (job.cleanroom) {
+              if (["cleanroom", "sterile_cleanroom"].indexOf(String(job.cleanroom)) === -1)
+                throw new Error("Unsupported cleanroom type");
+              withoutCleanroom = Boolean(
+                Helper.checkConditions(base, target.getRecipeLogic()).isSuccess(),
+              );
+              var roomTypes = new List();
+              roomTypes.add(CleanroomType.getByName(String(job.cleanroom)));
+              target.setCleanroom(DummyCleanroom.createForTypes(roomTypes));
+            }
             var nativeJson = null;
             if (job.checkNativeRecipe === true || job.diagnostics === true) {
               var codecOps = RegistryOps.create(JsonOps.INSTANCE, event.server.registryAccess());
@@ -216,7 +249,7 @@
               machineId: String(job.machineId),
               matched: Boolean(matched),
             };
-            if (job.ebf) {
+            if (settings) {
               check.accepted = modified !== null;
               check.durationTicks = modified === null ? null : Number(modified.duration);
               check.eut = modified === null ? null : String(modified.getInputEUt().getTotalEU());
@@ -224,6 +257,10 @@
               check.overclockSteps = modified === null ? null : Number(modified.ocLevel);
               check.tickMatched =
                 modified !== null && Boolean(Helper.matchTickRecipe(target, modified).isSuccess());
+              check.conditionsMatched = Boolean(
+                Helper.checkConditions(base, target.getRecipeLogic()).isSuccess(),
+              );
+              check.withoutCleanroomMatched = withoutCleanroom;
             }
             if (job.checkNativeRecipe === true)
               check.nativeRecipeSha256 = String(

@@ -8,8 +8,8 @@ Search recipes, connect production chains, and calculate throughput, machine cou
 
 ## What's included
 
-- **33,170 native recipes**, represented by **39,093 machine-tier variants**, with searchable ingredients, machine selection and runtime textures. This includes **8,070 macerator recipes** with the correct tier-dependent output limits and **245 Electric Blast Furnace recipes**, including both Kanthal routes.
-- Monifactory calculations for ordinary electric machines and the EBF, including overclocking, inventory limits, coil heat discounts and sub-tick parallels. EBF cards have coil and energy-hatch controls; recipes sharing one card use the same machine configuration.
+- **34,130 native recipes**, represented by **40,053 machine-tier variants**, with searchable ingredients, machine selection and runtime textures. This includes **8,070 macerator recipes**, **245 Electric Blast Furnace recipes** (both Kanthal routes), and **960 Greenhouse, vacuum freezer, LCR and implosion compressor recipes**.
+- Monifactory calculations for these machines, including overclocking, inventory limits, EBF coil heat discounts and supported sub-tick parallels. Multiblock cards have energy-hatch controls; recipes sharing one card use the same machine configuration.
 - A renewable-resource guide focused on **base materials and fluids**, with dependency steps, startup requirements and explicit operating assumptions. Crafted products such as cables and components are omitted from browsing; their dependencies remain available within production routes.
 - Uncheck **Include Microverse missions** to find routes without normal or hostile missions. The guide recalculates dependencies and uses other proven routes where available; shared links retain this setting.
 - Browser-local plan saving and JSON import/export.
@@ -22,6 +22,10 @@ This is a work in progress for **0.13.7 Expert**, not a complete calculator for 
 Ordinary-machine calculations were checked against **18,480 live modifier reference cases** and **39,098 live inventory-matching cases**. Native recipe hashes also match the imported values. Unsupported conditions, NBT-sensitive ingredients and machine behavior are excluded from the board dataset rather than assigned guessed formulas. GTNH-specific bonuses and automatic container conversions are disabled for Monifactory recipes.
 
 EBF calculations also passed **28,224 native modifier comparisons** and **14,406 supplied-inventory checks**. EBF rates assume batch mode off, stocked HV item buses and EV 4x fluid hatches, and available output space. These checks use unplaced native machine objects; they do not test complete production cycles or structure formation.
+
+Greenhouses, vacuum freezers, LCRs and implosion compressors passed **13,594 native modifier comparisons** and **12,272 stocked-inventory checks**. All **128 Greenhouse recipes** are included, with regular/boosted variants and reusable seeds. LCR cleanroom recipes retain their operating requirement. Cards list the tested item buses and fluid hatches; larger fluid recipes require larger hatches. Batch mode is off.
+
+Generator planning is being ported: select a fuel, set an EU/t target, and size both generators and their fuel-production chain, including the chain's own power consumption. This flow is not available yet; the inherited GTNH generator tables are not used for Monifactory.
 
 The renewable guide covers more recipe types than the board calculator. A guide route establishes material availability under its listed assumptions; it does not establish machine speed, power sizing or full board support for that machine. Other multiblocks, generators, additional recipe serializers and stateful behavior still need further work. Chance outputs use long-run expectations, not guaranteed short-term production.
 

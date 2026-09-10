@@ -34,7 +34,7 @@ for (const job of [...byRecipe.values(), ...byMachine.values()])
   selected.set(job.id, { ...job, expected: true });
 // EBF references cover every offered heat/power configuration, including
 // filled-inventory subtick behavior. Ordinary families use the matrix above.
-for (const job of source.jobs.filter((job) => job.ebf))
+for (const job of source.jobs.filter((job) => job.ebf || job.multiblock))
   selected.set(job.id, { ...job, expected: true });
 const negatives = new Map();
 const recipeTypes = new Map(catalog.recipes.map((recipe) => [recipe.id, recipe.recipeType]));
@@ -59,9 +59,11 @@ const result = {
   kind: "monifactory-inventory-reference",
   instanceFingerprint: source.instanceFingerprint,
   status: "running",
-  coverage: source.jobs.some((job) => job.ebf)
-    ? "every-offered-ebf-configuration-and-empty-control"
-    : "one-layout-per-recipe-plus-every-used-machine-and-empty-controls",
+  coverage: source.jobs.some((job) => job.multiblock)
+    ? "every-offered-multiblock-configuration-and-empty-controls"
+    : source.jobs.some((job) => job.ebf)
+      ? "every-offered-ebf-configuration-and-empty-control"
+      : "one-layout-per-recipe-plus-every-used-machine-and-empty-controls",
   cases: [],
   errors: [],
 };
@@ -128,7 +130,7 @@ for (let start = 0; start < jobs.length; start += batchSize) {
       ...batch[i],
       matched: actual.matched,
       ...(actual.nativeRecipeSha256 ? { nativeRecipeSha256: actual.nativeRecipeSha256 } : {}),
-      ...(batch[i].ebf
+      ...(batch[i].ebf || batch[i].multiblock
         ? {
             calculation: {
               accepted: actual.accepted,
@@ -138,9 +140,22 @@ for (let start = 0; start < jobs.length; start += batchSize) {
               overclockSteps: actual.overclockSteps,
             },
             tickMatched: actual.tickMatched,
+            conditionsMatched: actual.conditionsMatched,
+            withoutCleanroomMatched: actual.withoutCleanroomMatched,
           }
         : {}),
     });
+    if (
+      batch[i].multiblock &&
+      (!actual.conditionsMatched ||
+        (batch[i].cleanroom && actual.withoutCleanroomMatched !== false))
+    )
+      result.errors.push(`Condition mismatch: ${batch[i].id}`);
+    if (
+      batch[i].cleanroom &&
+      (report.enableCleanroom !== true || report.cleanMultiblocks !== false)
+    )
+      result.errors.push(`Cleanroom profile mismatch: ${batch[i].id}`);
     if (batch[i].expectedCalculation) {
       for (const key of ["accepted", "durationTicks", "eut", "parallels", "overclockSteps"]) {
         if (String(actual[key]) !== String(batch[i].expectedCalculation[key]))
