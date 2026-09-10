@@ -1,0 +1,201 @@
+{
+  "powers": [
+    {
+      "hatches": [
+        {
+          "id": "gtceu:lv_energy_input_hatch",
+          "voltage": "32",
+          "amperage": "2"
+        }
+      ],
+      "key": "h0"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:mv_energy_input_hatch",
+          "voltage": "128",
+          "amperage": "2"
+        }
+      ],
+      "key": "h1"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:mv_energy_input_hatch",
+          "voltage": "128",
+          "amperage": "2"
+        },
+        {
+          "id": "gtceu:mv_energy_input_hatch",
+          "voltage": "128",
+          "amperage": "2"
+        }
+      ],
+      "key": "h2"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:hv_energy_input_hatch",
+          "voltage": "512",
+          "amperage": "2"
+        }
+      ],
+      "key": "h3"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:hv_energy_input_hatch",
+          "voltage": "512",
+          "amperage": "2"
+        },
+        {
+          "id": "gtceu:mv_energy_input_hatch",
+          "voltage": "128",
+          "amperage": "2"
+        }
+      ],
+      "key": "h4"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:hv_energy_input_hatch",
+          "voltage": "512",
+          "amperage": "2"
+        },
+        {
+          "id": "gtceu:hv_energy_input_hatch",
+          "voltage": "512",
+          "amperage": "2"
+        }
+      ],
+      "key": "h5"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:ev_energy_input_hatch",
+          "voltage": "2048",
+          "amperage": "2"
+        }
+      ],
+      "key": "h6"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:ev_energy_input_hatch_4a",
+          "voltage": "2048",
+          "amperage": "4"
+        }
+      ],
+      "key": "h7"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:ev_energy_input_hatch_16a",
+          "voltage": "2048",
+          "amperage": "16"
+        }
+      ],
+      "key": "h8"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:iv_energy_input_hatch",
+          "voltage": "8192",
+          "amperage": "2"
+        }
+      ],
+      "key": "h9"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:luv_energy_input_hatch",
+          "voltage": "32768",
+          "amperage": "2"
+        }
+      ],
+      "key": "h10"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:zpm_energy_input_hatch",
+          "voltage": "131072",
+          "amperage": "2"
+        }
+      ],
+      "key": "h11"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:uv_energy_input_hatch",
+          "voltage": "524288",
+          "amperage": "2"
+        }
+      ],
+      "key": "h12"
+    },
+    {
+      "hatches": [
+        {
+          "id": "gtceu:uv_energy_input_hatch_16a",
+          "voltage": "524288",
+          "amperage": "16"
+        }
+      ],
+      "key": "h13"
+    }
+  ],
+  "coils": [
+    {
+      "temperature": 1800,
+      "key": "cupronickel",
+      "itemId": "gtceu:cupronickel_coil_block"
+    },
+    {
+      "temperature": 2700,
+      "key": "kanthal",
+      "itemId": "gtceu:kanthal_coil_block"
+    },
+    {
+      "temperature": 3600,
+      "key": "nichrome",
+      "itemId": "gtceu:nichrome_coil_block"
+    },
+    {
+      "temperature": 4500,
+      "key": "rtm_alloy",
+      "itemId": "gtceu:rtm_alloy_coil_block"
+    },
+    {
+      "temperature": 5400,
+      "key": "hssg",
+      "itemId": "gtceu:hssg_coil_block"
+    },
+    {
+      "temperature": 7200,
+      "key": "naquadah",
+      "itemId": "gtceu:naquadah_coil_block"
+    },
+    {
+      "temperature": 9001,
+      "key": "trinium",
+      "itemId": "gtceu:trinium_coil_block"
+    },
+    {
+      "temperature": 10800,
+      "key": "tritanium",
+      "itemId": "gtceu:tritanium_coil_block"
+    }
+  ]
+}

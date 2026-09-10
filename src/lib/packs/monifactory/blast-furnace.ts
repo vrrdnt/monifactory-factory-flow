@@ -20,8 +20,8 @@ export interface BlastFurnaceConfiguration {
 
 /**
  * GTRecipeModifiers.ebfOverclock, with batch mode off. Caller must additionally
- * establish structure, conditions and inventory eligibility. Not yet connected
- * to the board pending inventory and integration checks.
+ * establish structure, conditions and inventory eligibility. The board adapter
+ * uses the supplied-inventory reference in tools/monifactory/fixtures.
  */
 export function calculateBlastFurnace(
   recipe: BlastFurnaceRecipe,

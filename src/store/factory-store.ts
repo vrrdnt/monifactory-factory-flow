@@ -1,6 +1,7 @@
 "use client";
 
 import { create } from "zustand";
+import { normalizeSharedEbfConfigurations } from "@/lib/packs/monifactory/shared-ebf";
 import { createEmptyProject } from "@/examples";
 import type { DatasetManifest, RecipeDataset } from "@/lib/datasets";
 import {
@@ -5908,6 +5909,7 @@ function haveSameMachineCounts(left: FactoryProject, right: FactoryProject): boo
 }
 
 function touchProject(project: FactoryProject): FactoryProject {
+  project = normalizeSharedEbfConfigurations(project);
   return {
     // Every edit passes through here, which is the one place that can promise
     // a custom rate card never keeps a resource after its last wire goes —

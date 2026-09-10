@@ -9,10 +9,11 @@ Build, Solve and Pool modes.
 
 ## Published baseline
 
-The current bundled board has 32,925 native recipes from a 41,275-entry GT
-runtime export, represented by 38,848 machine-tier variants across 34 recipe maps.
-This includes 8,070 native macerator recipes. Missing families include electric blast furnaces,
-vacuum freezers, distillation towers, large chemical reactors and assembly lines.
+The current bundled board has 33,170 native recipes from a 41,275-entry GT
+runtime export, represented by 39,093 machine-tier variants across 35 recipe maps.
+This includes 8,070 native macerator recipes and 245 EBF recipes, including both
+Kanthal ingot routes. Missing families include vacuum freezers, distillation
+towers, large chemical reactors and assembly lines.
 Other multiblocks, generators, non-GT recipes, conditions, NBT-sensitive inputs,
 special chance logic, inventory exclusions and dynamic recipes also remain in
 scope. The renewable guide is a separate material-availability model and cannot
@@ -26,9 +27,10 @@ serve as verification of board calculations.
   instance verified 528 ordinary modifier cases, 96 native output cases, 721
   heating-coil primitive cases and 80 chance-function cases. Its macerators use
   the native NONE chance function. The serving dataset includes these variants.
-- Heating-coil OC primitives implement perfect OCs, heat discounts and subtick
-  parallels. Full EBF integration still needs coil/hatch configuration, machine
-  eligibility, modifier ordering, inventory matching and board controls.
+- EBF cards expose native coil and hatch configurations, including two MV
+  hatches for Kanthal. Perfect OCs, heat discounts, modifier ordering and subtick
+  parallels use the verified GTCEu calculator. Recipes on a shared EBF card use
+  one physical coil/hatch configuration meeting every section's requirements.
 - `prepare-special-probe.mjs` prepares actual macerator modifier/output checks,
   native heating-coil OC comparisons and chance-function comparisons. Heating
   primitives are not a formed-multiblock or completed production-cycle test.
@@ -46,8 +48,20 @@ serve as verification of board calculations.
   state on unplaced objects, with empty inventories and batch mode disabled.
   `prepare-ebf-probe.mjs` and `verify-ebf-probe.mjs` reproduce the checks. The
   portable fixture contains actual results. It does not verify formed structure
-  constraints, filled-inventory subtick capacity or completed production cycles;
-  EBF board integration remains pending.
+  constraints or completed production cycles.
+- A second EBF reference supplies actual HV input/output buses and EV 4x fluid
+  hatches, sets programmed circuits, and connects charged native energy hatches.
+  All 14,405 admitted recipe/configuration pairs and one empty-input negative
+  control pass matching, timing, power, parallels and native-codec hash checks.
+  The reference is committed as `ebf-inventory-reference.json.gz`. Board tests
+  compare every pair and exercise Kanthal in Build, Solve and Pool, plus shared
+  Kanthal/Tungsten configuration and time allocation. Browser checks verify coil
+  and hatch changes, pinned rates and persistence after reload.
+- EBF batch mode is off. The inventory bound assumes continuously stocked HV
+  item buses and EV 4x fluid hatches, with room for all possible outputs. Seven
+  EBF recipes remain excluded: five use unsupported ingredient encodings and two
+  Necrosiderite recipes require 12,200 K and 1,000,000 EU/t, beyond the currently
+  verified heat/power configurations.
 
 The replacement instance exported 41,275 GT recipes, 2,962 more than the first
 copy (mostly boiler recipes). Its first expanded inventory run checked 39,098
@@ -66,6 +80,15 @@ Run inventory checks after a reload has fully completed. Every newly normalized
 recipe now requires a matching native-codec hash at conversion time. The dataset
 builder accepts a fresh texture index or `--reuse-published-icons` followed by
 the previous `renewables.json.gz`; reuse does not assert a fresh client capture.
+
+To add EBF data, first capture native part limits with
+`prepare-probe.mjs --parts <copied-instance> <runtime-catalog>`. Load the helper
+once, wait for reload completion, then queue the request again if an old callback
+consumed it. Normalize with `ebf-inventory.mjs <runtime-catalog> <ebf-modifier-report>
+<inventory-parts> <inventory-limits> <output>`, then run `run-inventory-checks.mjs`
+with the generated jobs and `ebf-catalog.json`. Add `--ebf <ebf-catalog>
+<inventory-reference>` at the end of the dataset-builder command. Publication
+requires a matching native witness for every offered configuration.
 
 Use a copied instance and existing test world. The temporary control helper only
 responds to explicit `status` and `reload` requests. No full KubeJS export runs at

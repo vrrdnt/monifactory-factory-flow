@@ -117,7 +117,7 @@ export function WelcomePage() {
               </span>
             </div>
             <p className="max-w-[600px] text-[13px] leading-relaxed text-fg-subtle">
-              Draw a GregTech: New Horizons factory as a flowchart. Every card is a
+              Draw a {isMonifactory ? "Monifactory" : "GregTech: New Horizons"} factory as a flowchart. Every card is a
               real recipe, every wire carries a real rate, and the board tells you
               what starves, what clogs and what to build.
             </p>
@@ -156,7 +156,7 @@ export function WelcomePage() {
             </div>
           </header>
 
-          {isMonifactory ? <p className="text-sm text-fg-subtle">Monifactory 0.13.7 Expert · Experimental ordinary-machine catalog. Multiblocks, generators, other-mod recipes and item icons are still being added.</p> : <CommunityShelf />}
+          {isMonifactory ? <p className="text-sm text-fg-subtle">Monifactory 0.13.7 Expert · Ordinary machines and the Electric Blast Furnace, with recipe and item icons. More multiblocks, generators and other-mod recipes are still being added.</p> : <CommunityShelf />}
 
           {latest && !isMonifactory ? (
             <section className="flex flex-col gap-2">

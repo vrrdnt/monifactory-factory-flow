@@ -5,6 +5,39 @@ import { fileURLToPath } from "node:url";
 import { ORDINARY_ENGINE, ORDINARY_TIERS } from "../../src/lib/packs/monifactory/ordinary.ts";
 import { checkOrdinaryInventory } from "../../src/lib/packs/monifactory/inventory.ts";
 
+export function plannerSlot(entry, names) {
+  const candidates = entry.candidates.map((id) => ({
+    kind: entry.kind,
+    id,
+    displayName: names.get(`${entry.kind}:${id}`) ?? id,
+  }));
+  if (candidates.length === 1)
+    return {
+      ...candidates[0],
+      amount: entry.amount,
+      consumed: entry.consumed,
+      chance: entry.chance,
+    };
+  // A distinct virtual resource represents the choice. Concrete alternatives
+  // remain same-kind, one-for-one substitutions in the existing board model.
+  const digest = createHash("sha256")
+    .update(JSON.stringify({ kind: entry.kind, selector: entry.selector }))
+    .digest("hex")
+    .slice(0, 24);
+  return {
+    kind: entry.kind,
+    id: `monifactory_choice:${digest}`,
+    displayName: `Any of ${candidates.length}: ${candidates
+      .map((r) => r.displayName)
+      .slice(0, 3)
+      .join(", ")}`,
+    amount: entry.amount,
+    consumed: entry.consumed,
+    chance: entry.chance,
+    alternatives: candidates,
+  };
+}
+
 export function buildPlannerRecipes(catalog, reference) {
   if (
     catalog.format !== "monifactory-capacity-checked-catalog" ||
@@ -29,38 +62,7 @@ export function buildPlannerRecipes(catalog, reference) {
       (r.displayName ?? r.id).replace(/§[0-9a-fk-or]/gi, "").trim(),
     ]),
   );
-  function slot(entry) {
-    const candidates = entry.candidates.map((id) => ({
-      kind: entry.kind,
-      id,
-      displayName: names.get(`${entry.kind}:${id}`) ?? id,
-    }));
-    if (candidates.length === 1)
-      return {
-        ...candidates[0],
-        amount: entry.amount,
-        consumed: entry.consumed,
-        chance: entry.chance,
-      };
-    // A distinct virtual resource represents the choice. Concrete alternatives
-    // remain same-kind, one-for-one substitutions in the existing board model.
-    const digest = createHash("sha256")
-      .update(JSON.stringify({ kind: entry.kind, selector: entry.selector }))
-      .digest("hex")
-      .slice(0, 24);
-    return {
-      kind: entry.kind,
-      id: `monifactory_choice:${digest}`,
-      displayName: `Any of ${candidates.length}: ${candidates
-        .map((r) => r.displayName)
-        .slice(0, 3)
-        .join(", ")}`,
-      amount: entry.amount,
-      consumed: entry.consumed,
-      chance: entry.chance,
-      alternatives: candidates,
-    };
-  }
+  const slot = (entry) => plannerSlot(entry, names);
   return catalog.recipes.map((recipe) => {
     const cases = positive.get(recipe.id);
     if (!cases?.length) throw new Error(`Missing runtime inventory witness for ${recipe.id}`);

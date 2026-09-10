@@ -6,14 +6,24 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildPlannerRecipes } from "./planner-recipes.mjs";
 import { publishTextures, reusePublishedIcons } from "./textures.mjs";
+import { buildEbfPlannerRecipes } from "./ebf-planner.mjs";
 
 export function buildDataset(
   catalog,
   reference,
   generatedAt = new Date().toISOString(),
   icons = {},
+  ebf,
 ) {
   const recipes = buildPlannerRecipes(catalog, reference);
+  if (ebf) {
+    if (
+      ebf.catalog.instanceFingerprint !== catalog.instanceFingerprint ||
+      ebf.catalog.profile.id !== catalog.profile.id
+    )
+      throw new Error("EBF and ordinary dataset profiles must match.");
+    recipes.push(...buildEbfPlannerRecipes(ebf.catalog, ebf.reference, catalog.resources));
+  }
   const profile = catalog.profile;
   if (
     profile.packId !== "monifactory" ||
@@ -49,6 +59,8 @@ export function buildDataset(
   }
   for (const recipe of recipes) {
     for (const resource of [...recipe.inputs, ...recipe.outputs]) add(resource);
+    for (const control of recipe.machineConfigControls ?? [])
+      for (const tier of control.tiers) add(tier.resource);
   }
   const machines = new Map(catalog.machines.map((m) => [m.id, m]));
   const handlerIcons = new Map();
@@ -86,7 +98,9 @@ export function buildDataset(
       sourceVersion: "1",
       generatedAt,
       notes:
-        "Ordinary LV–UV machines only. Modifier and inventory reference checks passed; full production cycles, multiblocks, generators and non-GT recipes are not covered. " +
+        (ebf
+          ? "Ordinary LV–UV machines and the Electric Blast Furnace. Modifier and inventory reference checks passed; full production cycles, other multiblocks, generators and non-GT recipes are not covered. "
+          : "Ordinary LV–UV machines only. Modifier and inventory reference checks passed; full production cycles, multiblocks, generators and non-GT recipes are not covered. ") +
         (Object.keys(icons).length
           ? "Default-stack icons captured from the installed EMI renderer."
           : "Icons are not yet included."),
@@ -107,8 +121,19 @@ export function buildDataset(
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const [catalogPath, referencePath, textureOption, previousGuidePath, ...extra] =
-    process.argv.slice(2);
+  const args = process.argv.slice(2);
+  const ebfIndex = args.indexOf("--ebf");
+  let ebf;
+  if (ebfIndex !== -1) {
+    if (args.length !== ebfIndex + 3)
+      throw new Error("--ebf requires a catalog and inventory reference.");
+    const [, catalogPath, referencePath] = args.splice(ebfIndex);
+    ebf = {
+      catalog: JSON.parse(await readFile(catalogPath, "utf8")),
+      reference: JSON.parse(await readFile(referencePath, "utf8")),
+    };
+  }
+  const [catalogPath, referencePath, textureOption, previousGuidePath, ...extra] = args;
   const reuseIcons = textureOption === "--reuse-published-icons";
   const textureIndexPath = reuseIcons ? undefined : textureOption;
   if (
@@ -145,6 +170,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     JSON.parse(await readFile(referencePath, "utf8")),
     new Date().toISOString(),
     icons,
+    ebf,
   );
   if (reused) {
     dataset.textureProvenance = reused.provenance;

@@ -19,11 +19,17 @@
   var Digest = Java.loadClass("java.security.MessageDigest");
   var Hex = Java.loadClass("java.util.HexFormat");
   var JString = Java.loadClass("java.lang.String");
+  var Coils = Java.loadClass("com.gregtechceu.gtceu.common.block.CoilBlock$CoilType");
+  var EnergyList = Java.loadClass("com.gregtechceu.gtceu.api.misc.EnergyContainerList");
+  var Util = Java.loadClass("com.gregtechceu.gtceu.utils.GTUtil");
   var root = "local/monifactory-planner/";
   var ticks = 0;
   function machine(id) {
     var definition = GT.MACHINES.get(new RL(id));
-    if (definition.getTier() < 1 || definition.getTier() > 8)
+    if (
+      id !== "gtceu:electric_blast_furnace" &&
+      (definition.getTier() < 1 || definition.getTier() > 8)
+    )
       throw new Error("Unsupported machine tier");
     return definition
       .getBlockEntityType()
@@ -45,6 +51,21 @@
     for (var i = 0; i < values.length; i++) list.add(values[i]);
     m.addHandlerList(Handlers.of(io, list));
   }
+  function setField(target, name, value, integer) {
+    var type = target.getClass();
+    while (type !== null) {
+      var fields = type.getDeclaredFields();
+      for (var i = 0; i < fields.length; i++) {
+        if (String(fields[i].getName()) !== name) continue;
+        fields[i].setAccessible(true);
+        if (integer) fields[i].setInt(target, value);
+        else fields[i].set(target, value);
+        return;
+      }
+      type = type.getSuperclass();
+    }
+    throw new Error("Missing native state field " + name);
+  }
   ServerEvents.tick(function (event) {
     if (++ticks % 100 !== 0) return;
     var request = JsonIO.read(root + "inventory-request.json");
@@ -65,6 +86,7 @@
       environmentalHazards: Boolean(Config.INSTANCE.gameplay.environmentalHazards),
       machines: [],
       items: [],
+      parts: [],
       cases: [],
       errors: [],
     };
@@ -75,7 +97,25 @@
         report.environmentalHazards
       )
         throw new Error("Wrong runtime configuration");
-      if (request.action === "limits") {
+      if (request.action === "parts") {
+        for (var partIndex = 0; partIndex < request.machineIds.length; partIndex++) {
+          var partId = String(request.machineIds[partIndex]);
+          if (!/^gtceu:[a-z]+_(input|output)_(bus|hatch)(_[49]x)?$/.test(partId))
+            throw new Error("Unsupported inventory part");
+          var part = machine(partId);
+          var isBus = partId.indexOf("_bus") !== -1;
+          report.parts.push({
+            id: partId,
+            tier: Number(part.getTier()),
+            kind: isBus ? "item" : "fluid",
+            direction: partId.indexOf("_input_") !== -1 ? "input" : "output",
+            slots: isBus ? slots(part.getInventory()) : [],
+            tanks: isBus ? [] : tanks(part.tank),
+            allowsSameFluid: isBus ? false : Boolean(part.tank.isAllowSameFluids()),
+            circuitSlots: slots(part.getCircuitInventory()),
+          });
+        }
+      } else if (request.action === "limits") {
         for (var i = 0; i < request.machineIds.length; i++) {
           var id = String(request.machineIds[i]);
           var m = machine(id);
@@ -104,28 +144,59 @@
           var job = request.jobs[j];
           try {
             var target = machine(String(job.machineId));
-            connect(target, IO.IN, [
-              target.importItems,
-              target.importFluids,
-              target.getCircuitInventory(),
-            ]);
-            connect(target, IO.OUT, [target.exportItems, target.exportFluids]);
+            var inputItems, inputFluids, circuitInventory;
+            if (job.ebf) {
+              if (String(job.machineId) !== "gtceu:electric_blast_furnace")
+                throw new Error("Unexpected EBF controller");
+              var bus = machine(String(job.ebf.inputBus));
+              inputItems = bus.getInventory();
+              inputFluids = machine(String(job.ebf.inputHatch)).tank;
+              circuitInventory = bus.getCircuitInventory();
+              var containers = new List();
+              for (var h = 0; h < job.ebf.hatches.length; h++) {
+                var energyHatch = machine(String(job.ebf.hatches[h]));
+                energyHatch.energyContainer.setEnergyStored(
+                  energyHatch.energyContainer.getEnergyCapacity(),
+                );
+                containers.add(energyHatch.energyContainer);
+                connect(target, IO.IN, [energyHatch.energyContainer]);
+              }
+              setField(target, "energyContainer", new EnergyList(containers), false);
+              setField(
+                target,
+                "tier",
+                Number(Util.getFloorTierByVoltage(target.getMaxVoltage())),
+                true,
+              );
+              setField(target, "coilType", Coils.values()[Number(job.ebf.coilIndex)], false);
+              target.setBatchEnabled(false);
+              connect(target, IO.OUT, [
+                machine(String(job.ebf.outputBus)).getInventory(),
+                machine(String(job.ebf.outputHatch)).tank,
+              ]);
+            } else {
+              inputItems = target.importItems;
+              inputFluids = target.importFluids;
+              circuitInventory = target.getCircuitInventory();
+              connect(target, IO.OUT, [target.exportItems, target.exportFluids]);
+            }
+            connect(target, IO.IN, [inputItems, inputFluids, circuitInventory]);
             for (var s = 0; s < job.items.length; s++) {
               var entry = job.items[s];
-              target.importItems.setStackInSlot(
+              inputItems.setStackInSlot(
                 Number(entry.slot),
                 new Stack(Forge.ITEMS.getValue(new RL(String(entry.id))), Number(entry.amount)),
               );
             }
             for (var f = 0; f < job.fluids.length; f++) {
               var value = job.fluids[f];
-              target.importFluids.setFluidInTank(
+              inputFluids.setFluidInTank(
                 Number(value.slot),
                 Fluid.of(String(value.id), Number(value.amount)),
               );
             }
             if (job.circuit !== undefined && job.circuit !== null)
-              target.getCircuitInventory().setStackInSlot(0, Circuit.stack(Number(job.circuit)));
+              circuitInventory.setStackInSlot(0, Circuit.stack(Number(job.circuit)));
             var base = event.server
               .getRecipeManager()
               .byKey(new RL(String(job.rawRecipeId || job.recipeId)))
@@ -145,6 +216,15 @@
               machineId: String(job.machineId),
               matched: Boolean(matched),
             };
+            if (job.ebf) {
+              check.accepted = modified !== null;
+              check.durationTicks = modified === null ? null : Number(modified.duration);
+              check.eut = modified === null ? null : String(modified.getInputEUt().getTotalEU());
+              check.parallels = modified === null ? null : Number(modified.subtickParallels);
+              check.overclockSteps = modified === null ? null : Number(modified.ocLevel);
+              check.tickMatched =
+                modified !== null && Boolean(Helper.matchTickRecipe(target, modified).isSuccess());
+            }
             if (job.checkNativeRecipe === true)
               check.nativeRecipeSha256 = String(
                 Hex.of().formatHex(
@@ -162,8 +242,8 @@
                   : String(Serializer.CODEC.encodeStart(ops, modified).result().get());
               check.matchResult = String(match);
               check.inputStacks = [];
-              for (var slot = 0; slot < target.importItems.getSlots(); slot++) {
-                var stack = target.importItems.getStackInSlot(slot);
+              for (var slot = 0; slot < inputItems.getSlots(); slot++) {
+                var stack = inputItems.getStackInSlot(slot);
                 check.inputStacks.push({
                   id: String(Forge.ITEMS.getKey(stack.getItem())),
                   count: Number(stack.getCount()),

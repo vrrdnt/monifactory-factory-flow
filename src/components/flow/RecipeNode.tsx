@@ -6111,7 +6111,7 @@ function PowerStoryContent({ report, utilization, machines = 1, recipe, node, ac
   // The calculator's working, on hover only: the scan behind the next win
   // samples the report a few hundred times.
   const working = useMemo(
-    () => (report.isMultiblock && recipe && node ? describePowerWorking(recipe, node, report.poolEuT) : undefined),
+    () => (report.isMultiblock && recipe && node && recipe.source?.packId !== "monifactory" ? describePowerWorking(recipe, node, report.poolEuT) : undefined),
     [report.isMultiblock, report.poolEuT, recipe, node],
   );
   const rows = working

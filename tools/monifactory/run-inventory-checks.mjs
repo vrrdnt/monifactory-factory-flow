@@ -32,6 +32,10 @@ for (const job of source.jobs) {
 }
 for (const job of [...byRecipe.values(), ...byMachine.values()])
   selected.set(job.id, { ...job, expected: true });
+// EBF references cover every offered heat/power configuration, including
+// filled-inventory subtick behavior. Ordinary families use the matrix above.
+for (const job of source.jobs.filter((job) => job.ebf))
+  selected.set(job.id, { ...job, expected: true });
 const negatives = new Map();
 const recipeTypes = new Map(catalog.recipes.map((recipe) => [recipe.id, recipe.recipeType]));
 const nativeHashes = new Map(
@@ -40,7 +44,14 @@ const nativeHashes = new Map(
 for (const job of byRecipe.values()) {
   const type = recipeTypes.get(job.recipeId);
   if (!negatives.has(type) && (job.items.length || job.fluids.length))
-    negatives.set(type, { ...job, id: job.id + "/empty", items: [], fluids: [], expected: false });
+    negatives.set(type, {
+      ...job,
+      id: job.id + "/empty",
+      items: [],
+      fluids: [],
+      expected: false,
+      expectedCalculation: undefined,
+    });
 }
 const jobs = [...selected.values(), ...negatives.values()];
 const result = {
@@ -48,7 +59,9 @@ const result = {
   kind: "monifactory-inventory-reference",
   instanceFingerprint: source.instanceFingerprint,
   status: "running",
-  coverage: "one-layout-per-recipe-plus-every-used-machine-and-empty-controls",
+  coverage: source.jobs.some((job) => job.ebf)
+    ? "every-offered-ebf-configuration-and-empty-control"
+    : "one-layout-per-recipe-plus-every-used-machine-and-empty-controls",
   cases: [],
   errors: [],
 };
@@ -115,8 +128,32 @@ for (let start = 0; start < jobs.length; start += batchSize) {
       ...batch[i],
       matched: actual.matched,
       ...(actual.nativeRecipeSha256 ? { nativeRecipeSha256: actual.nativeRecipeSha256 } : {}),
+      ...(batch[i].ebf
+        ? {
+            calculation: {
+              accepted: actual.accepted,
+              durationTicks: actual.durationTicks,
+              eut: actual.eut,
+              parallels: actual.parallels,
+              overclockSteps: actual.overclockSteps,
+            },
+            tickMatched: actual.tickMatched,
+          }
+        : {}),
     });
-    if (actual.matched !== batch[i].expected) console.log(`Inventory mismatch: ${batch[i].id}`);
+    if (batch[i].expectedCalculation) {
+      for (const key of ["accepted", "durationTicks", "eut", "parallels", "overclockSteps"]) {
+        if (String(actual[key]) !== String(batch[i].expectedCalculation[key]))
+          result.errors.push(
+            `Modifier mismatch: ${batch[i].id} ${key}: native=${actual[key]}, expected=${batch[i].expectedCalculation[key]}`,
+          );
+      }
+      if (!actual.tickMatched) result.errors.push(`Tick inputs failed: ${batch[i].id}`);
+    }
+    if (actual.matched !== batch[i].expected) {
+      result.errors.push(`Inventory mismatch: ${batch[i].id}`);
+      console.log(`Inventory mismatch: ${batch[i].id}`);
+    }
     if (
       nativeHashes.get(batch[i].recipeId) &&
       actual.nativeRecipeSha256 !== nativeHashes.get(batch[i].recipeId)

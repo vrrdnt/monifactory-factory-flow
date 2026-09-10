@@ -22,7 +22,16 @@ export async function prepareProbe(instance, catalogPath, inventory = false) {
       "The catalog and prepared Expert instance must share the same export request fingerprint. No files changed.",
     );
   }
-  const machineIds = catalog.machines.filter(isOrdinaryMachine).map((m) => m.id);
+  const machineIds = catalog.machines
+    .filter(
+      inventory === "parts"
+        ? (m) =>
+            m.tier >= 1 &&
+            m.tier <= 8 &&
+            /^gtceu:[a-z]+_(input|output)_(bus|hatch)(_[49]x)?$/.test(m.id)
+        : isOrdinaryMachine,
+    )
+    .map((m) => m.id);
   if (!machineIds.length) throw new Error("No ordinary machines to probe. No files changed.");
   const script = inventory ? "monifactory_planner_inventory.js" : "monifactory_planner_probe.js";
   const destination = path.join(minecraft, "kubejs/server_scripts", script);
@@ -35,28 +44,45 @@ export async function prepareProbe(instance, catalogPath, inventory = false) {
   await writeFile(
     path.join(root, inventory ? "inventory-request.json" : "probe-request.json"),
     JSON.stringify(
-      inventory ? { action: "limits", machineIds } : { run: true, machineIds },
+      inventory
+        ? { action: inventory === "parts" ? "parts" : "limits", machineIds }
+        : { run: true, machineIds },
       null,
       2,
     ) + "\n",
   );
   return {
     machineCount: machineIds.length,
-    output: path.join(root, inventory ? "inventory-limits.json" : "ordinary-machine-probe.json"),
+    output: path.join(
+      root,
+      inventory === "parts"
+        ? "inventory-parts.json"
+        : inventory
+          ? "inventory-limits.json"
+          : "ordinary-machine-probe.json",
+    ),
     instruction:
       "Reload or reopen the copied world once. The probe runs after 100 server ticks; no blocks or recipes are registered.",
   };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const [instance, catalog] = process.argv.slice(2).filter((arg) => arg !== "--inventory");
+  const [instance, catalog] = process.argv
+    .slice(2)
+    .filter((arg) => !["--inventory", "--parts"].includes(arg));
+  if (process.argv.includes("--inventory") && process.argv.includes("--parts"))
+    throw new Error("Choose inventory limits or multiblock parts.");
   if (!instance || !catalog)
     throw new Error(
       "Usage: node tools/monifactory/prepare-probe.mjs <copied instance> <catalog.json>",
     );
   console.log(
     JSON.stringify(
-      await prepareProbe(instance, catalog, process.argv.includes("--inventory")),
+      await prepareProbe(
+        instance,
+        catalog,
+        process.argv.includes("--parts") ? "parts" : process.argv.includes("--inventory"),
+      ),
       null,
       2,
     ),

@@ -26,7 +26,11 @@ type VoltageTier = Exclude<MachineTier, "DEMO">;
  * overclocking, and banks sub-tick speed the way the machine does. Everything
  * else still uses the runtime data, which remains the best source we have.
  */
-export function prefersCuratedMachineMath(recipe: { machineType?: string }): boolean {
+export function prefersCuratedMachineMath(recipe: {
+  machineType?: string;
+  source?: Recipe["source"];
+}): boolean {
+  if (recipe.source?.packId === "monifactory") return false;
   return getMachineBehaviour(recipe.machineType) !== undefined;
 }
 

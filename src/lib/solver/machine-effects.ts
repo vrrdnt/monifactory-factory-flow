@@ -1,4 +1,5 @@
 import { isMonifactoryRecipe } from "../packs/monifactory/bridge";
+import { EBF_ENGINE, ebfBoardStats } from "../packs/monifactory/ebf-board";
 import {
   getRecipeCoilTierControl,
   getRecipeMachineConfigTierControls,
@@ -316,7 +317,10 @@ export function getMachineParallelMultiplier(
   recipe: MachineEffectRecipe,
   node: MachineEffectNode,
 ): number {
-  if (isMonifactoryRecipe(recipe)) return 1;
+  if (isMonifactoryRecipe(recipe))
+    return recipe.source?.calculationEngine === EBF_ENGINE
+      ? ebfBoardStats(recipe as Recipe, node).parallels
+      : 1;
   // GT++ "Voltage Tier * n Parallels" scales with the tier the machine runs
   // at; the GT tier ordinal counts ULV as 0, LV as 1, and so on. Stacked
   // hatches raise it, because the game reads the tier of the SUMMED voltage.

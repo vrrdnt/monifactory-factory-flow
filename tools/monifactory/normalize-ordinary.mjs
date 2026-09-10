@@ -25,7 +25,7 @@ const slot = z
 const capabilities = z
   .object({ item: z.array(slot).default([]), fluid: z.array(slot).default([]) })
   .strict();
-const nativeSchema = z
+export const nativeSchema = z
   .object({
     duration: positiveInt,
     category: id,
@@ -54,7 +54,7 @@ function reject(code) {
 function hash(text) {
   return createHash("sha256").update(text).digest("hex");
 }
-function parseNative(text) {
+export function parseNative(text) {
   // Refuse unrepresentable native numbers instead of silently rounding a long.
   return JSON.parse(text, (_key, value) => {
     if (typeof value === "number" && !Number.isSafeInteger(value)) reject("unsafe-native-number");
@@ -134,7 +134,7 @@ function selectorCandidates(selector, kind, resources, tags) {
   reject("unsupported-ingredient-or-nbt");
 }
 
-function normalizeSlots(caps, side, resources, tags, recipe) {
+export function normalizeSlots(caps, side, resources, tags, recipe) {
   const result = [];
   for (const kind of ["item", "fluid"]) {
     for (const entry of caps?.[kind] ?? []) {

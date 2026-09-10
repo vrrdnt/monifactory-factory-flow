@@ -1,5 +1,6 @@
 import type { FactoryEdge, FactoryNode, FactoryNodeRecipeSection, FactoryProject, MachineHandler, Recipe } from "./types";
 import { getRecipeMachineHandlers } from "./recipe-rules";
+import { normalizeSharedEbfConfigurations } from "../packs/monifactory/shared-ebf";
 
 /**
  * SHARED MACHINES (Jack, 2026-09-07): one card, several recipes, one machine.
@@ -208,6 +209,8 @@ export function expandSharedMachines(project: FactoryProject): FactoryProject {
   if (cached) {
     return cached;
   }
+  const originalProject = project;
+  project = normalizeSharedEbfConfigurations(project);
   const sharedIds = new Set(project.nodes.filter(isSharedMachineNode).map((node) => node.id));
   const nodes: FactoryNode[] = [];
   for (const node of project.nodes) {
@@ -232,7 +235,7 @@ export function expandSharedMachines(project: FactoryProject): FactoryProject {
     return next;
   });
   const expanded: FactoryProject = { ...project, nodes, edges };
-  expansionCache.set(project, expanded);
+  expansionCache.set(originalProject, expanded);
   expansionCache.set(expanded, expanded);
   return expanded;
 }

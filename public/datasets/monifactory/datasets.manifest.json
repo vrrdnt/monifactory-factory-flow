@@ -10,18 +10,18 @@
         "mode": "Expert"
       },
       "channel": "experimental",
-      "publishedAt": "2026-09-10T08:02:50.157Z",
+      "publishedAt": "2026-09-10T08:31:11.317Z",
       "manifestPath": "/datasets/monifactory/datasets.manifest.json",
       "recipeDatasetPath": "/datasets/monifactory/monifactory-0.13.7-expert/recipes.json.gz",
       "resourceIndexPath": "/datasets/monifactory/monifactory-0.13.7-expert/resource-index.json.gz",
       "recipeIndexPath": "/datasets/monifactory/monifactory-0.13.7-expert/recipe-index.json.gz",
       "recipeLookupIndexPath": "/datasets/monifactory/monifactory-0.13.7-expert/recipe-lookup-index.json.gz",
-      "checksumSha256": "e0ada69d2e31183ae1b3011b8bdb3b7f9f524c32b049019029da7b3a66d21034",
+      "checksumSha256": "635194c6b4f87d36fc5348d3dd7f1c8288dd0b85b2f8ea52bb6976cb22a9fe34",
       "sourceInfo": {
         "sourceId": "monifactory-kubejs",
         "sourceVersion": "1",
-        "generatedAt": "2026-09-10T08:02:50.157Z",
-        "notes": "Ordinary LV–UV machines only. Modifier and inventory reference checks passed; full production cycles, multiblocks, generators and non-GT recipes are not covered. Default-stack icons captured from the installed EMI renderer. Icons reuse the prior 0.13.7 Expert capture; the replacement client was not recaptured."
+        "generatedAt": "2026-09-10T08:31:11.317Z",
+        "notes": "Ordinary LV–UV machines and the Electric Blast Furnace. Modifier and inventory reference checks passed; full production cycles, other multiblocks, generators and non-GT recipes are not covered. Default-stack icons captured from the installed EMI renderer. Icons reuse the prior 0.13.7 Expert capture; the replacement client was not recaptured."
       }
     }
   ]

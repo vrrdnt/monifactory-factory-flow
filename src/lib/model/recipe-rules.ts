@@ -258,7 +258,12 @@ export function getRecipeMachineConfigTierControls(
   recipe: Pick<Recipe, "machineType" | "source" | "nei" | "machineConfigControls">,
   node: Pick<FactoryNode, "machineConfigTiers">,
 ): MachineConfigTierControl[] {
-  if (isMonifactoryRecipe(recipe)) return [];
+  if (isMonifactoryRecipe(recipe))
+    return (recipe.machineConfigControls ?? [])
+      .map((control) =>
+        resolveMachineConfigTierControl(control, node.machineConfigTiers?.[control.id]),
+      )
+      .filter((control): control is MachineConfigTierControl => Boolean(control));
   const controls = dropHiddenControls(
     mergeMachineConfigControls(
       recipe.machineConfigControls ?? [],

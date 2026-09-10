@@ -1,4 +1,5 @@
 import type { FactoryNode, Recipe } from "../../model/types";
+import { EBF_ENGINE, ebfBoardControls, ebfBoardStats } from "./ebf-board";
 import {
   calculateOrdinaryMachine,
   ORDINARY_ENGINE,
@@ -12,8 +13,24 @@ export function isMonifactoryRecipe(recipe: { source?: Recipe["source"] }): bool
 
 export function applyMonifactoryHandler(
   recipe: Recipe,
-  node: Pick<FactoryNode, "machineHandlerId">,
+  node: Pick<FactoryNode, "machineHandlerId"> & Partial<Pick<FactoryNode, "machineConfigTiers">>,
 ): Recipe {
+  if (recipe.source?.calculationEngine === EBF_ENGINE) {
+    const handler = recipe.machineHandlers?.find(
+      (h) => h.id === (node.machineHandlerId ?? recipe.machineHandlers?.[0]?.id),
+    );
+    if (!handler || handler.id !== "gtceu:electric_blast_furnace" || handler.kind !== "multiblock")
+      throw new Error("Monifactory requires a verified EBF handler.");
+    const stats = ebfBoardStats(recipe, node);
+    return {
+      ...recipe,
+      minimumTier: ORDINARY_TIERS[stats.machineTier],
+      maximumTier: ORDINARY_TIERS[stats.machineTier],
+      machineProfile: { ...handler },
+      machineConfigControls: ebfBoardControls(recipe, node),
+      runtimeCalculation: undefined,
+    };
+  }
   if (recipe.source?.calculationEngine !== ORDINARY_ENGINE)
     throw new Error("Unsupported Monifactory calculation engine.");
   const handler = node.machineHandlerId
@@ -38,8 +55,26 @@ export function applyMonifactoryHandler(
   };
 }
 
-export function getMonifactoryStats(recipe: Recipe, node: Pick<FactoryNode, "machineHandlerId">) {
+export function getMonifactoryStats(
+  recipe: Recipe,
+  node: Pick<FactoryNode, "machineHandlerId"> & Partial<Pick<FactoryNode, "machineConfigTiers">>,
+) {
   const effective = applyMonifactoryHandler(recipe, node);
+  if (recipe.source?.calculationEngine === EBF_ENGINE) {
+    const result = ebfBoardStats(effective, node);
+    return {
+      ...result,
+      tier: ORDINARY_TIERS[result.machineTier],
+      minimumTier: ORDINARY_TIERS[result.machineTier],
+      // The shared board multiplies per-operation EU by the parallel count.
+      eut: result.eut / result.parallels,
+      drawEuT: result.eut,
+      perfectSpeedFactor: 4,
+      perfectEuFactor: 4,
+      poolEuT: Number(result.power.totalEUt),
+      isMultiblock: true,
+    };
+  }
   const tierIndex = ORDINARY_TIERS.findIndex((tier) => tier === effective.minimumTier);
   const result = calculateOrdinaryMachine(effective, tierIndex);
   if (!result.accepted)
@@ -52,5 +87,9 @@ export function getMonifactoryStats(recipe: Recipe, node: Pick<FactoryNode, "mac
     perfectSpeedFactor: 4,
     perfectEuFactor: 4,
     poolEuT: ORDINARY_VOLTAGES[tierIndex],
+    drawEuT: result.eut,
+    parallels: 1,
+    hatches: 1,
+    isMultiblock: false,
   };
 }
