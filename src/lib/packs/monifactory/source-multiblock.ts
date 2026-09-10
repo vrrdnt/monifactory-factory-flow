@@ -11,7 +11,7 @@ export const SOURCE_COIL = "monifactorySourceCoil";
 export const SOURCE_PARALLEL = "monifactorySourceParallel";
 export const SOURCE_SHARED_EUT = "monifactorySourceSharedEUt";
 export const SOURCE_SHARED_HEAT = "monifactorySourceSharedHeat";
-const TIERS: MachineTier[] = [
+const TIERS: Exclude<MachineTier, "DEMO">[] = [
   "ULV",
   "LV",
   "MV",
