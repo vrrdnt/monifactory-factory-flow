@@ -2,6 +2,10 @@
 
 import { checklistCursorStyle } from "./flow/ChecklistMode";
 import { GENERATOR_ENGINE, generatorBoardStats } from "@/lib/packs/monifactory/generator";
+import {
+  sourceMultiblockModel,
+  sourceMultiblockStats,
+} from "@/lib/packs/monifactory/source-multiblock";
 
 import { useMemo, useRef } from "react";
 import { Cloud, Zap } from "lucide-react";
@@ -155,10 +159,7 @@ export function MachineShoppingList() {
 
   const groups = useMemo<MachineGroup[]>(() => {
     const recipesById = new Map(project.recipes.map((recipe) => [recipe.id, recipe]));
-    const byMachine = new Map<
-      string,
-      MachineGroup & { buildsByKey: Map<string, BuildLine> }
-    >();
+    const byMachine = new Map<string, MachineGroup & { buildsByKey: Map<string, BuildLine> }>();
 
     for (const node of project.nodes) {
       if (node.enabled === false) {
@@ -192,16 +193,16 @@ export function MachineShoppingList() {
       const solvedMonifactory = project.solveMode && recipe.source?.packId === "monifactory";
       const nodeSections = listNodeSections(node);
       const solvedCount = nodeSections.reduce(
-        (sum, { node: section }) => sum + (lastResult.nodes[section.id]?.theoreticalMachinesRequired ?? 0),
+        (sum, { node: section }) =>
+          sum + (lastResult.nodes[section.id]?.theoreticalMachinesRequired ?? 0),
         0,
       );
       // Solve returns continuous capacity. Build whole machines and spread
       // each section's required time over them for average power.
       const count = crop
         ? cropsNhHarvesterMachineCount(crop, node.machineCount)
-        : (solvedMonifactory
-            ? Math.max(0, Math.ceil(solvedCount - 0.000001))
-            : node.machineCount) * Math.max(1, node.parallel);
+        : (solvedMonifactory ? Math.max(0, Math.ceil(solvedCount - 0.000001)) : node.machineCount) *
+          Math.max(1, node.parallel);
       if (crop && count <= 0) {
         continue;
       }
@@ -222,7 +223,9 @@ export function MachineShoppingList() {
               : undefined,
           usage: solvedMonifactory
             ? count > 0
-              ? ((lastResult.nodes[view.id]?.theoreticalMachinesRequired ?? 0) * Math.max(1, node.parallel)) / count
+              ? ((lastResult.nodes[view.id]?.theoreticalMachinesRequired ?? 0) *
+                  Math.max(1, node.parallel)) /
+                count
               : 0
             : Math.min(1, Math.max(0, lastResult.nodes[view.id]?.utilization ?? 1)),
         };
@@ -247,11 +250,12 @@ export function MachineShoppingList() {
       // into the draw column like any machine's.
       const powerEuT = recipe.power
         ? recipe.power.euPerTick
-        : recipe.source?.calculationEngine === GENERATOR_ENGINE
-          ? generatorBoardStats(recipe, node).outputEUt
-          : undefined;
-      const madeEuT =
-        powerEuT !== undefined && powerEuT >= 0 ? powerEuT * runningCount : undefined;
+        : sourceMultiblockModel(recipe, node)
+          ? sourceMultiblockStats(recipe, node).outputEUt
+          : recipe.source?.calculationEngine === GENERATOR_ENGINE
+            ? generatorBoardStats(recipe, node).outputEUt
+            : undefined;
+      const madeEuT = powerEuT !== undefined && powerEuT >= 0 ? powerEuT * runningCount : undefined;
       // A crop harvester's draw, from the mod's own math: an Industrial Farm
       // burns `getPowerUsage` continuously spread over its seeds; a Crop
       // Manager spends `maxEUInput() / 8` on each crop it picks, so its
@@ -335,9 +339,7 @@ export function MachineShoppingList() {
       // to construct.
       // A crop harvester's build is its tier: an LV manager and an HV manager
       // are different things to construct, exactly like powered machines.
-      const cropTier = crop
-        ? (cropsNhHarvesterTierName(crop.tierIndex) as VoltageTier)
-        : undefined;
+      const cropTier = crop ? (cropsNhHarvesterTierName(crop.tierIndex) as VoltageTier) : undefined;
       // A generator's build is its tier setting where it has one (an LV and
       // an HV gas turbine are different things to construct); multiblock
       // generators are one build each.
@@ -402,7 +404,7 @@ export function MachineShoppingList() {
       build.nodeIds.push(node.id);
       if (euT !== undefined) {
         build.euT = (build.euT ?? 0) + euT;
-        build.avgEuT = (build.avgEuT ?? 0) + euT * usage;
+        build.avgEuT = (build.avgEuT ?? 0) + (sharedAvgEuT ?? euT * usage);
       }
       if (steamLs !== undefined) {
         build.steamLs = (build.steamLs ?? 0) + steamLs;
@@ -420,9 +422,7 @@ export function MachineShoppingList() {
     const list = [...byMachine.values()];
     // Ordered by PEAK, the column the cables are sized from.
     for (const group of list) {
-      group.builds.sort(
-        (a, b) => a.tierIndex - b.tierIndex || (b.euT ?? 0) - (a.euT ?? 0),
-      );
+      group.builds.sort((a, b) => a.tierIndex - b.tierIndex || (b.euT ?? 0) - (a.euT ?? 0));
     }
     list.sort(
       (a, b) =>
@@ -474,7 +474,9 @@ export function MachineShoppingList() {
         {/* The sheet's head: the title on the left, the two column labels
             over their columns on the right. */}
         <div className="flex w-full items-end gap-1.5">
-          <span className="min-w-0 flex-1 text-sm font-bold uppercase tracking-wider">Machines</span>
+          <span className="min-w-0 flex-1 text-sm font-bold uppercase tracking-wider">
+            Machines
+          </span>
           <span className={COLUMN_HEAD_CLASS}>Peak</span>
           <span className={COLUMN_HEAD_CLASS}>Average</span>
         </div>
@@ -482,7 +484,11 @@ export function MachineShoppingList() {
             draws, three (used, made, net) once a generator sits on it, and
             a steam row whenever a steam machine does. */}
         {hasSteam ? (
-          <TotalLine label="Steam" peak={{ steamLs: totals.steamLs }} average={{ steamLs: totals.avgSteamLs }} />
+          <TotalLine
+            label="Steam"
+            peak={{ steamLs: totals.steamLs }}
+            average={{ steamLs: totals.avgSteamLs }}
+          />
         ) : null}
         {hasEu || hasMade ? (
           <TotalLine
@@ -493,7 +499,11 @@ export function MachineShoppingList() {
         ) : null}
         {hasMade ? (
           <>
-            <TotalLine label="Made" peak={{ madeEuT: totals.madeEuT }} average={{ madeEuT: totals.avgMadeEuT }} />
+            <TotalLine
+              label="Made"
+              peak={{ madeEuT: totals.madeEuT }}
+              average={{ madeEuT: totals.avgMadeEuT }}
+            />
             <TotalLine
               label="Net"
               peak={{ netEuT: totals.madeEuT - totals.euT }}
@@ -520,12 +530,28 @@ export function MachineShoppingList() {
                 count={uniform ? group.count : undefined}
                 label={group.label}
                 chip={uniform ? build : undefined}
-                peak={uniform ? { euT: build?.euT, madeEuT: build?.madeEuT, steamLs: build?.steamLs } : undefined}
-                average={uniform ? { euT: build?.avgEuT, madeEuT: build?.avgMadeEuT, steamLs: build?.avgSteamLs } : undefined}
+                peak={
+                  uniform
+                    ? { euT: build?.euT, madeEuT: build?.madeEuT, steamLs: build?.steamLs }
+                    : undefined
+                }
+                average={
+                  uniform
+                    ? { euT: build?.avgEuT, madeEuT: build?.avgMadeEuT, steamLs: build?.avgSteamLs }
+                    : undefined
+                }
                 state={uniform ? (build?.state ?? "ok") : "ok"}
                 wash={uniform && build && !build.isMultiblock ? build.tier : undefined}
-                checklist={checklistMode ? group.nodeIds.every((id) => project.checklist?.cards.includes(id)) : undefined}
-                onClick={() => checklistMode ? useFactoryStore.getState().toggleChecklist("cards", group.nodeIds) : focusNext(group.label, group.nodeIds)}
+                checklist={
+                  checklistMode
+                    ? group.nodeIds.every((id) => project.checklist?.cards.includes(id))
+                    : undefined
+                }
+                onClick={() =>
+                  checklistMode
+                    ? useFactoryStore.getState().toggleChecklist("cards", group.nodeIds)
+                    : focusNext(group.label, group.nodeIds)
+                }
               />
               {uniform
                 ? null
@@ -545,12 +571,28 @@ export function MachineShoppingList() {
                             : undefined
                       }
                       chip={buildLine}
-                      peak={{ euT: buildLine.euT, madeEuT: buildLine.madeEuT, steamLs: buildLine.steamLs }}
-                      average={{ euT: buildLine.avgEuT, madeEuT: buildLine.avgMadeEuT, steamLs: buildLine.avgSteamLs }}
+                      peak={{
+                        euT: buildLine.euT,
+                        madeEuT: buildLine.madeEuT,
+                        steamLs: buildLine.steamLs,
+                      }}
+                      average={{
+                        euT: buildLine.avgEuT,
+                        madeEuT: buildLine.avgMadeEuT,
+                        steamLs: buildLine.avgSteamLs,
+                      }}
                       state={buildLine.state}
                       wash={buildLine.isMultiblock ? undefined : buildLine.tier}
-                      checklist={checklistMode ? buildLine.nodeIds.every((id) => project.checklist?.cards.includes(id)) : undefined}
-                      onClick={() => checklistMode ? useFactoryStore.getState().toggleChecklist("cards", buildLine.nodeIds) : focusNext(buildLine.key, buildLine.nodeIds)}
+                      checklist={
+                        checklistMode
+                          ? buildLine.nodeIds.every((id) => project.checklist?.cards.includes(id))
+                          : undefined
+                      }
+                      onClick={() =>
+                        checklistMode
+                          ? useFactoryStore.getState().toggleChecklist("cards", buildLine.nodeIds)
+                          : focusNext(buildLine.key, buildLine.nodeIds)
+                      }
                     />
                   ))}
             </div>
@@ -581,12 +623,15 @@ const COLUMN_HEAD_CLASS =
  * such figure, so the columns still line up.
  */
 function FigureCell({ figure, className }: { figure?: Figure; className?: string }) {
-  const value =
-    figure?.netEuT ?? figure?.madeEuT ?? figure?.euT ?? figure?.steamLs;
+  const value = figure?.netEuT ?? figure?.madeEuT ?? figure?.euT ?? figure?.steamLs;
   if (value === undefined) {
     return <span className={[COLUMN_CLASS, className ?? ""].join(" ")} />;
   }
-  const steam = figure?.steamLs !== undefined && figure.euT === undefined && figure.madeEuT === undefined && figure.netEuT === undefined;
+  const steam =
+    figure?.steamLs !== undefined &&
+    figure.euT === undefined &&
+    figure.madeEuT === undefined &&
+    figure.netEuT === undefined;
   const made = figure?.madeEuT !== undefined;
   const net = figure?.netEuT !== undefined;
   const tone = net
@@ -672,7 +717,10 @@ function ListLine({
   count?: number;
   label?: string;
   /** The fused hatch-and-tier chip, when this line is one build. */
-  chip?: Pick<BuildLine, "tier" | "hatches" | "hatchChip" | "hatchTypeId" | "amps" | "isMultiblock" | "typedEuT">;
+  chip?: Pick<
+    BuildLine,
+    "tier" | "hatches" | "hatchChip" | "hatchTypeId" | "amps" | "isMultiblock" | "typedEuT"
+  >;
   /** The line's two columns: full draw, and the solve-weighted draw. */
   peak?: Figure;
   average?: Figure;
@@ -696,7 +744,11 @@ function ListLine({
   const hatchType = chip?.isMultiblock ? getEnergyHatchType(chip.hatchTypeId) : undefined;
   const hatchAmps =
     chip?.amps ??
-    (hatchType ? (hatchType.exotic ? hatchType.amps : getHatchAmps(chip?.hatches ?? 1)) : undefined);
+    (hatchType
+      ? hatchType.exotic
+        ? hatchType.amps
+        : getHatchAmps(chip?.hatches ?? 1)
+      : undefined);
   // A multiblock's supply is one number: the typed EU/t, or what its stored
   // hatches add up to.
   const supplyEuT =
@@ -760,7 +812,15 @@ function ListLine({
   // story is about the row, and a target the width of a chip made the panel
   // feel like a secret.
   return (
-    <MinecraftTooltip content={checklist === undefined ? hatchStory : checklist ? "Completed — click to restore" : "Click to mark these machines complete"}>
+    <MinecraftTooltip
+      content={
+        checklist === undefined
+          ? hatchStory
+          : checklist
+            ? "Completed — click to restore"
+            : "Click to mark these machines complete"
+      }
+    >
       <button
         type="button"
         onClick={onClick}
@@ -769,7 +829,10 @@ function ListLine({
         data-checklist-row={checklist !== undefined ? "true" : undefined}
         // The wash sits at ~12% - present enough to read as the tier's
         // colour without competing with the chips that name it.
-        style={{ ...checklistCursorStyle, ...(wash ? { backgroundColor: `${GT_TIER_COLORS[wash].background}1f` } : {}) }}
+        style={{
+          ...checklistCursorStyle,
+          ...(wash ? { backgroundColor: `${GT_TIER_COLORS[wash].background}1f` } : {}),
+        }}
         className="relative flex w-full items-center gap-1.5 py-0.5 pl-2 pr-2 text-left hover:bg-[var(--mc-71)]"
       >
         {indent ? (

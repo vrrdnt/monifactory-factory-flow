@@ -1,4 +1,8 @@
 import { isMonifactoryRecipe } from "../packs/monifactory/bridge";
+import {
+  sourceMultiblockModel,
+  sourceMultiblockStats,
+} from "../packs/monifactory/source-multiblock";
 import { EBF_ENGINE, ebfBoardStats } from "../packs/monifactory/ebf-board";
 import { GENERATOR_ENGINE, generatorBoardStats } from "../packs/monifactory/generator";
 import { MULTIBLOCK_ENGINE, multiblockBoardStats } from "../packs/monifactory/multiblock-board";
@@ -319,6 +323,8 @@ export function getMachineParallelMultiplier(
   recipe: MachineEffectRecipe,
   node: MachineEffectNode,
 ): number {
+  if (sourceMultiblockModel(recipe as Recipe, node))
+    return sourceMultiblockStats(recipe as Recipe, node).parallels;
   if (isMonifactoryRecipe(recipe))
     return recipe.source?.calculationEngine === EBF_ENGINE
       ? ebfBoardStats(recipe as Recipe, node).parallels

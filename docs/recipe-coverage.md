@@ -22,9 +22,55 @@ machines to build. Generator efficiencies, usable fuels, byproducts and operatin
 requirements must come from the pinned pack's native behavior. Inherited GTNH
 fuel tables and turbine formulas are not valid Monifactory defaults.
 
-## Published baseline
+## Source-derived expansion (2026-09-10)
 
-The current bundled board has 34,166 native recipes from a 41,275-entry GT
+The user requested implementation and publication without further verification.
+The bundle now contains **39,396 native recipes**, represented by **45,366 recipe
+entries across 70 maps**. This pass adds **5,277 entries**, extends **33,115 existing
+entries** with multiblock choices and covers **73 processing controllers**. The
+known zero-duration `solidify_meta_null_to_tiny_pipe` recipe remains excluded.
+
+The new import pass adds the exported processing recipes for assembly lines,
+distillation towers, alloy blast smelters, GCYM large machines, mega machines,
+Microverse projectors, research stations, fusion reactors, boilers, large engines,
+rotor turbines and pack-specific processors. Existing recipes gain compatible
+multiblock handlers, including controllers with several recipe maps. Shared cards
+reuse the board's existing time allocation and common machine configuration.
+
+The new calculations are **source-derived and unverified**. Existing ordinary,
+EBF, Greenhouse, freezer, LCR, implosion and simple-generator adapters retain their
+historical references. Native conditions, custom data and chance logic are retained
+in recipe metadata; research/NBT items have distinct identities. Random counts and
+chanced consumption use mean rates. Research, dimensions, fusion startup energy,
+custom capabilities and structure requirements are prerequisites, not automatically
+solved constraints. Custom chance logic remains an estimate.
+
+Boilers assume full temperature; turbines assume full speed with manually selected
+combined rotor/holder power and efficiency. Engines include lubricant and optional
+oxygen boost. Omnic diversity and Sculk tank fill are explicit controls. These are
+steady-state estimates; maintenance, warm-up and inventory capacity are not modeled
+by the new adapters. Batch mode is off. Miners, drilling rigs and pumps still require
+world-state extraction models; Steam Additions controllers are not modeled.
+
+The bundled `multiblock-coverage.json` records counts, import exclusions, source
+revisions and input checksums. No new live checks, tests, typecheck, browser checks
+or production build were run for this expansion. Normal GitHub CI remains enabled.
+
+Reproduce the expansion after generating the existing baseline, or use
+`recipes.json.gz` from commit `ef7b29d0d7c97272d3cf7b726a9b06372f89b387` as the baseline:
+
+```powershell
+npx --yes --package=node@24 node tools/monifactory/expand-multiblocks.mjs <runtime-catalog.json> <baseline-recipes.json.gz>
+```
+
+This reads the existing export and icon capture and rebuilds the bundled dataset,
+resource catalog, search indexes and recipe shards. It does not request anything
+from Minecraft or rerun the baseline's reference checks. Keep the baseline outside
+the output directory; the expanded dataset cannot serve as its own baseline.
+
+## Historical runtime-checked baseline
+
+Before the source-derived expansion, the bundled board had 34,166 native recipes from a 41,275-entry GT
 runtime export, represented by 40,089 machine-tier variants across 42 recipe maps.
 This includes 8,070 native macerator recipes and 245 EBF recipes, including both
 Kanthal ingot routes, plus all 128 Greenhouse recipes, 127 vacuum freezer recipes,
@@ -36,7 +82,7 @@ special chance logic, inventory exclusions and dynamic recipes also remain in
 scope. The renewable guide is a separate material-availability model and cannot
 serve as verification of board calculations.
 
-## Implementation and verification
+## Historical implementation and verification
 
 - Simple combustion generators, gas turbines and steam turbines use
   `SimpleGeneratorMachine.recipeModifier` from GTCEu 7.5.3. It scales fuel and
@@ -187,8 +233,6 @@ The previous parallel full-suite run exhausted Windows memory while Minecraft
 was running. Use `--maxWorkers=1 --no-file-parallelism` for local Vitest runs while
 the test client is open. Do not treat the interrupted run as a passing check.
 
-Completion requires runtime references for the remaining machine families,
-retained native semantics for special ingredients and conditions, matching board
-controls and calculations, rebuilt searchable data, and verification of the
-published artifact. This document records outstanding work, not completed
-support.
+The historical verification requirements above apply to the runtime-checked
+adapters. The source-derived expansion deliberately defers those checks at the
+user's request; its availability does not imply verified in-game accuracy.

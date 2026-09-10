@@ -1,4 +1,9 @@
 import type { FactoryNode, Recipe } from "../../model/types";
+import {
+  applySourceMultiblock,
+  sourceMultiblockModel,
+  sourceMultiblockStats,
+} from "./source-multiblock";
 import { GENERATOR_ENGINE, generatorBoardStats } from "./generator";
 import { EBF_ENGINE, ebfBoardControls, ebfBoardStats } from "./ebf-board";
 import {
@@ -22,6 +27,7 @@ export function applyMonifactoryHandler(
   recipe: Recipe,
   node: Pick<FactoryNode, "machineHandlerId"> & Partial<Pick<FactoryNode, "machineConfigTiers">>,
 ): Recipe {
+  if (sourceMultiblockModel(recipe, node)) return applySourceMultiblock(recipe, node);
   if (recipe.source?.calculationEngine === GENERATOR_ENGINE) {
     const { handler } = generatorBoardStats(recipe, node);
     return {
@@ -87,6 +93,7 @@ export function getMonifactoryStats(
   recipe: Recipe,
   node: Pick<FactoryNode, "machineHandlerId"> & Partial<Pick<FactoryNode, "machineConfigTiers">>,
 ) {
+  if (sourceMultiblockModel(recipe, node)) return sourceMultiblockStats(recipe, node);
   const effective = applyMonifactoryHandler(recipe, node);
   if (recipe.source?.calculationEngine === GENERATOR_ENGINE) {
     const result = generatorBoardStats(effective, node);

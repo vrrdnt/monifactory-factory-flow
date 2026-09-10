@@ -10,18 +10,18 @@
         "mode": "Expert"
       },
       "channel": "experimental",
-      "publishedAt": "2026-09-10T09:38:08.859Z",
+      "publishedAt": "2026-09-10T11:06:26.806Z",
       "manifestPath": "/datasets/monifactory/datasets.manifest.json",
       "recipeDatasetPath": "/datasets/monifactory/monifactory-0.13.7-expert/recipes.json.gz",
       "resourceIndexPath": "/datasets/monifactory/monifactory-0.13.7-expert/resource-index.json.gz",
       "recipeIndexPath": "/datasets/monifactory/monifactory-0.13.7-expert/recipe-index.json.gz",
       "recipeLookupIndexPath": "/datasets/monifactory/monifactory-0.13.7-expert/recipe-lookup-index.json.gz",
-      "checksumSha256": "19faa0ada4b99eb92a47fc4579791b2a1fb3313047fdf723b2c0ca56f7ed4d95",
+      "checksumSha256": "fded848ef22c90f0539553c37ab042037634f8d5f9f1945cefb3a03d9f58036c",
       "sourceInfo": {
         "sourceId": "monifactory-kubejs",
         "sourceVersion": "1",
-        "generatedAt": "2026-09-10T09:38:08.859Z",
-        "notes": "Native LV-HV combustion generators, gas turbines and steam turbines are included. Verified Greenhouses, vacuum freezers, large chemical reactors and implosion compressors are included. Ordinary LV–UV machines and the Electric Blast Furnace. Modifier and inventory reference checks passed; full production cycles, other multiblocks, other generators and non-GT recipes are not covered. Default-stack icons captured from the installed EMI renderer. Icons reuse the prior 0.13.7 Expert capture; the replacement client was not recaptured."
+        "generatedAt": "2026-09-10T11:06:26.806Z",
+        "notes": "Ordinary machines, EBF, Greenhouse, vacuum freezer, LCR, implosion compressor and LV-HV fuel generators retain their prior runtime-checked adapters. Additional multiblock handlers and recipes use source-derived calculations without live or local verification. Conditions and custom recipe data are retained; sustained rates assume valid structures, stocked inputs, free output space and batch mode off. Icons reuse the prior installed-pack capture."
       }
     }
   ]
