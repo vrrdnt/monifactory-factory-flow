@@ -35,6 +35,7 @@ export function machineArtPixels(box: number): number {
 export interface HandlerRecipeStats {
   seconds: number;
   eut: number;
+  outputEUt?: number;
   totalEu: number;
   minimumTier: string;
   /** Steam-line machine: burns steam, never EU. */
@@ -51,6 +52,7 @@ export function getHandlerRecipeStats(recipe: Recipe, handler: MachineHandler): 
     const stats = getMonifactoryStats(recipe, { machineHandlerId: handler.id });
     return {
       seconds: stats.durationTicks / 20, eut: stats.eut,
+      outputEUt: "outputEUt" in stats ? stats.outputEUt : undefined,
       totalEu: stats.eut * stats.durationTicks, minimumTier: stats.minimumTier,
       steam: false, perfectOverclock: false, scalingParallels: [],
       controlSummaries: [], exactOverclocks: false,
@@ -282,7 +284,9 @@ export function MachineMenu({
               : undefined;
             const power: { value: string; unit: string } = steam
               ? { value: formatCompact(steam.drawSteamPerTick * 20).replace(/\.0$/, ""), unit: "L/s" }
-              : stats.eut > 0
+              : stats.outputEUt !== undefined
+                ? { value: `+${formatCompact(stats.outputEUt)}`, unit: "EU/t" }
+                : stats.eut > 0
                 ? { value: formatCompact(stats.eut), unit: "EU/t" }
                 : { value: "none", unit: "" };
             return { twin, stats, power };
@@ -302,7 +306,9 @@ export function MachineMenu({
         // small, muted, no space.
         const power: { value: string; unit: string } = steam
           ? { value: formatCompact(steam.drawSteamPerTick * 20).replace(/\.0$/, ""), unit: "L/s" }
-          : stats.eut > 0
+          : stats.outputEUt !== undefined
+            ? { value: `+${formatCompact(stats.outputEUt)}`, unit: "EU/t" }
+            : stats.eut > 0
             ? { value: formatCompact(stats.eut), unit: "EU/t" }
             : { value: "none", unit: "" };
         return { handler, stats, power };

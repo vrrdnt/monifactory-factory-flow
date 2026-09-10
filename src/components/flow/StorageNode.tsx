@@ -607,8 +607,32 @@ function StorageNodeComponent({ data, selected }: NodeProps<StorageFlowNode>) {
           </div>
         </div>
         </MinecraftTooltip>
+        {solveMode && role === "product" && storage.kind === "power" && storage.resourceId === "eu" ? (
+          <NetPowerTargetControl storageId={storage.id} />
+        ) : null}
       </div>
     </div>
+  );
+}
+
+function NetPowerTargetControl({ storageId }: { storageId: string }) {
+  const selected = useFactoryStore((state) => state.project.netPowerTargetStorageId === storageId);
+  const setNetPowerTarget = useFactoryStore((state) => state.setNetPowerTarget);
+  return (
+    <label
+      className="nodrag absolute left-0 top-full z-40 mt-1 flex w-full items-center justify-center gap-1 border border-[var(--mc-33)] bg-[var(--mc-82)] px-1 py-1 text-[10px]"
+      title="Subtract this plan's machine power consumption from this EU target. Only one target reserves the plan's power."
+      onPointerDown={(event) => event.stopPropagation()}
+      onClick={(event) => event.stopPropagation()}
+    >
+      <input
+        type="checkbox"
+        aria-label="Net power target"
+        checked={selected}
+        onChange={(event) => setNetPowerTarget(event.target.checked ? storageId : undefined)}
+      />
+      Net EU target
+    </label>
   );
 }
 

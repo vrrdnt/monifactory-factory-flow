@@ -26,6 +26,7 @@
     "com.gregtechceu.gtceu.api.machine.multiblock.DummyCleanroom",
   );
   var CleanroomType = Java.loadClass("com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType");
+  var SimpleGenerator = Java.loadClass("com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine");
   var root = "local/monifactory-planner/";
   var ticks = 0;
   function machine(id) {
@@ -140,7 +141,7 @@
             outputTanks: tanks(m.exportFluids),
             inputAllowsSameFluid: Boolean(m.importFluids.isAllowSameFluids()),
             outputAllowsSameFluid: Boolean(m.exportFluids.isAllowSameFluids()),
-            circuitSlots: slots(m.getCircuitInventory()),
+            circuitSlots: m instanceof SimpleGenerator ? [] : slots(m.getCircuitInventory()),
           });
         }
         var iterator = Forge.ITEMS.getValues().iterator();
@@ -199,10 +200,21 @@
             } else {
               inputItems = target.importItems;
               inputFluids = target.importFluids;
-              circuitInventory = target.getCircuitInventory();
+              circuitInventory = job.generator ? null : target.getCircuitInventory();
               connect(target, IO.OUT, [target.exportItems, target.exportFluids]);
+              if (job.generator) {
+                if (!(target instanceof SimpleGenerator))
+                  throw new Error("Unexpected generator class");
+                connect(target, IO.OUT, [target.energyContainer]);
+              }
             }
-            connect(target, IO.IN, [inputItems, inputFluids, circuitInventory]);
+            connect(
+              target,
+              IO.IN,
+              circuitInventory === null
+                ? [inputItems, inputFluids]
+                : [inputItems, inputFluids, circuitInventory],
+            );
             for (var s = 0; s < job.items.length; s++) {
               var entry = job.items[s];
               inputItems.setStackInSlot(
@@ -249,11 +261,14 @@
               machineId: String(job.machineId),
               matched: Boolean(matched),
             };
-            if (settings) {
+            if (settings || job.generator) {
               check.accepted = modified !== null;
               check.durationTicks = modified === null ? null : Number(modified.duration);
               check.eut = modified === null ? null : String(modified.getInputEUt().getTotalEU());
-              check.parallels = modified === null ? null : Number(modified.subtickParallels);
+              check.parallels =
+                modified === null
+                  ? null
+                  : Number(job.generator ? modified.parallels : modified.subtickParallels);
               check.overclockSteps = modified === null ? null : Number(modified.ocLevel);
               check.tickMatched =
                 modified !== null && Boolean(Helper.matchTickRecipe(target, modified).isSuccess());
@@ -261,6 +276,13 @@
                 Helper.checkConditions(base, target.getRecipeLogic()).isSuccess(),
               );
               check.withoutCleanroomMatched = withoutCleanroom;
+              if (job.generator) {
+                check.outputEUt =
+                  modified === null ? null : String(modified.getOutputEUt().getTotalEU());
+                check.overclockVoltage = String(target.getOverclockVoltage());
+                check.outputVoltage = String(target.energyContainer.getOutputVoltage());
+                check.outputAmperage = String(target.energyContainer.getOutputAmperage());
+              }
             }
             if (job.checkNativeRecipe === true)
               check.nativeRecipeSha256 = String(

@@ -87,7 +87,12 @@ export function solveSolveMode(
       continue;
     }
     const report = nodes[node.id];
-    if (report && node.enabled && report.status !== "missing-recipe" && report.operationRatePerSecond > 0) {
+    if (
+      report &&
+      node.enabled &&
+      report.status !== "missing-recipe" &&
+      report.operationRatePerSecond > 0
+    ) {
       machineIds.push(node.id);
     }
   }
@@ -244,7 +249,11 @@ export function solveSolveMode(
       } else {
         continue;
       }
-      const port = actVar.has(edge.source) ? outPort(edge) : actVar.has(edge.target) ? inPort(edge) : undefined;
+      const port = actVar.has(edge.source)
+        ? outPort(edge)
+        : actVar.has(edge.target)
+          ? inPort(edge)
+          : undefined;
       if (port) {
         scaleBasis = Math.max(scaleBasis, port.ratePerSecond);
       }
@@ -311,6 +320,20 @@ export function solveSolveMode(
     if (coefficients.size === 0) {
       return undefined;
     }
+    const storage = storagesById.get(target.storageId);
+    if (
+      project.netPowerTargetStorageId === target.storageId &&
+      storage?.kind === "power" &&
+      storage.resourceId === "eu"
+    ) {
+      // Solve the fuel chain and its own electrical cost together. Each act
+      // scales nameplate consumption as well as production; no fixed estimate.
+      for (const id of machineIds) {
+        const consumption = Math.max(0, nodes[id].euT) * 20;
+        if (consumption > 0)
+          coefficients.set(actVar.get(id)!, consumption / Math.max(1, target.amountPerSecond));
+      }
+    }
     return { coefficients, rhs: -target.amountPerSecond / Math.max(1, target.amountPerSecond) };
   };
 
@@ -342,7 +365,9 @@ export function solveSolveMode(
     machineWeights.set(actVar.get(id)!, -weight);
   }
 
-  const solveStages = (targetRows: Iterable<LinearProgram["upperBounds"][number]>): LpSolution | undefined => {
+  const solveStages = (
+    targetRows: Iterable<LinearProgram["upperBounds"][number]>,
+  ): LpSolution | undefined => {
     const bounds = [...upperBounds, ...targetRows];
     let solution: LpSolution | undefined;
     // Each stage's optimum is locked (with proportional slack for solver

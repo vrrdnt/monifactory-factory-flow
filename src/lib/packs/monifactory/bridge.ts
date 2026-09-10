@@ -1,4 +1,5 @@
 import type { FactoryNode, Recipe } from "../../model/types";
+import { GENERATOR_ENGINE, generatorBoardStats } from "./generator";
 import { EBF_ENGINE, ebfBoardControls, ebfBoardStats } from "./ebf-board";
 import {
   MULTIBLOCK_ENGINE,
@@ -21,6 +22,18 @@ export function applyMonifactoryHandler(
   recipe: Recipe,
   node: Pick<FactoryNode, "machineHandlerId"> & Partial<Pick<FactoryNode, "machineConfigTiers">>,
 ): Recipe {
+  if (recipe.source?.calculationEngine === GENERATOR_ENGINE) {
+    const { handler } = generatorBoardStats(recipe, node);
+    return {
+      ...recipe,
+      minimumTier: handler.minimumTier,
+      maximumTier: handler.maximumTier,
+      machineType: handler.machineType,
+      machineProfile: { ...handler },
+      machineConfigControls: undefined,
+      runtimeCalculation: undefined,
+    };
+  }
   if (
     recipe.source?.calculationEngine === EBF_ENGINE ||
     recipe.source?.calculationEngine === MULTIBLOCK_ENGINE
@@ -75,6 +88,21 @@ export function getMonifactoryStats(
   node: Pick<FactoryNode, "machineHandlerId"> & Partial<Pick<FactoryNode, "machineConfigTiers">>,
 ) {
   const effective = applyMonifactoryHandler(recipe, node);
+  if (recipe.source?.calculationEngine === GENERATOR_ENGINE) {
+    const result = generatorBoardStats(effective, node);
+    return {
+      ...result,
+      tier: ORDINARY_TIERS[result.machineTier],
+      minimumTier: ORDINARY_TIERS[result.machineTier],
+      perfectOverclockSteps: 0,
+      perfectSpeedFactor: 4,
+      perfectEuFactor: 4,
+      poolEuT: result.voltage,
+      drawEuT: 0,
+      hatches: 1,
+      isMultiblock: false,
+    };
+  }
   if (
     recipe.source?.calculationEngine === EBF_ENGINE ||
     recipe.source?.calculationEngine === MULTIBLOCK_ENGINE

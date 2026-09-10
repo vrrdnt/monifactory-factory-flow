@@ -1,6 +1,7 @@
 "use client";
 
 import { checklistCursorStyle } from "./flow/ChecklistMode";
+import { GENERATOR_ENGINE, generatorBoardStats } from "@/lib/packs/monifactory/generator";
 
 import { useMemo, useRef } from "react";
 import { Cloud, Zap } from "lucide-react";
@@ -188,9 +189,19 @@ export function MachineShoppingList() {
       const steam = getNodeSteamReport(recipe, node);
       const report =
         !steam && hasPowerReport(recipe) ? getNodePowerReport(recipe, node) : undefined;
+      const solvedMonifactory = project.solveMode && recipe.source?.packId === "monifactory";
+      const nodeSections = listNodeSections(node);
+      const solvedCount = nodeSections.reduce(
+        (sum, { node: section }) => sum + (lastResult.nodes[section.id]?.theoreticalMachinesRequired ?? 0),
+        0,
+      );
+      // Solve returns continuous capacity. Build whole machines and spread
+      // each section's required time over them for average power.
       const count = crop
         ? cropsNhHarvesterMachineCount(crop, node.machineCount)
-        : node.machineCount * Math.max(1, node.parallel);
+        : (solvedMonifactory
+            ? Math.max(0, Math.ceil(solvedCount - 0.000001))
+            : node.machineCount) * Math.max(1, node.parallel);
       if (crop && count <= 0) {
         continue;
       }
@@ -202,14 +213,18 @@ export function MachineShoppingList() {
       // its usage is its sections' time shares added up, its PEAK draw the
       // hungriest section's, its AVERAGE each section's draw weighted by
       // that section's share.
-      const sections = listNodeSections(node).map(({ node: view }) => {
+      const sections = nodeSections.map(({ node: view }) => {
         const sectionRecipe = recipesById.get(view.recipeId);
         return {
           report:
             sectionRecipe && !steam && hasPowerReport(sectionRecipe)
               ? getNodePowerReport(sectionRecipe, view)
               : undefined,
-          usage: Math.min(1, Math.max(0, lastResult.nodes[view.id]?.utilization ?? 1)),
+          usage: solvedMonifactory
+            ? count > 0
+              ? ((lastResult.nodes[view.id]?.theoreticalMachinesRequired ?? 0) * Math.max(1, node.parallel)) / count
+              : 0
+            : Math.min(1, Math.max(0, lastResult.nodes[view.id]?.utilization ?? 1)),
         };
       });
       const usage = Math.min(
@@ -230,7 +245,11 @@ export function MachineShoppingList() {
       // column); the parasitic machines (DEHP, fusion, the pebble reactors)
       // run a NEGATIVE figure, which is honestly just consumption and bills
       // into the draw column like any machine's.
-      const powerEuT = recipe.power ? recipe.power.euPerTick : undefined;
+      const powerEuT = recipe.power
+        ? recipe.power.euPerTick
+        : recipe.source?.calculationEngine === GENERATOR_ENGINE
+          ? generatorBoardStats(recipe, node).outputEUt
+          : undefined;
       const madeEuT =
         powerEuT !== undefined && powerEuT >= 0 ? powerEuT * runningCount : undefined;
       // A crop harvester's draw, from the mod's own math: an Industrial Farm

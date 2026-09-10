@@ -447,6 +447,7 @@ interface FactoryStore {
   /** Plan mode counts machines and reports flows; solve mode takes the
    * product drawers' typed amounts and reports machine counts. */
   setSolveMode: (solveMode: boolean) => void;
+  setNetPowerTarget: (storageId: string | undefined) => void;
   /** Pool mode: every resource is one shared pool, no wires needed. */
   setPoolMode: (poolMode: boolean) => void;
   /**
@@ -1317,7 +1318,7 @@ export const useFactoryStore = create<FactoryStore>((set, get) => ({
         // The EU output slot (power became a resource in v2.45) is the
         // generator's product, and the EU condition below already asks for
         // it: pushing the slot too showed "EU" and "Power (EU)" side by side.
-        if (output.kind === "power") {
+        if (output.kind === "power" && effectiveRecipe.source?.packId !== "monifactory") {
           continue;
         }
         push("makes", output);
@@ -1821,7 +1822,10 @@ export const useFactoryStore = create<FactoryStore>((set, get) => ({
     );
   },
   openPowerMenu: () => {
-    if (get().dataset?.pack?.id === "monifactory") return;
+    if (get().dataset?.pack?.id === "monifactory") {
+      get().browseResource({ kind: "power", id: "eu", displayName: "Power (EU)" }, "recipes");
+      return;
+    }
     set({ powerMenuOpen: true });
   },
   closePowerMenu: () => set({ powerMenuOpen: false }),
@@ -2642,6 +2646,18 @@ export const useFactoryStore = create<FactoryStore>((set, get) => ({
         project,
         lastResult: solveBooks(project),
       });
+    });
+  },
+  setNetPowerTarget: (storageId) => {
+    set((state) => {
+      if (
+        storageId !== undefined &&
+        !state.project.storages?.some(
+          (s) => s.id === storageId && s.kind === "power" && s.resourceId === "eu",
+        )
+      ) return state;
+      const project = touchProject({ ...state.project, netPowerTargetStorageId: storageId });
+      return withProjectHistory(state, { project, lastResult: solveBooks(project) });
     });
   },
   deleteStorage: (storageId) => {

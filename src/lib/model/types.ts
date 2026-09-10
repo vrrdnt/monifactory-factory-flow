@@ -739,6 +739,8 @@ export interface FactoryProject {
    * was authored in.
    */
   solveMode?: boolean;
+  /** One EU product target reserves the power consumed by the whole plan. */
+  netPowerTargetStorageId?: string;
   /**
    * POOL MODE: no wires needed. Every resource is one shared pool: whatever
    * any machine makes goes in, whatever any machine needs comes out, the
@@ -901,6 +903,8 @@ export interface StorageThroughputResult {
   targetPerSecond?: number;
   /** Solve mode: no chain can reach the typed amount at any machine scale. */
   targetUnreachable?: boolean;
+  /** Electrical consumption reserved by the plan's designated net EU target. */
+  reservedPowerPerSecond?: number;
 }
 
 export interface ResourceBalance {

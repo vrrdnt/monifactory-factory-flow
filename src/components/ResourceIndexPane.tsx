@@ -101,12 +101,12 @@ export function ResourceIndexPane({
   });
   const powerRow =
     !onBoard && resourceFilter === "all" && resourcePage === 0
-      ? powerSearchRow(debouncedRecipeSearch)
+      ? powerSearchRow(debouncedRecipeSearch, isMonifactory)
       : undefined;
   const displayedResources = onBoard
     ? boardResults.resources
     : powerRow
-      ? [powerRow, ...resourceResults]
+      ? [powerRow, ...resourceResults.filter((r) => r.kind !== powerRow.kind || r.id !== powerRow.id)]
       : resourceResults;
   const displayedTotal = onBoard ? boardResults.total : resourceTotal;
   const displayedMods = onBoard ? boardResults.mods : resourceMods;
@@ -531,7 +531,7 @@ function getResourceModLabel(resource: { id: string; kind: string }): string {
  * generator), right click who takes it (the parasitic machines) - the same
  * two questions every item row answers.
  */
-function powerSearchRow(query: string): IndexedResource | undefined {
+function powerSearchRow(query: string, monifactory = false): IndexedResource | undefined {
   const trimmed = query.trim().toLowerCase();
   if (trimmed.length < 2) {
     return undefined;
@@ -540,8 +540,8 @@ function powerSearchRow(query: string): IndexedResource | undefined {
     return undefined;
   }
   return {
-    kind: "fluid",
-    id: POWER_EU_CLAUSE_ID,
+    kind: monifactory ? "power" : "fluid",
+    id: monifactory ? "eu" : POWER_EU_CLAUSE_ID,
     displayName: "Power (EU)",
     recipeCount: 0,
     dominantColor: "#d99a2b",

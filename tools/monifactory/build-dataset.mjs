@@ -8,6 +8,7 @@ import { buildPlannerRecipes } from "./planner-recipes.mjs";
 import { publishTextures, reusePublishedIcons } from "./textures.mjs";
 import { buildEbfPlannerRecipes } from "./ebf-planner.mjs";
 import { buildMultiblockPlannerRecipes } from "./multiblock-planner.mjs";
+import { buildGeneratorPlannerRecipes } from "./generator-planner.mjs";
 
 export function buildDataset(
   catalog,
@@ -16,6 +17,7 @@ export function buildDataset(
   icons = {},
   ebf,
   multiblock,
+  generators,
 ) {
   const recipes = buildPlannerRecipes(catalog, reference);
   if (ebf) {
@@ -27,6 +29,16 @@ export function buildDataset(
     recipes.push(...buildEbfPlannerRecipes(ebf.catalog, ebf.reference, catalog.resources));
   }
   const profile = catalog.profile;
+  if (generators) {
+    if (
+      generators.catalog.instanceFingerprint !== catalog.instanceFingerprint ||
+      generators.catalog.profile.id !== catalog.profile.id
+    )
+      throw new Error("Generator and ordinary dataset profiles must match.");
+    recipes.push(
+      ...buildGeneratorPlannerRecipes(generators.catalog, generators.reference, catalog.resources),
+    );
+  }
   if (multiblock) {
     if (
       multiblock.catalog.instanceFingerprint !== catalog.instanceFingerprint ||
@@ -110,11 +122,14 @@ export function buildDataset(
       sourceVersion: "1",
       generatedAt,
       notes:
+        (generators
+          ? "Native LV-HV combustion generators, gas turbines and steam turbines are included. "
+          : "") +
         (multiblock
           ? "Verified Greenhouses, vacuum freezers, large chemical reactors and implosion compressors are included. "
           : "") +
         (ebf
-          ? "Ordinary LV–UV machines and the Electric Blast Furnace. Modifier and inventory reference checks passed; full production cycles, other multiblocks, generators and non-GT recipes are not covered. "
+          ? `Ordinary LV–UV machines and the Electric Blast Furnace. Modifier and inventory reference checks passed; full production cycles, other multiblocks, ${generators ? "other generators" : "generators"} and non-GT recipes are not covered. `
           : "Ordinary LV–UV machines only. Modifier and inventory reference checks passed; full production cycles, multiblocks, generators and non-GT recipes are not covered. ") +
         (Object.keys(icons).length
           ? "Default-stack icons captured from the installed EMI renderer."
@@ -137,6 +152,17 @@ export function buildDataset(
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2);
+  const generatorsIndex = args.indexOf("--generators");
+  let generators;
+  if (generatorsIndex !== -1) {
+    if (args.length !== generatorsIndex + 3)
+      throw new Error("--generators requires a catalog and inventory reference at the end.");
+    const [, catalogPath, referencePath] = args.splice(generatorsIndex);
+    generators = {
+      catalog: JSON.parse(await readFile(catalogPath, "utf8")),
+      reference: JSON.parse(await readFile(referencePath, "utf8")),
+    };
+  }
   const multiblockIndex = args.indexOf("--multiblock");
   let multiblock;
   if (multiblockIndex !== -1) {
@@ -198,6 +224,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     icons,
     ebf,
     multiblock,
+    generators,
   );
   if (reused) {
     dataset.textureProvenance = reused.provenance;
@@ -205,7 +232,9 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       " Icons reuse the prior 0.13.7 Expert capture; the replacement client was not recaptured.";
   }
   if (textureIndexPath || reused) {
-    const missing = dataset.resources.filter((r) => !r.iconAtlas && !r.alternatives?.length);
+    const missing = dataset.resources.filter(
+      (r) => r.kind !== "power" && !r.iconAtlas && !r.alternatives?.length,
+    );
     if (missing.length)
       throw new Error(
         `Missing textures for ${missing.length} concrete planner resources: ${missing

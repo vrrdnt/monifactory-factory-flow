@@ -87,10 +87,16 @@ export function buildStorageTooltip(
     case "product": {
       const target = storage.targetPerSecond;
       const hasTarget = mode !== "build" && target !== undefined && target > 0;
-      if (hasTarget) view.rows.push({ label: "Required", value: rate(target) });
-      view.rows.push({ label: "Produced", value: rate(inRate) });
-      if (hasTarget && target > inRate + EPS && differs(target, inRate)) {
-        view.rows.push({ label: "Shortfall", value: rate(target - inRate) });
+      const netPower = figures.reservedPowerPerSecond !== undefined;
+      const available = netPower ? figures.netPerSecond : inRate;
+      if (hasTarget) view.rows.push({ label: netPower ? "Required net" : "Required", value: rate(target) });
+      view.rows.push({ label: netPower ? "Generated" : "Produced", value: rate(inRate) });
+      if (netPower) view.rows.push(
+        { label: "Plan power use", value: rate(figures.reservedPowerPerSecond!) },
+        { label: "Net available", value: rate(available) },
+      );
+      if (hasTarget && target > available + EPS && differs(target, available)) {
+        view.rows.push({ label: "Shortfall", value: rate(target - available) });
         view.reason = figures.targetUnreachable
           ? "No machine count reaches the required amount."
           : feederCause(project, result, storage.id);
@@ -122,11 +128,17 @@ export function buildStorageTooltip(
 export function buildTargetTooltip(storage: FactoryStorage, figures: StorageThroughputResult | undefined): RecipeTooltipView {
   const target = storage.targetPerSecond;
   const rate = (value: number) => formatSlotRate(value, storage.kind);
-  const rows = target !== undefined && target > 0 ? [{ label: "Required", value: rate(target) }] : [];
+  const netPower = figures?.reservedPowerPerSecond !== undefined;
+  const rows = target !== undefined && target > 0 ? [{ label: netPower ? "Required net" : "Required", value: rate(target) }] : [];
+  if (netPower) rows.push(
+    { label: "Generated", value: rate(figures!.producedPerSecond) },
+    { label: "Plan power use", value: rate(figures!.reservedPowerPerSecond!) },
+    { label: "Net available", value: rate(figures!.netPerSecond) },
+  );
   if (figures?.targetUnreachable && figures.producedPerSecond >= 0) {
-    rows.push({ label: "Reachable", value: rate(figures.producedPerSecond) });
+    rows.push({ label: "Reachable", value: rate(netPower ? figures.netPerSecond : figures.producedPerSecond) });
   }
-  return { title: "Required amount", rows, actions: [{ gesture: "left", label: "Edit amount" }] };
+  return { title: netPower ? "Net power target" : "Required amount", rows, actions: [{ gesture: "left", label: "Edit amount" }] };
 }
 
 const NEXT_ACTION = (next: string): TooltipAction[] => [{ gesture: "left", label: `Switch to ${next}` }];

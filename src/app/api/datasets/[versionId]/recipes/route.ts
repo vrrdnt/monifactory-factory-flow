@@ -13,7 +13,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 type TierFilter = "all" | Exclude<MachineTier, "DEMO">;
-const RECIPE_RESOURCE_KINDS = new Set<ResourceKind>(["item", "fluid", "aspect"]);
+const RECIPE_RESOURCE_KINDS = new Set<ResourceKind>(["item", "fluid", "aspect", "power"]);
 
 export async function GET(
   request: Request,

@@ -615,6 +615,19 @@ function finalizeSolveModeResult(
       continue;
     }
     result.targetPerSecond = storage.targetPerSecond;
+    if (
+      project.netPowerTargetStorageId === storage.id &&
+      storage.kind === "power" &&
+      storage.resourceId === "eu"
+    ) {
+      const plantUse = Object.values(nodes).reduce(
+        (sum, node) => sum + (node.utilization > 0 ? Math.max(0, node.euT) * TICKS_PER_SECOND : 0),
+        0,
+      );
+      result.consumedPerSecond += plantUse;
+      result.netPerSecond -= plantUse;
+      result.reservedPowerPerSecond = plantUse;
+    }
     if (solved.unreachableStorageIds.has(storage.id)) {
       result.targetUnreachable = true;
       bottlenecks.push({

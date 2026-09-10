@@ -24,18 +24,57 @@ fuel tables and turbine formulas are not valid Monifactory defaults.
 
 ## Published baseline
 
-The current bundled board has 34,130 native recipes from a 41,275-entry GT
-runtime export, represented by 40,053 machine-tier variants across 39 recipe maps.
+The current bundled board has 34,166 native recipes from a 41,275-entry GT
+runtime export, represented by 40,089 machine-tier variants across 42 recipe maps.
 This includes 8,070 native macerator recipes and 245 EBF recipes, including both
 Kanthal ingot routes, plus all 128 Greenhouse recipes, 127 vacuum freezer recipes,
 495 large chemical reactor recipes and all 210 implosion compressor recipes.
-Missing families still include distillation towers and assembly lines.
+There are also 36 fuel recipes across nine LV–HV generators. Missing families
+still include distillation towers and assembly lines.
 Other multiblocks, generators, non-GT recipes, conditions, NBT-sensitive inputs,
 special chance logic, inventory exclusions and dynamic recipes also remain in
 scope. The renewable guide is a separate material-availability model and cannot
 serve as verification of board calculations.
 
 ## Implementation and verification
+
+- Simple combustion generators, gas turbines and steam turbines use
+  `SimpleGeneratorMachine.recipeModifier` from GTCEu 7.5.3. It scales fuel and
+  output EU by the native fast parallel count, retaining the recipe duration.
+  Full supplied-inventory checks passed for all 107 supported fuel/tier pairs
+  plus three empty-input controls. One fuel cannot run at LV. References retain
+  codec hashes, native output voltage/amperage, output EU, input/tick matching,
+  conditions and actual inventory limits. All 36 native fuel recipes are kept;
+  no GTNH fuel values or efficiency factors are used.
+- Native generator recipes have a real `power:eu` output. The resource index,
+  recipe API, Power button, fuel search and refactor flow use that output.
+  Machine selection changes the registered generator tier; Build, Solve and
+  Pool scale actual fuel consumption. The machine list includes generation.
+  GTNH synthetic generator search results remain excluded for this pack.
+- `netPowerTargetStorageId` designates one EU product whose Solve/Pool target
+  subtracts every active processing machine's electrical consumption. The LP
+  scales consumption with the same machine-count variables as fuel production,
+  so the additional fuel chain's own consumption is included. A nonpositive
+  net-energy chain is infeasible. Other EU targets remain gross. Saved plans
+  retain this choice, and the target tooltip separates generation, consumption
+  and net available power. Build mode does not impose a net target.
+- Browser verification covers the 36-recipe Power search, LV/HV generator
+  selection, gross/net target switching, import and persistence after reload.
+  The machine list rounds solved capacity up to whole machines and displays
+  peak power separately from average use. The full suite passes 1,491 tests
+  with one existing expected failure; typecheck and the production build pass.
+- The importable ethanol example uses unboosted sugar cane Greenhouses, LV
+  breweries, MV distilleries and LV combustion generators. Each mB of ethanol
+  provides 192 EU and this route spends 184 EU producing it. Consequently a
+  128 EU/t net target requires 320 mB/s ethanol: 3,072 EU/t gross generation and
+  2,944 EU/t processing consumption. Water and initial seeds are external
+  requirements. This is a regression example, not an optimized fuel choice.
+- Reproduce generator normalization with `generator-inventory.mjs <raw-catalog>
+  <native-generator-inventory-limits> <output>`, then verify the generated jobs
+  with `run-inventory-checks.mjs`. Append `--generators <generator-catalog>
+  <inventory-reference>` after other optional dataset-builder inputs. The
+  `generator-inventory-reference.json.gz` fixture contains the native results
+  and real fuel-production recipes for board and net-power regression tests.
 
 - The four new multiblocks passed 13,594 native modifier comparisons across 14
   hatch configurations each, plus 12,272 stocked-inventory checks. The Greenhouse

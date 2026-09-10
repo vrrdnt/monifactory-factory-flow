@@ -739,9 +739,10 @@ export function RecipeSearchOverlay({
   // placing the hit dials those settings in. Purely client-side.
   const addPowerSourceNode = useFactoryStore((state) => state.addPowerSourceNode);
   const refactorNodeToPowerSource = useFactoryStore((state) => state.refactorNodeToPowerSource);
+  const monifactoryDataset = useFactoryStore((state) => state.dataset?.pack?.id === "monifactory");
   const allPowerHits = useMemo(
-    () => searchPowerSourcesForStencil(clauses, takesOp, makesOp, query),
-    [clauses, takesOp, makesOp, query],
+    () => monifactoryDataset ? [] : searchPowerSourcesForStencil(clauses, takesOp, makesOp, query),
+    [monifactoryDataset, clauses, takesOp, makesOp, query],
   );
   // The tier filter reads the generators too: a source's unlock chip is its
   // tier, and one above the ceiling is out exactly as a recipe would be. A
@@ -1928,9 +1929,10 @@ const CompactRecipeCard = memo(function CompactRecipeCard({
   const minimumTier = isAutoWorkbench ? primary.minimumTier : recipe.minimumTier;
   const seconds = durationTicks / 20;
   const secondsText = `${formatRate(seconds, seconds >= 10 ? 0 : 1)}s`;
-  const powerText = eut > 0 ? `${eut.toLocaleString()} EU/t` : "no power";
+  const generatedEUt = monifactoryStats && "outputEUt" in monifactoryStats ? monifactoryStats.outputEUt : undefined;
+  const powerText = generatedEUt ? `+${generatedEUt.toLocaleString()} EU/t` : eut > 0 ? `${eut.toLocaleString()} EU/t` : "no power";
   const tierColor =
-    eut > 0 ? GT_TIER_COLORS[minimumTier as Exclude<MachineTier, "DEMO">] : undefined;
+    eut > 0 || generatedEUt ? GT_TIER_COLORS[minimumTier as Exclude<MachineTier, "DEMO">] : undefined;
   // Crafting-grid recipes arrive one slot at a time (nine separate Iron
   // Plates), and oredict slots arrive wearing their oredict name. The chips
   // read as a shopping list instead: same items merged with their amounts

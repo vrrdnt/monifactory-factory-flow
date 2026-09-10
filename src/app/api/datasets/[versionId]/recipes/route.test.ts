@@ -15,6 +15,21 @@ vi.mock("@/lib/server/dataset-query", () => ({
 }));
 
 describe("recipe dataset API route", () => {
+  it("keeps native EU resources and power stencil clauses", async () => {
+    await GET(
+      new Request(
+        "http://localhost/api/datasets/monifactory-0.13.7-expert/recipes?resourceKind=power&resourceId=eu&clause=makes%3Apower%3Aeu",
+      ),
+      { params: Promise.resolve({ versionId: "monifactory-0.13.7-expert" }) },
+    );
+    expect(queryDatasetRecipes).toHaveBeenLastCalledWith(
+      "monifactory-0.13.7-expert",
+      expect.objectContaining({
+        resource: { kind: "power", id: "eu" },
+        clauses: [{ role: "makes", kind: "power", id: "eu" }],
+      }),
+    );
+  });
   it("accepts aspect resources for recipe lookups", async () => {
     await GET(
       new Request(
@@ -78,9 +93,12 @@ describe("recipe dataset API route", () => {
     );
 
     // An empty include list is a real state: nothing selected.
-    await GET(new Request("http://localhost/api/datasets/stable/recipes?allMaps=1&mapMode=include"), {
-      params: Promise.resolve({ versionId: "stable" }),
-    });
+    await GET(
+      new Request("http://localhost/api/datasets/stable/recipes?allMaps=1&mapMode=include"),
+      {
+        params: Promise.resolve({ versionId: "stable" }),
+      },
+    );
 
     expect(queryDatasetRecipes).toHaveBeenLastCalledWith(
       "stable",

@@ -30,18 +30,16 @@ export function SpawnKeys({ leading }: { leading?: ReactNode }) {
   return (
     <div className="mx-2 mt-2 flex shrink-0 gap-1">
       {leading}
-      {!isMonifactory && (
-        <button
-          type="button"
-          onClick={openPowerMenu}
-          className={key}
-          title="Place a generator"
-          aria-label="Place a generator"
-        >
-          <Zap className="h-3.5 w-3.5 shrink-0" />
-          Power
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={openPowerMenu}
+        className={key}
+        title="Place a generator"
+        aria-label="Place a generator"
+      >
+        <Zap className="h-3.5 w-3.5 shrink-0" />
+        Power
+      </button>
       <button
         type="button"
         onClick={addCustomRateNode}

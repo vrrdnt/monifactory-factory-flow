@@ -1,0 +1,903 @@
+{
+  "schemaVersion": 1,
+  "id": "monifactory-ethanol-power-example",
+  "name": "Sugar cane to 128 net EU/t",
+  "description": "Demonstration of fuel-chain power accounting, not an optimized fuel route. Uses unboosted sugar cane Greenhouses, LV breweries, MV distilleries and LV combustion generators. Water and initial seeds are supplied externally. Net power reserves every processing machine on this plan; continuous equivalent machine counts assume buffers and intermittent operation of the last whole machine.",
+  "recipes": [
+    {
+      "id": "kubejs:greenhouse/sugar_cane",
+      "name": "Sugar Cane",
+      "kind": "gregtech_machine",
+      "machineType": "Greenhouse",
+      "minimumTier": "MV",
+      "durationTicks": 640,
+      "eut": 80,
+      "inputs": [
+        {
+          "kind": "item",
+          "id": "minecraft:sugar_cane",
+          "displayName": "Sugar Cane",
+          "amount": 1,
+          "consumed": false,
+          "iconAtlas": {
+            "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-4c0de264ef56f0aa29dc68eb003ebf4e43d26123a392adc703fdc72054542279.png",
+            "atlasWidth": 1280,
+            "atlasHeight": 1280,
+            "x": 88,
+            "y": 88,
+            "width": 64,
+            "height": 64,
+            "dominantColor": "#559023",
+            "renderScale": 0.5
+          },
+          "dominantColor": "#559023"
+        },
+        {
+          "kind": "fluid",
+          "id": "minecraft:water",
+          "displayName": "Water",
+          "amount": 24000,
+          "consumed": true,
+          "iconAtlas": {
+            "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-b0887c7867f29bb4626a40e929ef2ffdff6ad5bf184329b67d02c20e41421489.png",
+            "atlasWidth": 1280,
+            "atlasHeight": 1280,
+            "x": 168,
+            "y": 168,
+            "width": 64,
+            "height": 64,
+            "dominantColor": "#1e396f",
+            "renderScale": 0.5
+          },
+          "dominantColor": "#1e396f"
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "item",
+          "id": "minecraft:sugar_cane",
+          "displayName": "Sugar Cane",
+          "amount": 32,
+          "chance": 1,
+          "iconAtlas": {
+            "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-4c0de264ef56f0aa29dc68eb003ebf4e43d26123a392adc703fdc72054542279.png",
+            "atlasWidth": 1280,
+            "atlasHeight": 1280,
+            "x": 88,
+            "y": 88,
+            "width": 64,
+            "height": 64,
+            "dominantColor": "#559023",
+            "renderScale": 0.5
+          },
+          "dominantColor": "#559023"
+        }
+      ],
+      "programmedCircuit": "1",
+      "notes": "Batch mode off. Rates assume stocked inputs and available output space using HV Input Bus, HV Output Bus, IV Nonuple Input Hatch, IV Nonuple Output Hatch.",
+      "source": {
+        "packId": "monifactory",
+        "calculationEngine": "monifactory-0.13.7-expert/gtceu-7.5.3/multiblock-v1",
+        "datasetVersionId": "monifactory-0.13.7-expert",
+        "recipeMap": "gtceu:greenhouse",
+        "sourceMod": "gtceu",
+        "exporter": "unknown",
+        "rawRecipeId": "kubejs:greenhouse/sugar_cane",
+        "sourceIdentifier": "monifactory-kubejs"
+      },
+      "metadata": {
+        "monifactory": {
+          "profile": "monifactory-0.13.7-expert",
+          "instanceFingerprint": "f1247d14e127922e0d00a40a560e8ba09b309a10ba58ea4a4471c0db3edf89ef",
+          "inventoryStatus": "capacity-checked-and-reference-matched",
+          "machineId": "gtceu:greenhouse",
+          "stockParallels": 1,
+          "inventoryParts": {
+            "inputBus": "gtceu:hv_input_bus",
+            "outputBus": "gtceu:hv_output_bus",
+            "inputHatch": "gtceu:iv_input_hatch_9x",
+            "outputHatch": "gtceu:iv_output_hatch_9x"
+          },
+          "inputSelectors": [
+            {
+              "item": "minecraft:sugar_cane"
+            },
+            [
+              {
+                "fluid": "minecraft:water"
+              }
+            ]
+          ]
+        }
+      },
+      "machineHandlers": [
+        {
+          "id": "gtceu:greenhouse",
+          "label": "Greenhouse",
+          "machineType": "Greenhouse",
+          "minimumTier": "MV",
+          "kind": "multiblock"
+        }
+      ],
+      "machineConfigControls": [
+        {
+          "id": "monifactoryMultiblockPower",
+          "label": "Energy hatches",
+          "minimumKey": "h1",
+          "defaultKey": "h1",
+          "tiers": [
+            {
+              "key": "h1",
+              "label": "MV",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:mv_energy_input_hatch",
+                "displayName": "Energy input hatch",
+                "amount": 1,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-9aa8a45d57dc52106cae00c7d9d3b73377520c63af1bf8812a06e73bbcca6d11.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 408,
+                  "y": 888,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#546970",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#546970"
+              }
+            },
+            {
+              "key": "h2",
+              "label": "MV + MV",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:mv_energy_input_hatch",
+                "displayName": "Energy input hatch",
+                "amount": 2,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-9aa8a45d57dc52106cae00c7d9d3b73377520c63af1bf8812a06e73bbcca6d11.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 408,
+                  "y": 888,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#546970",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#546970"
+              }
+            },
+            {
+              "key": "h3",
+              "label": "HV",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:hv_energy_input_hatch",
+                "displayName": "Energy input hatch",
+                "amount": 1,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-0ac5e75b665b84e08fd93cd7962d4a6f56acacf90f1495a9c920f1f5fe54df00.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 88,
+                  "y": 328,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#72737a",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#72737a"
+              }
+            },
+            {
+              "key": "h4",
+              "label": "HV + MV",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:hv_energy_input_hatch",
+                "displayName": "Energy input hatch",
+                "amount": 2,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-0ac5e75b665b84e08fd93cd7962d4a6f56acacf90f1495a9c920f1f5fe54df00.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 88,
+                  "y": 328,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#72737a",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#72737a"
+              }
+            },
+            {
+              "key": "h5",
+              "label": "HV + HV",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:hv_energy_input_hatch",
+                "displayName": "Energy input hatch",
+                "amount": 2,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-0ac5e75b665b84e08fd93cd7962d4a6f56acacf90f1495a9c920f1f5fe54df00.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 88,
+                  "y": 328,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#72737a",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#72737a"
+              }
+            },
+            {
+              "key": "h6",
+              "label": "EV",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:ev_energy_input_hatch",
+                "displayName": "Energy input hatch",
+                "amount": 1,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-496988759e8c76d8aeb0d9b28c8854c0476467c65d0877484770ecf9a3e41b81.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 88,
+                  "y": 488,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#64556a",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#64556a"
+              }
+            },
+            {
+              "key": "h7",
+              "label": "EV 4A",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:ev_energy_input_hatch_4a",
+                "displayName": "Energy input hatch",
+                "amount": 1,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-496988759e8c76d8aeb0d9b28c8854c0476467c65d0877484770ecf9a3e41b81.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 248,
+                  "y": 488,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#635568",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#635568"
+              }
+            },
+            {
+              "key": "h8",
+              "label": "EV 16A",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:ev_energy_input_hatch_16a",
+                "displayName": "Energy input hatch",
+                "amount": 1,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-496988759e8c76d8aeb0d9b28c8854c0476467c65d0877484770ecf9a3e41b81.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 168,
+                  "y": 488,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#5f5363",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#5f5363"
+              }
+            },
+            {
+              "key": "h9",
+              "label": "IV",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:iv_energy_input_hatch",
+                "displayName": "Energy input hatch",
+                "amount": 1,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-468213233ec698fd91a0e557bc4d88d36795a254dcc119e9e2a0d69ca5d5cff5.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 728,
+                  "y": 728,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#424b58",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#424b58"
+              }
+            },
+            {
+              "key": "h10",
+              "label": "LUV",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:luv_energy_input_hatch",
+                "displayName": "Energy input hatch",
+                "amount": 1,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-f4b5934237733948b9f5c7d4642a2a2e76c3de0c77b09e7bba67e8853ac9ea63.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 8,
+                  "y": 888,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#5f605f",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#5f605f"
+              }
+            },
+            {
+              "key": "h11",
+              "label": "ZPM",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:zpm_energy_input_hatch",
+                "displayName": "Energy input hatch",
+                "amount": 1,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-87394d2a54dc0b57daca23e721e1e0bb8ebdc8614ffe0ae16660ddff3563b985.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 1048,
+                  "y": 88,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#2c2b2d",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#2c2b2d"
+              }
+            },
+            {
+              "key": "h12",
+              "label": "UV",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:uv_energy_input_hatch",
+                "displayName": "Energy input hatch",
+                "amount": 1,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-33b18e83b1cc7eb99a9e208b6b09a6d4c6c9dadec86ca6304d910cb6548ce4af.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 808,
+                  "y": 968,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#2e4433",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#2e4433"
+              }
+            },
+            {
+              "key": "h13",
+              "label": "UV 16A",
+              "resource": {
+                "kind": "item",
+                "id": "gtceu:uv_energy_input_hatch_16a",
+                "displayName": "Energy input hatch",
+                "amount": 1,
+                "iconAtlas": {
+                  "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-33b18e83b1cc7eb99a9e208b6b09a6d4c6c9dadec86ca6304d910cb6548ce4af.png",
+                  "atlasWidth": 1280,
+                  "atlasHeight": 1280,
+                  "x": 888,
+                  "y": 968,
+                  "width": 64,
+                  "height": 64,
+                  "dominantColor": "#2f4533",
+                  "renderScale": 0.5
+                },
+                "dominantColor": "#2f4533"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gtceu:brewery/biomass_from_sugar_cane",
+      "name": "Biomass",
+      "kind": "gregtech_machine",
+      "machineType": "Basic Brewery",
+      "minimumTier": "LV",
+      "maximumTier": "LV",
+      "durationTicks": 160,
+      "eut": 3,
+      "inputs": [
+        {
+          "kind": "item",
+          "id": "minecraft:sugar_cane",
+          "displayName": "Sugar Cane",
+          "amount": 1,
+          "consumed": true,
+          "iconAtlas": {
+            "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-4c0de264ef56f0aa29dc68eb003ebf4e43d26123a392adc703fdc72054542279.png",
+            "atlasWidth": 1280,
+            "atlasHeight": 1280,
+            "x": 88,
+            "y": 88,
+            "width": 64,
+            "height": 64,
+            "dominantColor": "#559023",
+            "renderScale": 0.5
+          },
+          "dominantColor": "#559023"
+        },
+        {
+          "kind": "fluid",
+          "id": "minecraft:water",
+          "displayName": "Water",
+          "amount": 20,
+          "consumed": true,
+          "iconAtlas": {
+            "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-b0887c7867f29bb4626a40e929ef2ffdff6ad5bf184329b67d02c20e41421489.png",
+            "atlasWidth": 1280,
+            "atlasHeight": 1280,
+            "x": 168,
+            "y": 168,
+            "width": 64,
+            "height": 64,
+            "dominantColor": "#1e396f",
+            "renderScale": 0.5
+          },
+          "dominantColor": "#1e396f"
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "fluid",
+          "id": "gtceu:biomass",
+          "displayName": "Biomass",
+          "amount": 20,
+          "chance": 1,
+          "iconAtlas": {
+            "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-3eaa04d703ed7aa351857673811d2483c63c66a607eb24c0830f7e25e226c159.png",
+            "atlasWidth": 1280,
+            "atlasHeight": 1280,
+            "x": 168,
+            "y": 408,
+            "width": 64,
+            "height": 64,
+            "dominantColor": "#10d000",
+            "renderScale": 0.5
+          },
+          "dominantColor": "#10d000"
+        }
+      ],
+      "machineHandlers": [
+        {
+          "id": "gtceu:lv_brewery",
+          "label": "Basic Brewery",
+          "machineType": "Basic Brewery",
+          "minimumTier": "LV",
+          "maximumTier": "LV",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:mv_brewery",
+          "label": "Advanced Brewery",
+          "machineType": "Advanced Brewery",
+          "minimumTier": "MV",
+          "maximumTier": "MV",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:hv_brewery",
+          "label": "Advanced Brewery II",
+          "machineType": "Advanced Brewery II",
+          "minimumTier": "HV",
+          "maximumTier": "HV",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:ev_brewery",
+          "label": "Advanced Brewery III",
+          "machineType": "Advanced Brewery III",
+          "minimumTier": "EV",
+          "maximumTier": "EV",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:iv_brewery",
+          "label": "Elite Brewery",
+          "machineType": "Elite Brewery",
+          "minimumTier": "IV",
+          "maximumTier": "IV",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:luv_brewery",
+          "label": "Elite Brewery II",
+          "machineType": "Elite Brewery II",
+          "minimumTier": "LuV",
+          "maximumTier": "LuV",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:zpm_brewery",
+          "label": "Elite Brewery III",
+          "machineType": "Elite Brewery III",
+          "minimumTier": "ZPM",
+          "maximumTier": "ZPM",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:uv_brewery",
+          "label": "Ultimate Brewery",
+          "machineType": "Ultimate Brewery",
+          "minimumTier": "UV",
+          "maximumTier": "UV",
+          "kind": "single"
+        }
+      ],
+      "source": {
+        "packId": "monifactory",
+        "calculationEngine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+        "datasetVersionId": "monifactory-0.13.7-expert",
+        "recipeMap": "gtceu:brewery",
+        "sourceMod": "gtceu",
+        "exporter": "unknown",
+        "rawRecipeId": "gtceu:brewery/biomass_from_sugar_cane",
+        "sourceIdentifier": "monifactory-kubejs"
+      },
+      "metadata": {
+        "monifactory": {
+          "profile": "monifactory-0.13.7-expert",
+          "instanceFingerprint": "f1247d14e127922e0d00a40a560e8ba09b309a10ba58ea4a4471c0db3edf89ef",
+          "inventoryStatus": "capacity-checked-and-reference-matched",
+          "inputSelectors": [
+            {
+              "item": "minecraft:sugar_cane"
+            },
+            [
+              {
+                "tag": "forge:water"
+              }
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "gtceu:distillery/distill_biomass_to_ethanol",
+      "name": "Wood Pulp + Ethanol",
+      "kind": "gregtech_machine",
+      "machineType": "Advanced Distillery",
+      "minimumTier": "MV",
+      "maximumTier": "MV",
+      "durationTicks": 64,
+      "eut": 100,
+      "inputs": [
+        {
+          "kind": "fluid",
+          "id": "gtceu:biomass",
+          "displayName": "Biomass",
+          "amount": 1000,
+          "consumed": true,
+          "iconAtlas": {
+            "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-3eaa04d703ed7aa351857673811d2483c63c66a607eb24c0830f7e25e226c159.png",
+            "atlasWidth": 1280,
+            "atlasHeight": 1280,
+            "x": 168,
+            "y": 408,
+            "width": 64,
+            "height": 64,
+            "dominantColor": "#10d000",
+            "renderScale": 0.5
+          },
+          "dominantColor": "#10d000"
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "item",
+          "id": "gtceu:wood_dust",
+          "displayName": "Wood Pulp",
+          "amount": 1,
+          "chance": 1,
+          "iconAtlas": {
+            "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-2889fd98fc2f59c5d23e09510960041201137e0a659b8cb7a23a634412ef1ba6.png",
+            "atlasWidth": 1280,
+            "atlasHeight": 1280,
+            "x": 1128,
+            "y": 488,
+            "width": 64,
+            "height": 64,
+            "dominantColor": "#543e22",
+            "renderScale": 0.5
+          },
+          "dominantColor": "#543e22"
+        },
+        {
+          "kind": "fluid",
+          "id": "gtceu:ethanol",
+          "displayName": "Ethanol",
+          "amount": 600,
+          "chance": 1,
+          "iconAtlas": {
+            "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-3eaa04d703ed7aa351857673811d2483c63c66a607eb24c0830f7e25e226c159.png",
+            "atlasWidth": 1280,
+            "atlasHeight": 1280,
+            "x": 1048,
+            "y": 968,
+            "width": 64,
+            "height": 64,
+            "dominantColor": "#b33401",
+            "renderScale": 0.5
+          },
+          "dominantColor": "#b33401"
+        }
+      ],
+      "machineHandlers": [
+        {
+          "id": "gtceu:mv_distillery",
+          "label": "Advanced Distillery",
+          "machineType": "Advanced Distillery",
+          "minimumTier": "MV",
+          "maximumTier": "MV",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:hv_distillery",
+          "label": "Advanced Distillery II",
+          "machineType": "Advanced Distillery II",
+          "minimumTier": "HV",
+          "maximumTier": "HV",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:ev_distillery",
+          "label": "Advanced Distillery III",
+          "machineType": "Advanced Distillery III",
+          "minimumTier": "EV",
+          "maximumTier": "EV",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:iv_distillery",
+          "label": "Elite Distillery",
+          "machineType": "Elite Distillery",
+          "minimumTier": "IV",
+          "maximumTier": "IV",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:luv_distillery",
+          "label": "Elite Distillery II",
+          "machineType": "Elite Distillery II",
+          "minimumTier": "LuV",
+          "maximumTier": "LuV",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:zpm_distillery",
+          "label": "Elite Distillery III",
+          "machineType": "Elite Distillery III",
+          "minimumTier": "ZPM",
+          "maximumTier": "ZPM",
+          "kind": "single"
+        },
+        {
+          "id": "gtceu:uv_distillery",
+          "label": "Ultimate Distillery",
+          "machineType": "Ultimate Distillery",
+          "minimumTier": "UV",
+          "maximumTier": "UV",
+          "kind": "single"
+        }
+      ],
+      "programmedCircuit": "1",
+      "source": {
+        "packId": "monifactory",
+        "calculationEngine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+        "datasetVersionId": "monifactory-0.13.7-expert",
+        "recipeMap": "gtceu:distillery",
+        "sourceMod": "gtceu",
+        "exporter": "unknown",
+        "rawRecipeId": "gtceu:distillery/distill_biomass_to_ethanol",
+        "sourceIdentifier": "monifactory-kubejs"
+      },
+      "metadata": {
+        "monifactory": {
+          "profile": "monifactory-0.13.7-expert",
+          "instanceFingerprint": "f1247d14e127922e0d00a40a560e8ba09b309a10ba58ea4a4471c0db3edf89ef",
+          "inventoryStatus": "capacity-checked-and-reference-matched",
+          "inputSelectors": [
+            [
+              {
+                "tag": "forge:biomass"
+              }
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "gtceu:combustion_generator/ethanol",
+      "name": "Ethanol power generation",
+      "kind": "gregtech_machine",
+      "machineType": "Combustion Generator",
+      "minimumTier": "LV",
+      "durationTicks": 6,
+      "eut": 0,
+      "inputs": [
+        {
+          "kind": "fluid",
+          "id": "gtceu:ethanol",
+          "displayName": "Ethanol",
+          "amount": 1,
+          "consumed": true,
+          "iconAtlas": {
+            "imagePath": "/datasets/monifactory/monifactory-0.13.7-expert/textures/atlas-3eaa04d703ed7aa351857673811d2483c63c66a607eb24c0830f7e25e226c159.png",
+            "atlasWidth": 1280,
+            "atlasHeight": 1280,
+            "x": 1048,
+            "y": 968,
+            "width": 64,
+            "height": 64,
+            "dominantColor": "#b33401",
+            "renderScale": 0.5
+          },
+          "dominantColor": "#b33401"
+        }
+      ],
+      "outputs": [
+        {
+          "kind": "power",
+          "id": "eu",
+          "displayName": "EU",
+          "amount": 192,
+          "byproduct": true,
+          "dominantColor": "#fbbf24"
+        }
+      ],
+      "machineHandlers": [
+        {
+          "id": "gtceu:lv_combustion",
+          "label": "LV Combustion Generator",
+          "machineType": "Combustion Generator",
+          "kind": "single",
+          "minimumTier": "LV",
+          "maximumTier": "LV"
+        },
+        {
+          "id": "gtceu:mv_combustion",
+          "label": "MV Combustion Generator",
+          "machineType": "Combustion Generator",
+          "kind": "single",
+          "minimumTier": "MV",
+          "maximumTier": "MV"
+        },
+        {
+          "id": "gtceu:hv_combustion",
+          "label": "HV Combustion Generator",
+          "machineType": "Combustion Generator",
+          "kind": "single",
+          "minimumTier": "HV",
+          "maximumTier": "HV"
+        }
+      ],
+      "notes": "Native fuel consumption with full input supply and continuous energy extraction. Connect the EU output to a product target in Solve or Pool, and connect fuel inputs to their production chain.",
+      "source": {
+        "packId": "monifactory",
+        "calculationEngine": "monifactory-0.13.7-expert/gtceu-7.5.3/simple-generator-v1",
+        "datasetVersionId": "monifactory-0.13.7-expert",
+        "recipeMap": "gtceu:combustion_generator",
+        "sourceMod": "gtceu",
+        "exporter": "unknown",
+        "rawRecipeId": "gtceu:combustion_generator/ethanol",
+        "sourceIdentifier": "monifactory-kubejs"
+      },
+      "metadata": {
+        "monifactory": {
+          "profile": "monifactory-0.13.7-expert",
+          "instanceFingerprint": "f1247d14e127922e0d00a40a560e8ba09b309a10ba58ea4a4471c0db3edf89ef",
+          "inventoryStatus": "capacity-checked-and-reference-matched",
+          "outputEUt": 32,
+          "inputSelectors": [
+            [
+              {
+                "tag": "forge:ethanol"
+              }
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "nodes": [
+    {
+      "id": "machine-0",
+      "recipeId": "kubejs:greenhouse/sugar_cane",
+      "machineCount": 1,
+      "parallel": 1,
+      "overclockTier": "MV",
+      "machineHandlerId": "gtceu:greenhouse",
+      "enabled": true,
+      "position": {
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "id": "machine-1",
+      "recipeId": "gtceu:brewery/biomass_from_sugar_cane",
+      "machineCount": 1,
+      "parallel": 1,
+      "overclockTier": "LV",
+      "machineHandlerId": "gtceu:lv_brewery",
+      "enabled": true,
+      "position": {
+        "x": 500,
+        "y": 0
+      }
+    },
+    {
+      "id": "machine-2",
+      "recipeId": "gtceu:distillery/distill_biomass_to_ethanol",
+      "machineCount": 1,
+      "parallel": 1,
+      "overclockTier": "MV",
+      "machineHandlerId": "gtceu:mv_distillery",
+      "enabled": true,
+      "position": {
+        "x": 0,
+        "y": 300
+      }
+    },
+    {
+      "id": "machine-3",
+      "recipeId": "gtceu:combustion_generator/ethanol",
+      "machineCount": 1,
+      "parallel": 1,
+      "overclockTier": "LV",
+      "machineHandlerId": "gtceu:lv_combustion",
+      "enabled": true,
+      "position": {
+        "x": 500,
+        "y": 300
+      }
+    }
+  ],
+  "storages": [
+    {
+      "id": "net-eu",
+      "kind": "power",
+      "resourceId": "eu",
+      "displayName": "EU",
+      "poolSide": "drain",
+      "targetPerSecond": 2560,
+      "position": {
+        "x": 1000,
+        "y": 330
+      }
+    }
+  ],
+  "edges": [],
+  "fuelProfiles": [],
+  "solveMode": true,
+  "poolMode": true,
+  "netPowerTargetStorageId": "net-eu"
+}
