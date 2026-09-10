@@ -1,0 +1,2149 @@
+{
+  "catalog": {
+    "schemaVersion": 1,
+    "format": "monifactory-capacity-checked-catalog",
+    "engine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+    "profile": {
+      "id": "monifactory-0.13.7-expert",
+      "packId": "monifactory",
+      "packVersion": "0.13.7",
+      "mode": "Expert",
+      "minecraftVersion": "1.20.1",
+      "forgeVersion": "47.4.13",
+      "requiredMods": {
+        "gtceu": "7.5.3",
+        "monilabs": "0.21.6",
+        "kubejs": "2001.6.5-build.16"
+      },
+      "source": {
+        "repository": "https://github.com/Omicron-Industries/Monifactory",
+        "tag": "0.13.7",
+        "commit": "6e3c9995f402c709fdeff0171ca382b5e921de16",
+        "clientArchiveSha256": "88ca112e9f91b3556039fd711f5f4fbfe0186b6601a055025b82e1eb09fbe1b2"
+      }
+    },
+    "instanceFingerprint": "f1247d14e127922e0d00a40a560e8ba09b309a10ba58ea4a4471c0db3edf89ef",
+    "validation": {
+      "machineModifierCases": 18480,
+      "machineModifierStatus": "runtime-verified",
+      "recipeExecutionStatus": "not-tested",
+      "environmentalHazards": false,
+      "inventoryStatus": "conservative-capacity-checked"
+    },
+    "coverage": {
+      "totalGTRecipes": 41275,
+      "included": 32925,
+      "recipeVariants": 38848,
+      "excluded": 8350,
+      "verifiedMachines": 280,
+      "exclusionsByReason": {
+        "no-verified-ordinary-machine": 5999,
+        "no-supported-output": 1,
+        "unsupported-ingredient-or-nbt": 1776,
+        "probabilistic-input": 5,
+        "above-supported-machine-voltage": 74,
+        "recipe-conditions": 274,
+        "unsupported-fluid-content": 1,
+        "unsupported-energy-content": 1,
+        "custom-chance-logic": 15,
+        "tier-boosted-chance": 2,
+        "custom-recipe-data": 28,
+        "unsupported-native-shape": 1,
+        "no-proven-inventory-layout": 173
+      },
+      "nonGTRecipes": "not-exported",
+      "icons": "not-exported",
+      "inventoryExcludedMachinePairs": 1546,
+      "inventoryExclusionsByReason": {
+        "input-fluid-capacity": 1545,
+        "output-fluid-capacity": 1
+      }
+    },
+    "resources": [
+      {
+        "kind": "item",
+        "id": "gtceu:andesite_dust",
+        "displayName": "Andesite Dust"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:andesite_iron_ore",
+        "displayName": "Andesite Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:basalt_iron_ore",
+        "displayName": "Basalt Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:bio_chaff",
+        "displayName": "Bio Chaff"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:blackstone_iron_ore",
+        "displayName": "Blackstone Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:crushed_iron_ore",
+        "displayName": "Crushed Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:deepslate_iron_ore",
+        "displayName": "Deepslate Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:diorite_iron_ore",
+        "displayName": "Diorite Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:endstone_iron_ore",
+        "displayName": "End Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:ev_macerator",
+        "displayName": "§5Advanced Macerator III§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:glacio_iron_ore",
+        "displayName": "Glacio Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:granite_iron_ore",
+        "displayName": "Granite Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:gravel_iron_ore",
+        "displayName": "Gravel Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:hv_macerator",
+        "displayName": "§6Advanced Macerator II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:iron_ore",
+        "displayName": "Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:iv_macerator",
+        "displayName": "§9Elite Macerator §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:luv_macerator",
+        "displayName": "§dElite Macerator II§r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:lv_macerator",
+        "displayName": "Basic Macerator §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:marble_iron_ore",
+        "displayName": "Marble Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:mars_iron_ore",
+        "displayName": "Mars Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:mercury_iron_ore",
+        "displayName": "Mercury Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:moon_iron_ore",
+        "displayName": "Moon Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:mv_macerator",
+        "displayName": "§bAdvanced Macerator §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:netherrack_iron_ore",
+        "displayName": "Nether Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:nickel_dust",
+        "displayName": "Nickel Dust"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:plant_ball",
+        "displayName": "Plant Ball"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:red_granite_iron_ore",
+        "displayName": "Red Granite Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:red_sand_iron_ore",
+        "displayName": "Red Sand Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:sand_iron_ore",
+        "displayName": "Sand Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:tuff_iron_ore",
+        "displayName": "Tuff Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:uv_macerator",
+        "displayName": "§3Ultimate Macerator §r"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:venus_iron_ore",
+        "displayName": "Venus Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "gtceu:zpm_macerator",
+        "displayName": "§cElite Macerator III§r"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:deepslate_iron_ore",
+        "displayName": "Deepslate Iron Ore"
+      },
+      {
+        "kind": "item",
+        "id": "minecraft:iron_ore",
+        "displayName": "Iron Ore"
+      }
+    ],
+    "tags": [],
+    "machines": [
+      {
+        "id": "gtceu:ev_macerator",
+        "itemId": "gtceu:ev_macerator",
+        "tier": 4,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:macerator"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:hv_macerator",
+        "itemId": "gtceu:hv_macerator",
+        "tier": 3,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:macerator"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:iv_macerator",
+        "itemId": "gtceu:iv_macerator",
+        "tier": 5,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:macerator"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:luv_macerator",
+        "itemId": "gtceu:luv_macerator",
+        "tier": 6,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:macerator"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:lv_macerator",
+        "itemId": "gtceu:lv_macerator",
+        "tier": 1,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:macerator"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:mv_macerator",
+        "itemId": "gtceu:mv_macerator",
+        "tier": 2,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:macerator"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:uv_macerator",
+        "itemId": "gtceu:uv_macerator",
+        "tier": 8,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:macerator"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      },
+      {
+        "id": "gtceu:zpm_macerator",
+        "itemId": "gtceu:zpm_macerator",
+        "tier": 7,
+        "kind": "single",
+        "recipeTypes": [
+          "gtceu:macerator"
+        ],
+        "modifierClass": "com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList",
+        "calculationStatus": "unverified"
+      }
+    ],
+    "recipes": [
+      {
+        "id": "gtceu:macerator/bio_chaff/monifactory_tier_1",
+        "nativeRecipeSha256": "e6ee813730a0391ac7a3efcbed2fd95db1d0dde93e1c490144e4a098d9393816",
+        "recipeType": "gtceu:macerator",
+        "engine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+        "durationTicks": 200,
+        "eut": 4,
+        "machines": [
+          {
+            "id": "gtceu:lv_macerator",
+            "tier": 1
+          },
+          {
+            "id": "gtceu:mv_macerator",
+            "tier": 2
+          }
+        ],
+        "inputs": [
+          {
+            "kind": "item",
+            "amount": 2,
+            "selector": {
+              "item": "gtceu:plant_ball"
+            },
+            "candidates": [
+              "gtceu:plant_ball"
+            ],
+            "consumed": true
+          }
+        ],
+        "rawRecipeId": "gtceu:macerator/bio_chaff",
+        "outputs": [
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:bio_chaff"
+            },
+            "candidates": [
+              "gtceu:bio_chaff"
+            ],
+            "chance": 1
+          }
+        ]
+      },
+      {
+        "id": "gtceu:macerator/bio_chaff/monifactory_tier_3",
+        "nativeRecipeSha256": "e6ee813730a0391ac7a3efcbed2fd95db1d0dde93e1c490144e4a098d9393816",
+        "recipeType": "gtceu:macerator",
+        "engine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+        "durationTicks": 200,
+        "eut": 4,
+        "machines": [
+          {
+            "id": "gtceu:hv_macerator",
+            "tier": 3
+          }
+        ],
+        "inputs": [
+          {
+            "kind": "item",
+            "amount": 2,
+            "selector": {
+              "item": "gtceu:plant_ball"
+            },
+            "candidates": [
+              "gtceu:plant_ball"
+            ],
+            "consumed": true
+          }
+        ],
+        "rawRecipeId": "gtceu:macerator/bio_chaff",
+        "outputs": [
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:bio_chaff"
+            },
+            "candidates": [
+              "gtceu:bio_chaff"
+            ],
+            "chance": 1
+          },
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:bio_chaff"
+            },
+            "candidates": [
+              "gtceu:bio_chaff"
+            ],
+            "chance": 1
+          },
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:bio_chaff"
+            },
+            "candidates": [
+              "gtceu:bio_chaff"
+            ],
+            "chance": 0.5
+          }
+        ]
+      },
+      {
+        "id": "gtceu:macerator/bio_chaff/monifactory_tier_4",
+        "nativeRecipeSha256": "e6ee813730a0391ac7a3efcbed2fd95db1d0dde93e1c490144e4a098d9393816",
+        "recipeType": "gtceu:macerator",
+        "engine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+        "durationTicks": 200,
+        "eut": 4,
+        "machines": [
+          {
+            "id": "gtceu:ev_macerator",
+            "tier": 4
+          },
+          {
+            "id": "gtceu:iv_macerator",
+            "tier": 5
+          },
+          {
+            "id": "gtceu:luv_macerator",
+            "tier": 6
+          },
+          {
+            "id": "gtceu:zpm_macerator",
+            "tier": 7
+          },
+          {
+            "id": "gtceu:uv_macerator",
+            "tier": 8
+          }
+        ],
+        "inputs": [
+          {
+            "kind": "item",
+            "amount": 2,
+            "selector": {
+              "item": "gtceu:plant_ball"
+            },
+            "candidates": [
+              "gtceu:plant_ball"
+            ],
+            "consumed": true
+          }
+        ],
+        "rawRecipeId": "gtceu:macerator/bio_chaff",
+        "outputs": [
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:bio_chaff"
+            },
+            "candidates": [
+              "gtceu:bio_chaff"
+            ],
+            "chance": 1
+          },
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:bio_chaff"
+            },
+            "candidates": [
+              "gtceu:bio_chaff"
+            ],
+            "chance": 1
+          },
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:bio_chaff"
+            },
+            "candidates": [
+              "gtceu:bio_chaff"
+            ],
+            "chance": 0.5
+          },
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:bio_chaff"
+            },
+            "candidates": [
+              "gtceu:bio_chaff"
+            ],
+            "chance": 0.25
+          }
+        ]
+      },
+      {
+        "id": "gtceu:macerator/macerate_andesite_iron_ore_to_crushed_ore/monifactory_tier_1",
+        "nativeRecipeSha256": "f6621f88cf7ca81aea6640ac90bda08c778137a380d009d2cff1b73c7ebf65c1",
+        "recipeType": "gtceu:macerator",
+        "engine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+        "durationTicks": 400,
+        "eut": 2,
+        "machines": [
+          {
+            "id": "gtceu:lv_macerator",
+            "tier": 1
+          },
+          {
+            "id": "gtceu:mv_macerator",
+            "tier": 2
+          }
+        ],
+        "inputs": [
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "tag": "forge:ores/iron"
+            },
+            "candidates": [
+              "gtceu:andesite_iron_ore",
+              "gtceu:basalt_iron_ore",
+              "gtceu:blackstone_iron_ore",
+              "gtceu:deepslate_iron_ore",
+              "gtceu:diorite_iron_ore",
+              "gtceu:endstone_iron_ore",
+              "gtceu:glacio_iron_ore",
+              "gtceu:granite_iron_ore",
+              "gtceu:gravel_iron_ore",
+              "gtceu:iron_ore",
+              "gtceu:marble_iron_ore",
+              "gtceu:mars_iron_ore",
+              "gtceu:mercury_iron_ore",
+              "gtceu:moon_iron_ore",
+              "gtceu:netherrack_iron_ore",
+              "gtceu:red_granite_iron_ore",
+              "gtceu:red_sand_iron_ore",
+              "gtceu:sand_iron_ore",
+              "gtceu:tuff_iron_ore",
+              "gtceu:venus_iron_ore",
+              "minecraft:deepslate_iron_ore",
+              "minecraft:iron_ore"
+            ],
+            "consumed": true
+          }
+        ],
+        "rawRecipeId": "gtceu:macerator/macerate_andesite_iron_ore_to_crushed_ore",
+        "outputs": [
+          {
+            "kind": "item",
+            "amount": 2,
+            "selector": {
+              "item": "gtceu:crushed_iron_ore"
+            },
+            "candidates": [
+              "gtceu:crushed_iron_ore"
+            ],
+            "chance": 1
+          }
+        ]
+      },
+      {
+        "id": "gtceu:macerator/macerate_andesite_iron_ore_to_crushed_ore/monifactory_tier_3",
+        "nativeRecipeSha256": "f6621f88cf7ca81aea6640ac90bda08c778137a380d009d2cff1b73c7ebf65c1",
+        "recipeType": "gtceu:macerator",
+        "engine": "monifactory-0.13.7-expert/gtceu-7.5.3/ordinary-v1",
+        "durationTicks": 400,
+        "eut": 2,
+        "machines": [
+          {
+            "id": "gtceu:hv_macerator",
+            "tier": 3
+          },
+          {
+            "id": "gtceu:ev_macerator",
+            "tier": 4
+          },
+          {
+            "id": "gtceu:iv_macerator",
+            "tier": 5
+          },
+          {
+            "id": "gtceu:luv_macerator",
+            "tier": 6
+          },
+          {
+            "id": "gtceu:zpm_macerator",
+            "tier": 7
+          },
+          {
+            "id": "gtceu:uv_macerator",
+            "tier": 8
+          }
+        ],
+        "inputs": [
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "tag": "forge:ores/iron"
+            },
+            "candidates": [
+              "gtceu:andesite_iron_ore",
+              "gtceu:basalt_iron_ore",
+              "gtceu:blackstone_iron_ore",
+              "gtceu:deepslate_iron_ore",
+              "gtceu:diorite_iron_ore",
+              "gtceu:endstone_iron_ore",
+              "gtceu:glacio_iron_ore",
+              "gtceu:granite_iron_ore",
+              "gtceu:gravel_iron_ore",
+              "gtceu:iron_ore",
+              "gtceu:marble_iron_ore",
+              "gtceu:mars_iron_ore",
+              "gtceu:mercury_iron_ore",
+              "gtceu:moon_iron_ore",
+              "gtceu:netherrack_iron_ore",
+              "gtceu:red_granite_iron_ore",
+              "gtceu:red_sand_iron_ore",
+              "gtceu:sand_iron_ore",
+              "gtceu:tuff_iron_ore",
+              "gtceu:venus_iron_ore",
+              "minecraft:deepslate_iron_ore",
+              "minecraft:iron_ore"
+            ],
+            "consumed": true
+          }
+        ],
+        "rawRecipeId": "gtceu:macerator/macerate_andesite_iron_ore_to_crushed_ore",
+        "outputs": [
+          {
+            "kind": "item",
+            "amount": 2,
+            "selector": {
+              "item": "gtceu:crushed_iron_ore"
+            },
+            "candidates": [
+              "gtceu:crushed_iron_ore"
+            ],
+            "chance": 1
+          },
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:nickel_dust"
+            },
+            "candidates": [
+              "gtceu:nickel_dust"
+            ],
+            "chance": 0.14
+          },
+          {
+            "kind": "item",
+            "amount": 1,
+            "selector": {
+              "item": "gtceu:andesite_dust"
+            },
+            "candidates": [
+              "gtceu:andesite_dust"
+            ],
+            "chance": 0.67
+          }
+        ]
+      }
+    ],
+    "excluded": [],
+    "provenance": {
+      "catalogSha256": "e17c3486823f021b2e563b4861d15c4473ee76064c138fa77d1a7c775b46ae69",
+      "probeSha256": "0f7cc87f5826210d1940b9d23898286966066e4deda7a4ab7f554e191ac22ce5",
+      "specialProbeSha256": "f5082e6edaa1e1ba9323ac74ebeb613a0999e03667ad32679f78355cf86c00a8",
+      "gtceuSourceCommit": "91a79b8a7a2b62ec6277423e6c0ded4af89a831e",
+      "inventoryLimitsSha256": "02d09402fc408f45961dd8ab20edb65ff52702dec90580f6c026583cf877bbbd"
+    },
+    "machineLimits": [
+      {
+        "id": "gtceu:ev_macerator",
+        "tier": 4,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:hv_macerator",
+        "tier": 3,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:iv_macerator",
+        "tier": 5,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:luv_macerator",
+        "tier": 6,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:lv_macerator",
+        "tier": 1,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:mv_macerator",
+        "tier": 2,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:uv_macerator",
+        "tier": 8,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      },
+      {
+        "id": "gtceu:zpm_macerator",
+        "tier": 7,
+        "inputSlots": [
+          64
+        ],
+        "outputSlots": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "inputTanks": [],
+        "outputTanks": [],
+        "inputAllowsSameFluid": false,
+        "outputAllowsSameFluid": false,
+        "circuitSlots": [
+          64
+        ]
+      }
+    ],
+    "itemStackLimits": [
+      {
+        "id": "gtceu:andesite_dust",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:andesite_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:basalt_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:bio_chaff",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:blackstone_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:crushed_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:deepslate_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:diorite_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:endstone_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:ev_macerator",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:glacio_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:granite_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:gravel_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:hv_macerator",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:iv_macerator",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:luv_macerator",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:lv_macerator",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:marble_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:mars_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:mercury_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:moon_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:mv_macerator",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:netherrack_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:nickel_dust",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:plant_ball",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:red_granite_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:red_sand_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:sand_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:tuff_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:uv_macerator",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:venus_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "gtceu:zpm_macerator",
+        "maxStackSize": 64
+      },
+      {
+        "id": "minecraft:deepslate_iron_ore",
+        "maxStackSize": 64
+      },
+      {
+        "id": "minecraft:iron_ore",
+        "maxStackSize": 64
+      }
+    ],
+    "excludedMachinePairs": [],
+    "excludedVariants": [
+      {
+        "id": "gtceu:arc_furnace/arc_advanced_chroma_sensor_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_advanced_chroma_sensor_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_advanced_quarktech_chestplate",
+        "rawRecipeId": "gtceu:arc_furnace/arc_advanced_quarktech_chestplate",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_antimatter_collider",
+        "rawRecipeId": "gtceu:arc_furnace/arc_antimatter_collider",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_antimatter_manipulator",
+        "rawRecipeId": "gtceu:arc_furnace/arc_antimatter_manipulator",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_chroma_sensor_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_chroma_sensor_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_chromatic_capacitor_empty",
+        "rawRecipeId": "gtceu:arc_furnace/arc_chromatic_capacitor_empty",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_creative_energy_multi",
+        "rawRecipeId": "gtceu:arc_furnace/arc_creative_energy_multi",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_dimensional_superassembler",
+        "rawRecipeId": "gtceu:arc_furnace/arc_dimensional_superassembler",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_elite_microverse_projector",
+        "rawRecipeId": "gtceu:arc_furnace/arc_elite_microverse_projector",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_ev_fluid_drilling_rig",
+        "rawRecipeId": "gtceu:arc_furnace/arc_ev_fluid_drilling_rig",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_helical_fusion_reactor",
+        "rawRecipeId": "gtceu:arc_furnace/arc_helical_fusion_reactor",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_high_performance_computation_array",
+        "rawRecipeId": "gtceu:arc_furnace/arc_high_performance_computation_array",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_hpca_advanced_computation_component",
+        "rawRecipeId": "gtceu:arc_furnace/arc_hpca_advanced_computation_component",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_iv_substation_input_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_iv_substation_input_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_iv_substation_output_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_iv_substation_output_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_large_assembler",
+        "rawRecipeId": "gtceu:arc_furnace/arc_large_assembler",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_large_material_press",
+        "rawRecipeId": "gtceu:arc_furnace/arc_large_material_press",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_large_naquadah_reactor",
+        "rawRecipeId": "gtceu:arc_furnace/arc_large_naquadah_reactor",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_large_packer",
+        "rawRecipeId": "gtceu:arc_furnace/arc_large_packer",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_luv_4096a_laser_source_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_luv_4096a_laser_source_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_luv_4096a_laser_target_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_luv_4096a_laser_target_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_luv_assembler",
+        "rawRecipeId": "gtceu:arc_furnace/arc_luv_assembler",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_luv_auto_charger_4x",
+        "rawRecipeId": "gtceu:arc_furnace/arc_luv_auto_charger_4x",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_luv_circuit_assembler",
+        "rawRecipeId": "gtceu:arc_furnace/arc_luv_circuit_assembler",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_luv_world_accelerator",
+        "rawRecipeId": "gtceu:arc_furnace/arc_luv_world_accelerator",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_1024a_laser_source_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_1024a_laser_source_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_1024a_laser_target_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_1024a_laser_target_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_16a_energy_converter",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_16a_energy_converter",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_256a_laser_source_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_256a_laser_source_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_256a_laser_target_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_256a_laser_target_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_4096a_laser_source_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_4096a_laser_source_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_4096a_laser_target_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_4096a_laser_target_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_battery_buffer_16x",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_battery_buffer_16x",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_conveyor_module",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_conveyor_module",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_electric_piston",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_electric_piston",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_electric_pump",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_electric_pump",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_emitter",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_emitter",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_energy_input_hatch_16a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_energy_input_hatch_16a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_energy_output_hatch_16a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_energy_output_hatch_16a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_field_generator",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_field_generator",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_fluid_regulator",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_fluid_regulator",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_robot_arm",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_robot_arm",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_sensor",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_sensor",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_substation_input_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_substation_input_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_max_substation_output_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_max_substation_output_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_mega_alloy_blast_smelter",
+        "rawRecipeId": "gtceu:arc_furnace/arc_mega_alloy_blast_smelter",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_mega_blast_furnace",
+        "rawRecipeId": "gtceu:arc_furnace/arc_mega_blast_furnace",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_mega_vacuum_freezer",
+        "rawRecipeId": "gtceu:arc_furnace/arc_mega_vacuum_freezer",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_nan_certificate",
+        "rawRecipeId": "gtceu:arc_furnace/arc_nan_certificate",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_naquadah_refinery",
+        "rawRecipeId": "gtceu:arc_furnace/arc_naquadah_refinery",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_network_switch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_network_switch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_object_holder",
+        "rawRecipeId": "gtceu:arc_furnace/arc_object_holder",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_opv_substation_input_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_opv_substation_input_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_opv_substation_output_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_opv_substation_output_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_pterb_machine",
+        "rawRecipeId": "gtceu:arc_furnace/arc_pterb_machine",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_research_station",
+        "rawRecipeId": "gtceu:arc_furnace/arc_research_station",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_sterile_cleaning_maintenance_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_sterile_cleaning_maintenance_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uev_quantum_chest",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uev_quantum_chest",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uev_quantum_tank",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uev_quantum_tank",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uev_substation_input_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uev_substation_input_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uev_substation_output_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uev_substation_output_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_1024a_laser_source_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_1024a_laser_source_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_1024a_laser_target_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_1024a_laser_target_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_4096a_laser_source_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_4096a_laser_source_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_4096a_laser_target_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_4096a_laser_target_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_assembler",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_assembler",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_atomic_reconstructor",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_atomic_reconstructor",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_auto_charger_4x",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_auto_charger_4x",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_autoclave",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_autoclave",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_bender",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_bender",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_brewery",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_brewery",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_canner",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_canner",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_centrifuge",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_centrifuge",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_chemical_bath",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_chemical_bath",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_chemical_reactor",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_chemical_reactor",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_circuit_assembler",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_circuit_assembler",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_cutter",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_cutter",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_distillery",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_distillery",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_electromagnetic_separator",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_electromagnetic_separator",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_extractor",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_extractor",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_extruder",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_extruder",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_fermenter",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_fermenter",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_field_generator",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_field_generator",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_fluid_heater",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_fluid_heater",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_fluid_solidifier",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_fluid_solidifier",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_gas_collector",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_gas_collector",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_laser_engraver",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_laser_engraver",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_lathe",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_lathe",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_macerator",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_macerator",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_mixer",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_mixer",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_muffler_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_muffler_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_ore_washer",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_ore_washer",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_packer",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_packer",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_robot_arm",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_robot_arm",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_scanner",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_scanner",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_substation_input_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_substation_input_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_thermal_centrifuge",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_thermal_centrifuge",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uhv_wiremill",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uhv_wiremill",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uiv_substation_output_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uiv_substation_output_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_1024a_laser_source_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_1024a_laser_source_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_1024a_laser_target_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_1024a_laser_target_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_256a_laser_source_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_256a_laser_source_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_256a_laser_target_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_256a_laser_target_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_4096a_laser_source_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_4096a_laser_source_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_4096a_laser_target_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_4096a_laser_target_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_assembler",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_assembler",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_atomic_reconstructor",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_atomic_reconstructor",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_auto_charger_4x",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_auto_charger_4x",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_bender",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_bender",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_chemical_bath",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_chemical_bath",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_circuit_assembler",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_circuit_assembler",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_compressor",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_compressor",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_cutter",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_cutter",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_emitter",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_emitter",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_extractor",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_extractor",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_field_generator",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_field_generator",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_fluid_heater",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_fluid_heater",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_fluid_solidifier",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_fluid_solidifier",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_forming_press",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_forming_press",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_gas_collector",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_gas_collector",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_laser_engraver",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_laser_engraver",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_lathe",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_lathe",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_macerator",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_macerator",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_packer",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_packer",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_quantum_chest",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_quantum_chest",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_quantum_tank",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_quantum_tank",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_robot_arm",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_robot_arm",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_rock_crusher",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_rock_crusher",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_scanner",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_scanner",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_sensor",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_sensor",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_sifter",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_sifter",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_substation_output_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_substation_output_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_wiremill",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_wiremill",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uv_world_accelerator",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uv_world_accelerator",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uxv_substation_input_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uxv_substation_input_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_uxv_substation_output_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_uxv_substation_output_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_1024a_laser_source_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_1024a_laser_source_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_1024a_laser_target_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_1024a_laser_target_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_256a_laser_source_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_256a_laser_source_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_256a_laser_target_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_256a_laser_target_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_4096a_laser_source_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_4096a_laser_source_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_4096a_laser_target_hatch",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_4096a_laser_target_hatch",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_assembler",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_assembler",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_atomic_reconstructor",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_atomic_reconstructor",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_auto_charger_4x",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_auto_charger_4x",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_bender",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_bender",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_chemical_bath",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_chemical_bath",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_circuit_assembler",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_circuit_assembler",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_field_generator",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_field_generator",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_laser_engraver",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_laser_engraver",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_packer",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_packer",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_scanner",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_scanner",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_substation_input_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_substation_input_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_substation_output_hatch_64a",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_substation_output_hatch_64a",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/arc_zpm_world_accelerator",
+        "rawRecipeId": "gtceu:arc_furnace/arc_zpm_world_accelerator",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/bbc_recycling",
+        "rawRecipeId": "gtceu:arc_furnace/bbc_recycling",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:arc_furnace/rhf_recycling",
+        "rawRecipeId": "gtceu:arc_furnace/rhf_recycling",
+        "recipeType": "gtceu:arc_furnace",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:chemical_reactor/almandine_digestion",
+        "rawRecipeId": "gtceu:chemical_reactor/almandine_digestion",
+        "recipeType": "gtceu:chemical_reactor",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:chemical_reactor/emerald_digestion",
+        "rawRecipeId": "gtceu:chemical_reactor/emerald_digestion",
+        "recipeType": "gtceu:chemical_reactor",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:chemical_reactor/grossular_digestion",
+        "rawRecipeId": "gtceu:chemical_reactor/grossular_digestion",
+        "recipeType": "gtceu:chemical_reactor",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:chemical_reactor/mica_digestion",
+        "rawRecipeId": "gtceu:chemical_reactor/mica_digestion",
+        "recipeType": "gtceu:chemical_reactor",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:chemical_reactor/pollucite_digestion",
+        "rawRecipeId": "gtceu:chemical_reactor/pollucite_digestion",
+        "recipeType": "gtceu:chemical_reactor",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:chemical_reactor/potassium_feldspar_digestion",
+        "rawRecipeId": "gtceu:chemical_reactor/potassium_feldspar_digestion",
+        "recipeType": "gtceu:chemical_reactor",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:chemical_reactor/pyrope_digestion",
+        "rawRecipeId": "gtceu:chemical_reactor/pyrope_digestion",
+        "recipeType": "gtceu:chemical_reactor",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:chemical_reactor/spessartine_digestion",
+        "rawRecipeId": "gtceu:chemical_reactor/spessartine_digestion",
+        "recipeType": "gtceu:chemical_reactor",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:chemical_reactor/spodumene_digestion",
+        "rawRecipeId": "gtceu:chemical_reactor/spodumene_digestion",
+        "recipeType": "gtceu:chemical_reactor",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:distillery/distill_liquid_ender_air_to_deuterium",
+        "rawRecipeId": "gtceu:distillery/distill_liquid_ender_air_to_deuterium",
+        "recipeType": "gtceu:distillery",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:distillery/distill_liquid_ender_air_to_helium",
+        "rawRecipeId": "gtceu:distillery/distill_liquid_ender_air_to_helium",
+        "recipeType": "gtceu:distillery",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:distillery/distill_liquid_ender_air_to_krypton",
+        "rawRecipeId": "gtceu:distillery/distill_liquid_ender_air_to_krypton",
+        "recipeType": "gtceu:distillery",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:distillery/distill_liquid_ender_air_to_nitrogen_dioxide",
+        "rawRecipeId": "gtceu:distillery/distill_liquid_ender_air_to_nitrogen_dioxide",
+        "recipeType": "gtceu:distillery",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:distillery/distill_liquid_ender_air_to_radon",
+        "rawRecipeId": "gtceu:distillery/distill_liquid_ender_air_to_radon",
+        "recipeType": "gtceu:distillery",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:distillery/distill_liquid_ender_air_to_tritium",
+        "rawRecipeId": "gtceu:distillery/distill_liquid_ender_air_to_tritium",
+        "recipeType": "gtceu:distillery",
+        "reason": "no-proven-inventory-layout"
+      },
+      {
+        "id": "gtceu:distillery/distill_liquid_ender_air_to_xenon",
+        "rawRecipeId": "gtceu:distillery/distill_liquid_ender_air_to_xenon",
+        "recipeType": "gtceu:distillery",
+        "reason": "no-proven-inventory-layout"
+      }
+    ]
+  },
+  "reference": {
+    "schemaVersion": 1,
+    "kind": "monifactory-inventory-reference",
+    "instanceFingerprint": "f1247d14e127922e0d00a40a560e8ba09b309a10ba58ea4a4471c0db3edf89ef",
+    "status": "complete",
+    "coverage": "one-layout-per-recipe-plus-every-used-machine-and-empty-controls",
+    "cases": [
+      {
+        "id": "gtceu:macerator/bio_chaff/monifactory_tier_1@gtceu:lv_macerator",
+        "recipeId": "gtceu:macerator/bio_chaff/monifactory_tier_1",
+        "rawRecipeId": "gtceu:macerator/bio_chaff",
+        "machineId": "gtceu:lv_macerator",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:plant_ball",
+            "amount": 2
+          }
+        ],
+        "fluids": [],
+        "expected": true,
+        "matched": true,
+        "nativeRecipeSha256": "e6ee813730a0391ac7a3efcbed2fd95db1d0dde93e1c490144e4a098d9393816"
+      },
+      {
+        "id": "gtceu:macerator/bio_chaff/monifactory_tier_3@gtceu:hv_macerator",
+        "recipeId": "gtceu:macerator/bio_chaff/monifactory_tier_3",
+        "rawRecipeId": "gtceu:macerator/bio_chaff",
+        "machineId": "gtceu:hv_macerator",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:plant_ball",
+            "amount": 2
+          }
+        ],
+        "fluids": [],
+        "expected": true,
+        "matched": true,
+        "nativeRecipeSha256": "e6ee813730a0391ac7a3efcbed2fd95db1d0dde93e1c490144e4a098d9393816"
+      },
+      {
+        "id": "gtceu:macerator/bio_chaff/monifactory_tier_4@gtceu:ev_macerator",
+        "recipeId": "gtceu:macerator/bio_chaff/monifactory_tier_4",
+        "rawRecipeId": "gtceu:macerator/bio_chaff",
+        "machineId": "gtceu:ev_macerator",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:plant_ball",
+            "amount": 2
+          }
+        ],
+        "fluids": [],
+        "expected": true,
+        "matched": true,
+        "nativeRecipeSha256": "e6ee813730a0391ac7a3efcbed2fd95db1d0dde93e1c490144e4a098d9393816"
+      },
+      {
+        "id": "gtceu:macerator/macerate_andesite_iron_ore_to_crushed_ore/monifactory_tier_1@gtceu:lv_macerator",
+        "recipeId": "gtceu:macerator/macerate_andesite_iron_ore_to_crushed_ore/monifactory_tier_1",
+        "rawRecipeId": "gtceu:macerator/macerate_andesite_iron_ore_to_crushed_ore",
+        "machineId": "gtceu:lv_macerator",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:andesite_iron_ore",
+            "amount": 1
+          }
+        ],
+        "fluids": [],
+        "expected": true,
+        "matched": true,
+        "nativeRecipeSha256": "f6621f88cf7ca81aea6640ac90bda08c778137a380d009d2cff1b73c7ebf65c1"
+      },
+      {
+        "id": "gtceu:macerator/macerate_andesite_iron_ore_to_crushed_ore/monifactory_tier_3@gtceu:hv_macerator",
+        "recipeId": "gtceu:macerator/macerate_andesite_iron_ore_to_crushed_ore/monifactory_tier_3",
+        "rawRecipeId": "gtceu:macerator/macerate_andesite_iron_ore_to_crushed_ore",
+        "machineId": "gtceu:hv_macerator",
+        "items": [
+          {
+            "slot": 0,
+            "id": "gtceu:andesite_iron_ore",
+            "amount": 1
+          }
+        ],
+        "fluids": [],
+        "expected": true,
+        "matched": true,
+        "nativeRecipeSha256": "f6621f88cf7ca81aea6640ac90bda08c778137a380d009d2cff1b73c7ebf65c1"
+      }
+    ],
+    "errors": []
+  }
+}

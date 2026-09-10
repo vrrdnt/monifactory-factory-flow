@@ -53,6 +53,7 @@
       files: {},
       unsupportedRecipeTypes: {},
       errors: [],
+      warnings: [],
       mods: [],
     };
     JsonIO.write(destination + "report.json", report);
@@ -124,18 +125,42 @@
 
       streamFile(destination, "resources", report, function (write) {
         each(Registries.ITEMS.getValues(), function (item) {
+          var itemId = String(Registries.ITEMS.getKey(item));
+          var itemName = itemId;
+          try {
+            itemName = String(item.getDefaultInstance().getHoverName().getString());
+          } catch (error) {
+            report.warnings.push({
+              stage: "display-name",
+              kind: "item",
+              id: itemId,
+              message: String(error),
+            });
+          }
           write({
             kind: "item",
-            id: String(Registries.ITEMS.getKey(item)),
-            displayName: String(item.getDefaultInstance().getHoverName().getString()),
+            id: itemId,
+            displayName: itemName,
           });
           report.counts.items++;
         });
         each(Registries.FLUIDS.getValues(), function (fluid) {
+          var fluidId = String(Registries.FLUIDS.getKey(fluid));
+          var fluidName = fluidId;
+          try {
+            fluidName = String(fluid.getFluidType().getDescription().getString());
+          } catch (error) {
+            report.warnings.push({
+              stage: "display-name",
+              kind: "fluid",
+              id: fluidId,
+              message: String(error),
+            });
+          }
           write({
             kind: "fluid",
-            id: String(Registries.FLUIDS.getKey(fluid)),
-            displayName: String(fluid.getFluidType().getDescription().getString()),
+            id: fluidId,
+            displayName: fluidName,
           });
           report.counts.fluids++;
         });

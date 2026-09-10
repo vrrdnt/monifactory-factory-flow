@@ -145,6 +145,7 @@ export function buildCatalog(report, recipes, machines, resources, tags) {
     coverage: {
       recipesByType,
       unsupportedRecipeTypes: report.unsupportedRecipeTypes,
+      resourceNameWarnings: report.warnings ?? [],
       recipeTypesWithoutMachines: Object.keys(recipesByType)
         .filter((type) => !machineIdsByRecipeType[type])
         .sort(),

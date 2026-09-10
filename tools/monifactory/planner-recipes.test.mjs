@@ -66,6 +66,35 @@ describe("runtime inventory integration", () => {
     changed.cases.find((c) => c.expected && c.items.length).items[0].amount++;
     expect(() => buildPlannerRecipes(fixture.catalog, changed)).toThrow("stale");
   });
+  it("keeps a variant's native recipe identity through inventory jobs and board conversion", () => {
+    const c = structuredClone(fixture.catalog);
+    const refs = structuredClone(fixture.reference);
+    const recipe = c.recipes[0];
+    const nativeId = recipe.id;
+    recipe.rawRecipeId = nativeId;
+    recipe.id += "/monifactory_tier_3";
+    for (const row of refs.cases.filter((row) => row.recipeId === nativeId)) {
+      row.recipeId = recipe.id;
+      row.rawRecipeId = nativeId;
+    }
+    const converted = buildPlannerRecipes(c, refs).find((r) => r.id === recipe.id);
+    expect(converted.source.rawRecipeId).toBe(nativeId);
+    refs.cases.find((row) => row.recipeId === recipe.id && row.expected).rawRecipeId =
+      "test:wrong_recipe";
+    expect(() => buildPlannerRecipes(c, refs)).toThrow("different native recipe");
+  });
+  it("rejects changed native contents even when the ID and inventory layout still match", () => {
+    const c = structuredClone(fixture.catalog);
+    const refs = structuredClone(fixture.reference);
+    const recipe = c.recipes[0];
+    recipe.nativeRecipeSha256 = "a".repeat(64);
+    expect(() => buildPlannerRecipes(c, refs)).toThrow("native recipe data is stale");
+    for (const row of refs.cases.filter((r) => r.recipeId === recipe.id))
+      row.nativeRecipeSha256 = recipe.nativeRecipeSha256;
+    expect(() => buildPlannerRecipes(c, refs)).not.toThrow();
+    recipe.nativeRecipeSha256 = "b".repeat(64);
+    expect(() => buildPlannerRecipes(c, refs)).toThrow("native recipe data is stale");
+  });
   it("rejects incomplete limits and records recipes whose layouts cannot fit", () => {
     const c = structuredClone(fixture.catalog);
     c.format = "monifactory-ordinary-calculated-catalog";

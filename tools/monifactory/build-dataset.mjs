@@ -5,7 +5,7 @@ import { gzipSync } from "node:zlib";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildPlannerRecipes } from "./planner-recipes.mjs";
-import { publishTextures } from "./textures.mjs";
+import { publishTextures, reusePublishedIcons } from "./textures.mjs";
 
 export function buildDataset(
   catalog,
@@ -107,10 +107,18 @@ export function buildDataset(
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const [catalogPath, referencePath, textureIndexPath] = process.argv.slice(2);
-  if (!catalogPath || !referencePath)
+  const [catalogPath, referencePath, textureOption, previousGuidePath, ...extra] =
+    process.argv.slice(2);
+  const reuseIcons = textureOption === "--reuse-published-icons";
+  const textureIndexPath = reuseIcons ? undefined : textureOption;
+  if (
+    !catalogPath ||
+    !referencePath ||
+    extra.length ||
+    (reuseIcons ? !previousGuidePath : previousGuidePath)
+  )
     throw new Error(
-      "Usage: build-dataset.mjs <capacity-catalog.json> <inventory-reference.json> [texture-index.json]",
+      "Usage: build-dataset.mjs <capacity-catalog.json> <inventory-reference.json> [texture-index.json | --reuse-published-icons <renewables.json.gz>]",
     );
   const catalog = JSON.parse(await readFile(catalogPath, "utf8"));
   const root = fileURLToPath(new URL("../../", import.meta.url));
@@ -119,23 +127,39 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     throw new Error("Unsafe dataset version ID.");
   const output = path.join(publicRoot, catalog.profile.id);
   const prefix = `/datasets/monifactory/${catalog.profile.id}`;
-  const icons = textureIndexPath
-    ? await publishTextures(
-        textureIndexPath,
-        path.join(output, "textures"),
-        `${prefix}/textures`,
-        catalog,
-      )
-    : {};
+  const reused = reuseIcons
+    ? await reusePublishedIcons(previousGuidePath, path.join(output, "textures"), catalog)
+    : undefined;
+  const icons =
+    reused?.icons ??
+    (textureIndexPath
+      ? await publishTextures(
+          textureIndexPath,
+          path.join(output, "textures"),
+          `${prefix}/textures`,
+          catalog,
+        )
+      : {});
   const dataset = buildDataset(
     catalog,
     JSON.parse(await readFile(referencePath, "utf8")),
     new Date().toISOString(),
     icons,
   );
-  if (textureIndexPath) {
+  if (reused) {
+    dataset.textureProvenance = reused.provenance;
+    dataset.sourceInfo.notes +=
+      " Icons reuse the prior 0.13.7 Expert capture; the replacement client was not recaptured.";
+  }
+  if (textureIndexPath || reused) {
     const missing = dataset.resources.filter((r) => !r.iconAtlas && !r.alternatives?.length);
-    if (missing.length) throw new Error(`Missing textures for ${missing.length} concrete planner resources: ${missing.slice(0, 5).map((r) => r.id).join(", ")}`);
+    if (missing.length)
+      throw new Error(
+        `Missing textures for ${missing.length} concrete planner resources: ${missing
+          .slice(0, 5)
+          .map((r) => r.id)
+          .join(", ")}`,
+      );
   }
   if (!/^monifactory-[a-zA-Z0-9._-]+$/.test(dataset.datasetVersionId))
     throw new Error("Unsafe dataset version ID.");

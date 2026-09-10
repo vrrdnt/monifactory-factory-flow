@@ -13,6 +13,12 @@
   var Circuit = Java.loadClass("com.gregtechceu.gtceu.common.item.IntCircuitBehaviour");
   var Config = Java.loadClass("com.gregtechceu.gtceu.config.ConfigHolder");
   var Platform = Java.loadClass("dev.architectury.platform.Platform");
+  var Serializer = Java.loadClass("com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer");
+  var RegistryOps = Java.loadClass("net.minecraft.resources.RegistryOps");
+  var JsonOps = Java.loadClass("com.mojang.serialization.JsonOps");
+  var Digest = Java.loadClass("java.security.MessageDigest");
+  var Hex = Java.loadClass("java.util.HexFormat");
+  var JString = Java.loadClass("java.lang.String");
   var root = "local/monifactory-planner/";
   var ticks = 0;
   function machine(id) {
@@ -122,20 +128,50 @@
               target.getCircuitInventory().setStackInSlot(0, Circuit.stack(Number(job.circuit)));
             var base = event.server
               .getRecipeManager()
-              .byKey(new RL(String(job.recipeId)))
+              .byKey(new RL(String(job.rawRecipeId || job.recipeId)))
               .orElse(null);
             if (base === null) throw new Error("Recipe not found");
-            var modified = target
-              .getDefinition()
-              .getRecipeModifier()
-              .applyModifier(target, base.copy());
-            var matched = modified !== null && Helper.matchRecipe(target, modified).isSuccess();
-            report.cases.push({
+            var nativeJson = null;
+            if (job.checkNativeRecipe === true || job.diagnostics === true) {
+              var codecOps = RegistryOps.create(JsonOps.INSTANCE, event.server.registryAccess());
+              nativeJson = String(Serializer.CODEC.encodeStart(codecOps, base).result().get());
+            }
+            var modified = target.fullModifyRecipe(base.copy());
+            var match = modified === null ? null : Helper.matchRecipe(target, modified);
+            var matched = match !== null && match.isSuccess();
+            var check = {
               id: String(job.id),
               recipeId: String(job.recipeId),
               machineId: String(job.machineId),
               matched: Boolean(matched),
-            });
+            };
+            if (job.checkNativeRecipe === true)
+              check.nativeRecipeSha256 = String(
+                Hex.of().formatHex(
+                  Digest.getInstance("SHA-256").digest(new JString(nativeJson).getBytes("UTF-8")),
+                ),
+              );
+            if (job.diagnostics === true) {
+              var ops = RegistryOps.create(JsonOps.INSTANCE, event.server.registryAccess());
+              check.nativeRecipeJson = String(
+                Serializer.CODEC.encodeStart(ops, base).result().get(),
+              );
+              check.modifiedRecipeJson =
+                modified === null
+                  ? null
+                  : String(Serializer.CODEC.encodeStart(ops, modified).result().get());
+              check.matchResult = String(match);
+              check.inputStacks = [];
+              for (var slot = 0; slot < target.importItems.getSlots(); slot++) {
+                var stack = target.importItems.getStackInSlot(slot);
+                check.inputStacks.push({
+                  id: String(Forge.ITEMS.getKey(stack.getItem())),
+                  count: Number(stack.getCount()),
+                  empty: Boolean(stack.isEmpty()),
+                });
+              }
+            }
+            report.cases.push(check);
           } catch (error) {
             report.errors.push(String(job.id) + ": " + String(error));
           }

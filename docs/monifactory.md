@@ -1,5 +1,9 @@
 # Monifactory port
 
+For the current bundled recipe counts and pending machine support, see
+[recipe coverage](recipe-coverage.md). The sections below also retain evidence
+from earlier implementation milestones.
+
 The initial target is Monifactory 0.13.7 Expert. Source is pinned to release commit `6e3c9995f402c709fdeff0171ca382b5e921de16`, not the development branch. `tools/monifactory/profiles/0.13.7-expert.json` records the official client archive's SHA-256 and required runtime dependencies.
 
 ## First live integration result
@@ -131,7 +135,7 @@ npm run monifactory:verify-inventory -- "C:\path\to\Monifactory-PLANNER" ".pipel
 npm run monifactory:planner -- ".pipeline/monifactory/0.13.7-expert/capacity/capacity-catalog.json" ".pipeline/monifactory/0.13.7-expert/capacity/inventory-reference.json" ".pipeline/monifactory/0.13.7-expert/capacity/planner-recipes.json"
 ```
 
-The verification CLI sends batches of 750 checks to the loaded inventory helper. It validates response identity, profile, completeness and case counts; the conversion step refuses missing, failed or stale layout references. Each converted recipe keeps `source.packId` and `source.calculationEngine` through the planner schema, with only actual capacity-checked machines as fixed-tier handlers. Multiple ingredient choices remain a virtual same-kind resource with explicit alternatives; quantities cannot be changed by overrides. Native selectors are retained in metadata even when a resolved tag has only one member.
+The verification CLI sends batches of 250 checks to the loaded inventory helper. It validates response identity, profile, completeness and case counts; the conversion step refuses missing, failed or stale layout references. Each converted recipe keeps `source.packId` and `source.calculationEngine` through the planner schema, with only actual capacity-checked machines as fixed-tier handlers. Multiple ingredient choices remain a virtual same-kind resource with explicit alternatives; quantities cannot be changed by overrides. Native selectors are retained in metadata even when a resolved tag has only one member.
 
 The board's overclock, power, throughput and machine-count paths now dispatch these ordinary Monifactory recipes separately. GTNH curated bonuses, heat discounts, hatch amperage, extra node parallels, fuel estimates and free cell/fluid bridges do not apply. Unknown Monifactory engines or absent machine handlers fail explicitly. Verification covered the complete converted corpus against the recipe schema and one real graph per retained recipe map (33 maps). For example, the real bronze recipe in an MV mixer reports 200 ticks, 28 EU/t and 0.4 bronze dust/s.
 

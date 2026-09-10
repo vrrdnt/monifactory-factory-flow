@@ -34,6 +34,9 @@ for (const job of [...byRecipe.values(), ...byMachine.values()])
   selected.set(job.id, { ...job, expected: true });
 const negatives = new Map();
 const recipeTypes = new Map(catalog.recipes.map((recipe) => [recipe.id, recipe.recipeType]));
+const nativeHashes = new Map(
+  catalog.recipes.map((recipe) => [recipe.id, recipe.nativeRecipeSha256]),
+);
 for (const job of byRecipe.values()) {
   const type = recipeTypes.get(job.recipeId);
   if (!negatives.has(type) && (job.items.length || job.fluids.length))
@@ -52,11 +55,17 @@ const result = {
 console.log(
   `Checking ${byRecipe.size} recipes, ${byMachine.size} machines, ${negatives.size} negative controls (${jobs.length} cases).`,
 );
-for (let start = 0; start < jobs.length; start += 750) {
-  const batch = jobs.slice(start, start + 750);
+// Keep each game-thread batch small while the user runs another client.
+const batchSize = 250;
+for (let start = 0; start < jobs.length; start += batchSize) {
+  const batch = jobs.slice(start, start + batchSize);
   const id = randomUUID();
   // Case IDs carry the batch token so stale output cannot be accepted.
-  const mapped = batch.map((job, i) => ({ ...job, id: `${id}:${i}` }));
+  const mapped = batch.map((job, i) => ({
+    ...job,
+    id: `${id}:${i}`,
+    checkNativeRecipe: Boolean(nativeHashes.get(job.recipeId)),
+  }));
   const pending = path.join(root, "inventory-request.pending.json");
   await writeFile(pending, JSON.stringify({ action: "check", jobs: mapped }));
   await rename(pending, path.join(root, "inventory-request.json"));
@@ -102,12 +111,24 @@ for (let start = 0; start < jobs.length; start += 750) {
       actual.machineId !== batch[i].machineId
     )
       throw new Error("Mismatched check response.");
-    result.cases.push({ ...batch[i], matched: actual.matched });
+    result.cases.push({
+      ...batch[i],
+      matched: actual.matched,
+      ...(actual.nativeRecipeSha256 ? { nativeRecipeSha256: actual.nativeRecipeSha256 } : {}),
+    });
+    if (actual.matched !== batch[i].expected) console.log(`Inventory mismatch: ${batch[i].id}`);
+    if (
+      nativeHashes.get(batch[i].recipeId) &&
+      actual.nativeRecipeSha256 !== nativeHashes.get(batch[i].recipeId)
+    ) {
+      result.errors.push(`Native recipe changed: ${batch[i].recipeId}`);
+      console.log(`Native recipe changed: ${batch[i].recipeId}`);
+    }
   }
   console.log(
     `${result.cases.length}/${jobs.length} checked; ${result.cases.filter((c) => c.matched !== c.expected).length} mismatches.`,
   );
 }
-result.status = "complete";
+result.status = result.errors.length ? "failed" : "complete";
 await writeFile(outputPath, JSON.stringify(result) + "\n");
 console.log(`Saved ${result.cases.length} runtime inventory cases.`);

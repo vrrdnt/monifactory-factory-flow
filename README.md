@@ -8,7 +8,7 @@ Search recipes, connect production chains, and calculate throughput, machine cou
 
 ## What's included
 
-- **24,877 recipes** in the ordinary-machine board dataset, with searchable ingredients, machine selection and runtime textures.
+- **32,925 native recipes**, represented by **38,848 machine-tier variants**, with searchable ingredients, machine selection and runtime textures. This includes **8,070 macerator recipes** with the correct tier-dependent output limits.
 - A Monifactory calculation path for verified ordinary electric machines, including overclocking and inventory limits.
 - A renewable-resource guide focused on **base materials and fluids**, with dependency steps, startup requirements and explicit operating assumptions. Crafted products such as cables and components are omitted from browsing; their dependencies remain available within production routes.
 - Uncheck **Include Microverse missions** to find routes without normal or hostile missions. The guide recalculates dependencies and uses other proven routes where available; shared links retain this setting.
@@ -19,11 +19,11 @@ Search recipes, connect production chains, and calculate throughput, machine cou
 
 This is a work in progress for **0.13.7 Expert**, not a complete calculator for every Monifactory machine or recipe. The pinned runtime uses Minecraft 1.20.1, Forge 47.4.13, GTCEu 7.5.3 and MoniLabs 0.21.6.
 
-Ordinary-machine calculations were checked against **17,952 live modifier reference cases** and **25,120 live inventory-matching cases**. Unsupported conditions, NBT-sensitive ingredients and machine behavior are excluded from the board dataset rather than assigned guessed formulas. GTNH-specific bonuses and automatic container conversions are disabled for Monifactory recipes.
+Ordinary-machine calculations were checked against **18,480 live modifier reference cases** and **39,098 live inventory-matching cases**. Native recipe hashes also match the imported values. Unsupported conditions, NBT-sensitive ingredients and machine behavior are excluded from the board dataset rather than assigned guessed formulas. GTNH-specific bonuses and automatic container conversions are disabled for Monifactory recipes.
 
 The renewable guide covers more recipe types than the board calculator. A guide route establishes material availability under its listed assumptions; it does not establish machine speed, power sizing or full board support for that machine. Multiblock calculations, generators, additional recipe serializers and stateful behavior still need further work. Chance outputs use long-run expectations, not guaranteed short-term production.
 
-See the [Monifactory technical guide](docs/monifactory.md) for reference evidence, coverage limits and the export pipeline.
+See [current recipe coverage](docs/recipe-coverage.md) for remaining work, including EBF board integration, and the [Monifactory technical guide](docs/monifactory.md) for the export pipeline.
 
 ## Run locally
 

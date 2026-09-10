@@ -3,7 +3,8 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { PNG } from "pngjs";
 import { afterEach, beforeEach, expect, it } from "vitest";
-import { collectTextures, publishTextures } from "./textures.mjs";
+import { collectTextures, publishTextures, reusePublishedIcons } from "./textures.mjs";
+import { gzipSync } from "node:zlib";
 
 let scratch, source, output, catalogPath, page, report, catalog;
 beforeEach(async () => {
@@ -59,6 +60,56 @@ afterEach(async () => {
     path.basename(scratch).startsWith("monifactory-textures-")
   )
     await rm(scratch, { recursive: true, force: true });
+});
+it("reuses published same-profile icons with their original capture provenance", async () => {
+  await collectTextures(source, catalogPath, output);
+  const icons = await publishTextures(
+    path.join(output, "texture-index.json"),
+    output,
+    "/datasets/monifactory/monifactory-0.13.7-expert/textures",
+    catalog,
+  );
+  const guidePath = path.join(scratch, "renewables.json.gz");
+  const guide = {
+    format: "monifactory-renewables",
+    profile: catalog.profile,
+    instanceFingerprint: catalog.instanceFingerprint,
+    generatedAt: "2026-09-08T00:00:00Z",
+    resources: catalog.resources.map((r) => ({ ...r, iconAtlas: icons[`${r.kind}:${r.id}`] })),
+  };
+  await writeFile(guidePath, gzipSync(JSON.stringify(guide)));
+  const replacement = { ...catalog, instanceFingerprint: "b".repeat(64) };
+  const result = await reusePublishedIcons(guidePath, output, replacement);
+  expect(result.icons).toEqual(icons);
+  expect(result.provenance).toMatchObject({
+    sourceInstanceFingerprint: catalog.instanceFingerprint,
+    targetInstanceFingerprint: replacement.instanceFingerprint,
+  });
+  const index = JSON.parse(await readFile(path.join(output, "texture-index.json"), "utf8"));
+  await writeFile(path.join(output, index.atlases[0]), "corrupt");
+  await expect(reusePublishedIcons(guidePath, output, replacement)).rejects.toThrow("checksum");
+});
+it("rejects another profile and atlas paths outside the published directory", async () => {
+  const guidePath = path.join(scratch, "renewables.json.gz");
+  const guide = {
+    format: "monifactory-renewables",
+    profile: { id: "wrong" },
+    instanceFingerprint: catalog.instanceFingerprint,
+    resources: [],
+  };
+  await writeFile(guidePath, gzipSync(JSON.stringify(guide)));
+  await expect(reusePublishedIcons(guidePath, output, catalog)).rejects.toThrow("profile");
+  guide.profile = catalog.profile;
+  guide.resources = [
+    {
+      ...catalog.resources[0],
+      iconAtlas: {
+        imagePath: "/datasets/monifactory/monifactory-0.13.7-expert/textures/../private.png",
+      },
+    },
+  ];
+  await writeFile(guidePath, gzipSync(JSON.stringify(guide)));
+  await expect(reusePublishedIcons(guidePath, output, catalog)).rejects.toThrow("Unsafe");
 });
 it("collects visible pixels, reports empty stacks and publishes checksum-named atlases", async () => {
   expect(await collectTextures(source, catalogPath, output)).toEqual({

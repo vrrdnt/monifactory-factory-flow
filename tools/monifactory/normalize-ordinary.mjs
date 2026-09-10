@@ -9,6 +9,8 @@ import {
 } from "../../src/lib/packs/monifactory/ordinary.ts";
 import { isOrdinaryMachine } from "./ordinary-policy.mjs";
 import { profile } from "./prepare.mjs";
+import { validateSpecialProbe } from "./verify-special-probe.mjs";
+import { maceratorOutputVariants } from "./macerator-outputs.mjs";
 
 const positiveInt = z.number().int().positive().max(2147483647);
 const id = z.string().regex(/^[a-z0-9_.-]+:[a-z0-9_./-]+$/);
@@ -197,7 +199,7 @@ function normalizeSlots(caps, side, resources, tags, recipe) {
   return result;
 }
 
-export function normalizeOrdinary(catalog, probe) {
+export function normalizeOrdinary(catalog, probe, specialProbe) {
   if (
     catalog.schemaVersion !== 1 ||
     catalog.format !== "monifactory-runtime-catalog" ||
@@ -207,6 +209,20 @@ export function normalizeOrdinary(catalog, probe) {
     !/^[a-f0-9]{64}$/.test(catalog.instanceFingerprint)
   )
     reject("unsupported-runtime-catalog");
+  let outputLimits = new Map();
+  if (specialProbe) {
+    validateSpecialProbe(specialProbe, catalog);
+    outputLimits = new Map(specialProbe.machines.map((m) => [m.id, m]));
+    // Keep the original machine references; add only separately verified machines.
+    const originalMachines = new Set(probe.cases.map((row) => row.machineId));
+    probe = {
+      ...probe,
+      cases: [
+        ...probe.cases,
+        ...specialProbe.ordinaryCases.filter((row) => !originalMachines.has(row.machineId)),
+      ],
+    };
+  }
   const verified = validateProbe(probe, catalog);
   const resources = new Set(catalog.resources.map((r) => `${r.kind}:${r.id}`));
   const tags = new Map(catalog.tags.map((t) => [`${t.kind}:${t.id}`, t.members]));
@@ -257,6 +273,7 @@ export function normalizeOrdinary(catalog, probe) {
         reject("inconsistent-native-energy");
       const recipe = {
         id: raw.id,
+        nativeRecipeSha256: createHash("sha256").update(raw.nativeRecipeJson).digest("hex"),
         recipeType: raw.recipeType,
         engine: ORDINARY_ENGINE,
         durationTicks: native.duration,
@@ -267,9 +284,22 @@ export function normalizeOrdinary(catalog, probe) {
         .map((m) => ({ id: m.id, tier: m.tier }));
       if (!recipe.machines.length) reject("above-supported-machine-voltage");
       recipe.inputs = normalizeSlots(parsed.data.inputs, "input", resources, tags, recipe);
-      recipe.outputs = normalizeSlots(parsed.data.outputs, "output", resources, tags, recipe);
-      if (!recipe.outputs.length) reject("no-supported-output");
-      recipes.push(recipe);
+      const variants =
+        raw.recipeType === "gtceu:macerator"
+          ? maceratorOutputVariants(recipe, parsed.data.outputs ?? {}, outputLimits)
+          : [{ id: recipe.id, machines: recipe.machines, outputs: parsed.data.outputs }];
+      const normalized = variants.map((variant) => {
+        const outputs = normalizeSlots(variant.outputs, "output", resources, tags, recipe);
+        if (!outputs.length) reject("no-supported-output");
+        return {
+          ...recipe,
+          id: variant.id,
+          ...(variant.rawRecipeId ? { rawRecipeId: variant.rawRecipeId } : {}),
+          machines: variant.machines,
+          outputs,
+        };
+      });
+      recipes.push(...normalized);
     } catch (error) {
       excluded.push({ id: raw.id, recipeType: raw.recipeType, reason: error.message });
     }
@@ -291,7 +321,8 @@ export function normalizeOrdinary(catalog, probe) {
     },
     coverage: {
       totalGTRecipes: catalog.recipes.length,
-      included: recipes.length,
+      included: new Set(recipes.map((r) => r.rawRecipeId ?? r.id)).size,
+      recipeVariants: recipes.length,
       excluded: excluded.length,
       verifiedMachines: machines.length,
       exclusionsByReason,
@@ -306,13 +337,19 @@ export function normalizeOrdinary(catalog, probe) {
   };
 }
 
-export async function collectOrdinary(catalogPath, probePath, output) {
+export async function collectOrdinary(catalogPath, probePath, output, specialProbePath) {
   const catalogText = await readFile(catalogPath, "utf8");
   const probeText = await readFile(probePath, "utf8");
-  const result = normalizeOrdinary(JSON.parse(catalogText), JSON.parse(probeText));
+  const specialText = specialProbePath ? await readFile(specialProbePath, "utf8") : undefined;
+  const result = normalizeOrdinary(
+    JSON.parse(catalogText),
+    JSON.parse(probeText),
+    specialText ? JSON.parse(specialText) : undefined,
+  );
   result.provenance = {
     catalogSha256: hash(catalogText),
     probeSha256: hash(probeText),
+    ...(specialText ? { specialProbeSha256: hash(specialText) } : {}),
     gtceuSourceCommit: "91a79b8a7a2b62ec6277423e6c0ded4af89a831e",
   };
   await mkdir(output, { recursive: true });
@@ -333,10 +370,10 @@ export async function collectOrdinary(catalogPath, probePath, output) {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const [catalog, probe, output] = process.argv.slice(2);
+  const [catalog, probe, output, specialProbe] = process.argv.slice(2);
   if (!catalog || !probe || !output)
     throw new Error(
       "Usage: node tools/monifactory/normalize-ordinary.mjs <catalog.json> <ordinary-machine-probe.json> <output>",
     );
-  console.log(JSON.stringify(await collectOrdinary(catalog, probe, output), null, 2));
+  console.log(JSON.stringify(await collectOrdinary(catalog, probe, output, specialProbe), null, 2));
 }

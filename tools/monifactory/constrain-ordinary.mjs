@@ -50,6 +50,7 @@ export function constrainOrdinary(catalog, report) {
     if (!sizes.has(item.id)) throw new Error("Missing item stack limit.");
   const recipes = [],
     excluded = [...catalog.excluded],
+    excludedVariants = [],
     excludedMachinePairs = [],
     jobs = [];
   for (const recipe of catalog.recipes) {
@@ -62,6 +63,7 @@ export function constrainOrdinary(catalog, report) {
         jobs.push({
           id: `${recipe.id}@${machine.id}`,
           recipeId: recipe.id,
+          ...(recipe.rawRecipeId ? { rawRecipeId: recipe.rawRecipeId } : {}),
           machineId: machine.id,
           items: result.items,
           fluids: result.fluids,
@@ -76,11 +78,23 @@ export function constrainOrdinary(catalog, report) {
     }
     if (machines.length) recipes.push({ ...recipe, machines });
     else
-      excluded.push({
+      excludedVariants.push({
         id: recipe.id,
+        rawRecipeId: recipe.rawRecipeId ?? recipe.id,
         recipeType: recipe.recipeType,
         reason: "no-proven-inventory-layout",
       });
+  }
+  const retainedIds = new Set(recipes.map((r) => r.rawRecipeId ?? r.id));
+  const fullyExcluded = new Set();
+  for (const variant of excludedVariants) {
+    if (retainedIds.has(variant.rawRecipeId) || fullyExcluded.has(variant.rawRecipeId)) continue;
+    fullyExcluded.add(variant.rawRecipeId);
+    excluded.push({
+      id: variant.rawRecipeId,
+      recipeType: variant.recipeType,
+      reason: variant.reason,
+    });
   }
   const reasons = {},
     exclusionsByReason = {};
@@ -96,10 +110,12 @@ export function constrainOrdinary(catalog, report) {
       machineLimits: limits,
       itemStackLimits: items,
       excludedMachinePairs,
+      excludedVariants,
       validation: { ...catalog.validation, inventoryStatus: "conservative-capacity-checked" },
       coverage: {
         ...catalog.coverage,
-        included: recipes.length,
+        included: new Set(recipes.map((r) => r.rawRecipeId ?? r.id)).size,
+        recipeVariants: recipes.length,
         excluded: excluded.length,
         exclusionsByReason,
         inventoryExcludedMachinePairs: excludedMachinePairs.length,

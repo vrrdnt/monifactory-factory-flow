@@ -65,6 +65,10 @@ export function buildPlannerRecipes(catalog, reference) {
     const cases = positive.get(recipe.id);
     if (!cases?.length) throw new Error(`Missing runtime inventory witness for ${recipe.id}`);
     for (const row of cases) {
+      if ((row.rawRecipeId ?? row.recipeId) !== (recipe.rawRecipeId ?? recipe.id))
+        throw new Error("Reference uses a different native recipe.");
+      if (recipe.nativeRecipeSha256 && row.nativeRecipeSha256 !== recipe.nativeRecipeSha256)
+        throw new Error("Reference native recipe data is stale.");
       if (!recipe.machines.some((m) => m.id === row.machineId))
         throw new Error("Reference uses an excluded machine.");
       const layout = checkOrdinaryInventory(recipe, limits.get(row.machineId), sizes);
@@ -108,7 +112,7 @@ export function buildPlannerRecipes(catalog, reference) {
         recipeMap: recipe.recipeType,
         sourceMod: "gtceu",
         exporter: "unknown",
-        rawRecipeId: recipe.id,
+        rawRecipeId: recipe.rawRecipeId ?? recipe.id,
         sourceIdentifier: "monifactory-kubejs",
       },
       metadata: {

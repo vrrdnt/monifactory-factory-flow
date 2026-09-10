@@ -1,6 +1,6 @@
 // Audited registerSimpleMachines calls in GTCEu v7.5.3-1.20.1 GTMachines.java.
-// Macerators have tier-specific output truncation; rock crushers have world
-// checks. Neither belongs in this initial ordinary-machine adapter.
+// Macerators additionally require an output-limit reference in normalization.
+// Rock crushers need world checks and do not use this adapter yet.
 export const ordinaryFamilies = new Set([
   "electric_furnace",
   "alloy_smelter",
@@ -28,6 +28,7 @@ export const ordinaryFamilies = new Set([
   "lathe",
   "scanner",
   "mixer",
+  "macerator",
   "ore_washer",
   "packer",
   "polarizer",

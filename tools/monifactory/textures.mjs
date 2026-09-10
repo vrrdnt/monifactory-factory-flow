@@ -3,6 +3,7 @@ import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { PNG } from "pngjs";
+import { gunzipSync } from "node:zlib";
 import { profile, resolveMinecraftDirectory } from "./prepare.mjs";
 
 const key = (r) => `${r.kind}:${r.id}`;
@@ -201,6 +202,65 @@ export async function publishTextures(indexPath, output, publicPrefix, catalog) 
       return [id, { ...atlas, renderScale: 0.5, imagePath: `${publicPrefix}/${atlas.imagePath}` }];
     }),
   );
+}
+
+/** Explicit reuse of the previous same-pack capture; never rewrites its fingerprint. */
+export async function reusePublishedIcons(guidePath, atlasDirectory, catalog) {
+  const bytes = await readFile(guidePath);
+  const guide = JSON.parse(gunzipSync(bytes));
+  if (
+    guide.format !== "monifactory-renewables" ||
+    guide.profile?.id !== catalog.profile.id ||
+    guide.profile?.packVersion !== catalog.profile.packVersion ||
+    guide.profile?.mode !== catalog.profile.mode ||
+    !/^[a-f0-9]{64}$/.test(guide.instanceFingerprint)
+  )
+    throw new Error("Published icon source must match the selected pack profile.");
+  const prefix = `/datasets/monifactory/${catalog.profile.id}/textures/`;
+  const known = new Set(catalog.resources.map(key));
+  const icons = {},
+    pages = new Map();
+  for (const resource of guide.resources) {
+    if (!known.has(key(resource)) || !resource.iconAtlas) continue;
+    if (icons[key(resource)]) throw new Error("Duplicate published icon identity.");
+    const atlas = resource.iconAtlas;
+    if (!atlas.imagePath.startsWith(prefix)) throw new Error("Unexpected published atlas path.");
+    const filename = atlas.imagePath.slice(prefix.length);
+    if (!/^atlas-[a-f0-9]{64}\.png$/.test(filename))
+      throw new Error("Unsafe published atlas path.");
+    if (!pages.has(filename)) {
+      const image = await readFile(path.join(atlasDirectory, filename));
+      if (filename !== `atlas-${digest(image)}.png`)
+        throw new Error("Published atlas checksum mismatch.");
+      const png = PNG.sync.read(image);
+      pages.set(filename, { width: png.width, height: png.height });
+    }
+    const page = pages.get(filename);
+    if (
+      ![atlas.x, atlas.y, atlas.width, atlas.height].every(Number.isSafeInteger) ||
+      atlas.x < 0 ||
+      atlas.y < 0 ||
+      atlas.width < 1 ||
+      atlas.height < 1 ||
+      atlas.x + atlas.width > page.width ||
+      atlas.y + atlas.height > page.height ||
+      atlas.atlasWidth !== page.width ||
+      atlas.atlasHeight !== page.height
+    )
+      throw new Error("Invalid published icon bounds.");
+    icons[key(resource)] = { ...atlas };
+  }
+  return {
+    icons,
+    provenance: {
+      method: "reuse-previous-published-default-stack-capture",
+      sourceSha256: digest(bytes),
+      sourceInstanceFingerprint: guide.instanceFingerprint,
+      sourceGeneratedAt: guide.generatedAt,
+      targetInstanceFingerprint: catalog.instanceFingerprint,
+      note: "Matched registry identities and verified atlas checksums. Client assets were not recaptured in the replacement instance.",
+    },
+  };
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
